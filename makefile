@@ -25,7 +25,7 @@ $(file) : $(CPP_FILES) GL_utilities.o LoadTGA.o MicroGlut.o
 	g++ -std=c++17 $(CCFLAGS) -o $(file).out -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES $(CPP_FILES) GL_utilities.o LoadTGA.o MicroGlut.o $(flags)
 
 MicroGlut.o : $(commondir)$(os)MicroGlut.$(ext)
-	gcc -c -Wno-deprecated-declarations $(commondir)$(os)MicroGlut.m -o MicroGlut.o
+	gcc -c -Wno-deprecated-declarations $(commondir)$(os)MicroGlut.$(ext) -o MicroGlut.o
 
 GL_utilities.o : $(commondir)GL_utilities.c
 	gcc -c -Wno-deprecated-declarations $(commondir)GL_utilities.c -o GL_utilities.o
