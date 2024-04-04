@@ -1,0 +1,10 @@
+commondir = ../common/
+files = lab3-4
+
+all : $(files)
+
+$(files) : $(files).cpp $(commondir)GL_utilities.c $(commondir)LoadTGA.c $(commondir)Mac/MicroGlut.m
+	gcc -Wall -o $(files).out -I$(commondir) -I../common/Mac -DGL_GLEXT_PROTOTYPES $(files).cpp $(commondir)GL_utilities.c $(commondir)LoadTGA.c $(commondir)Mac/MicroGlut.m -framework OpenGL -framework Cocoa -lm -Wno-deprecated-declarations
+
+clean :
+	rm *.out
