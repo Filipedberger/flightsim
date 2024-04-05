@@ -3,7 +3,7 @@
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
-
+#include "VectorUtils4.h"
 
 
 class State {
@@ -18,7 +18,16 @@ class State {
 
     protected:
     GLuint program;
+    mat4 world2view;
+    mat4 projection;
+    vec3 cameraPosition;
+    vec3 lookAtPoint;
+    vec3 upVector;
 
+    virtual void upload2shader() {
+        glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
+        glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    }
 };
 
 #endif

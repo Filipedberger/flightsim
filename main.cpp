@@ -5,11 +5,10 @@
 #include "LittleOBJLoader.h"
 #include "LoadTGA.h"
 
-#include "state.h"
 #include "game_state.h"
 
+State* state = nullptr;
 
-State* state = new Game_State();
 
 static void keyboard_wrapper(unsigned char key, int x, int y){
 	state->keyboard(key, x, y);
@@ -35,11 +34,16 @@ void display(void){
 
 void init(void)
 {
-    glutWarpPointer(1920/2, 1080/2);
-    glClearColor(0.0, 0.0, 0.0, 0);
+    //glutWarpPointer(1920/2, 1080/2);
+    glClearColor(0.2,0.2,0.5,0);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	dumpInfo();
 	glutKeyboardFunc(keyboard_wrapper);
 	glutKeyboardUpFunc(keyboard_up_wrapper);
 	glutPassiveMotionFunc(mouse_wrapper);
+
+	state = new Game_State();
 }
 
 
@@ -47,16 +51,13 @@ void init(void)
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (1920, 1080);
 	glutCreateWindow ("Flight Simulator");
 	glutDisplayFunc(display);
 	init ();
 	glutRepeatingTimer(20);
-	
-	//glutPassiveMotionFunc(mouse);
-
 	glutMainLoop();
 	exit(0);
 }

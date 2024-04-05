@@ -3,9 +3,10 @@
 #define GAME_STATE_H
 
 #include "state.h"
-#include "object.h"
-#include "map.h"
 #include <vector>
+#include "object.h"
+#include "LittleOBJLoader.h"
+#include "VectorUtils4.h"
 
 
 class Game_State : public State {
@@ -20,7 +21,6 @@ class Game_State : public State {
 
     private:
     std::vector<Object*> objects;
-    Map* map;
 };
 
 #endif

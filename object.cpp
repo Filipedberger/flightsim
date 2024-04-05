@@ -7,12 +7,11 @@ Object::Object() {
     return;
 }
 
-void Object::create_model(std::string filename, int x_pos, int y_pos, int z_pos, int scale) {
+void Object::create_model(std::string filename, int x, int y, int z, float sc) {
     model = LoadModel(filename.c_str());
-    x = x_pos;
-    y = y_pos;
-    z = z_pos;
-    mdl_matrix = T(x, y, z) * S(scale, scale, scale);
+    position = vec3(x, y, z);
+    scale = sc;
+    update_model2world();
 
 }
 
@@ -21,6 +20,6 @@ void Object::update() {
 }
 
 void Object::display(GLuint program) {
-    glUniformMatrix4fv(glGetUniformLocation(program, "mdl_matrix"), 1, GL_TRUE, mdl_matrix.m);
+    upload2shader(program);
     DrawModel(model, program, "in_Position", "in_Normal", "in_TexCoord");
 }

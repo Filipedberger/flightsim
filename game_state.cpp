@@ -1,14 +1,36 @@
 #include "game_state.h"
-#include "GL_utilities.h"
 #include "object.h"
+
 #include "MicroGlut.h"
+#include "GL_utilities.h"
+#include "VectorUtils4.h"
+#include "LittleOBJLoader.h"
+#include "LoadTGA.h"
+
+#include <iostream>
+
+#define near 1.0
+#define far 20.0
+#define right 0.5
+#define left -0.5
+#define top 0.5
+#define bottom -0.5
 
 Game_State::Game_State() {
-    program = loadShaders("shaders/game_state.vert", "shaders/game_state.frag");
-    Object* obj = new Object();
-    obj->create_model("models/teapot.obj");
-    objects.push_back(obj);
+    Object* object = new Object();
+    object->create_model("models/bunny.obj");
+    objects.push_back(object);
 
+    cameraPosition = vec3(0.0f, 0.0f, 5.0f);
+    lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
+    upVector = vec3(0.0f, 1.0f, 0.0f);
+    world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+
+    projection = frustum(left, right, bottom, top, near, far);
+
+    program = loadShaders("shaders/game_state.vert", "shaders/game_state.frag");
+    glUseProgram(program);
+    
     return;
 }
 
@@ -25,26 +47,25 @@ void Game_State::mouse(int x, int y) {
 }
 
 void Game_State::update() {
-    for (Object* obj : objects) {
-        obj->update();
+    // Update camera etc. here, then update objects.
+
+    for (Object* object : objects) {
+        object->update();
+    
     }
 }
 
 void Game_State::display() {
-    glClearColor(0.2,0.2,0.5,0);
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-
+    // Upload matrices to shader, then display objects, map etc.
+    // We make sure to use the program before uploading matrices.
     glUseProgram(program);
-    for (Object* obj : objects) {
-        obj->display(program);
-    }
-    glUseProgram(0);
+    upload2shader();
     
+    for (Object* object : objects) {
+        object->display(program);
+    }
 }
 
 Game_State::~Game_State() {
-    for (Object* obj : objects) {
-        delete obj;
-    }
-}   
+    return;
+}
