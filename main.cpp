@@ -6,6 +6,7 @@
 #include "LoadTGA.h"
 
 #include "game_state.h"
+#include "menu_state.h"
 
 State* state = nullptr;
 
@@ -43,7 +44,7 @@ void init(void)
 	glutKeyboardUpFunc(keyboard_up_wrapper);
 	glutPassiveMotionFunc(mouse_wrapper);
 
-	state = new Game_State();
+	state = new Menu_State();
 }
 
 
