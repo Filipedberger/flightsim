@@ -17,8 +17,7 @@
 #define bottom -0.5
 
 Game_State::Game_State() {
-    Object* object = new Object();
-    object->create_model("models/bunny.obj");
+    Object* object = new Object("models/bunny.obj");
     objects.push_back(object);
 
     cameraPosition = vec3(0.0f, 0.0f, 5.0f);
@@ -50,7 +49,7 @@ void Game_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
     for (Object* object : objects) {
-        object->update();
+        object->update(time_elapsed);
     
     }
 }
