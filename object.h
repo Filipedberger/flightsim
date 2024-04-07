@@ -22,12 +22,11 @@ class Object {
     protected:
     Model* model;
     mat4 translationMatrix;
-    mat4 rotationMatrix;
-    mat4 scaleMatrix;
-    vec3 position;
+    mat4 rotationMatrix = IdentityMatrix();
+    mat4 scaleMatrix = IdentityMatrix();
+    vec3 position = vec3(0,0,0);
     float scale_factor;
 
-    void update_model2world();
     void upload2shader(GLuint program);
 
 };

@@ -48,7 +48,7 @@ void init(void)
 	glutKeyboardUpFunc(keyboard_up_wrapper);
 	glutPassiveMotionFunc(mouse_wrapper);
 
-	state = new Game_State();
+	state = new Menu_State();
 	prev_time = 0;
 }
 
