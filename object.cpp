@@ -3,19 +3,19 @@
 #include "LittleOBJLoader.h"
 #include "VectorUtils4.h"
 
-Object::Object() {
-    return;
+Object::Object(std::string filename, vec3 pos, float sc) {
+    rotationMatrix = IdentityMatrix();
+    create_model(filename, pos, sc);
 }
 
 void Object::create_model(std::string filename, vec3 pos, float sc) {
     model = LoadModel(filename.c_str());
-    position = pos;
-    scale = sc;
-    update_model2world();
+    move(pos);
+    scale(sc);
 
 }
 
-void Object::update() {
+void Object::update(int time_elapsed) {
     return;
 }
 
@@ -26,22 +26,27 @@ void Object::display(GLuint program) {
 
 void Object::translate(vec3 translation) {
         position = position + translation;
-        update_model2world();
+        translationMatrix = T(position.x, position.y, position.z);
     }
 
 void Object::move(vec3 coordinates) {
     position = coordinates;
-    update_model2world();
+    translationMatrix = T(position.x, position.y, position.z);
 }
 
 void Object::rotate(float angle, vec3 axis) {
-    model2world = model2world * ArbRotate(axis, angle);
+    rotationMatrix = rotationMatrix * ArbRotate(axis, angle);
 }
 
-void Object::update_model2world() {
-        model2world = T(position.x, position.y, position.z) * S(scale);
-    }
+void Object::scale(float sc) {
+    scale_factor = sc;
+    scaleMatrix = S(scale_factor, scale_factor, scale_factor);
+
+}
+
 
 void Object::upload2shader(GLuint program) {
-        glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, model2world.m);
+        glUniformMatrix4fv(glGetUniformLocation(program, "translationMatrix"), 1, GL_TRUE, translationMatrix.m);
+        glUniformMatrix4fv(glGetUniformLocation(program, "rotationMatrix"), 1, GL_TRUE, rotationMatrix.m);
+        glUniformMatrix4fv(glGetUniformLocation(program, "scaleMatrix"), 1, GL_TRUE, scaleMatrix.m);
     }
