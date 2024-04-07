@@ -9,6 +9,8 @@
 #include "menu_state.h"
 
 State* state = nullptr;
+int prev_time;
+int time_elapsed;
 
 
 static void keyboard_wrapper(unsigned char key, int x, int y){
@@ -25,8 +27,10 @@ static void mouse_wrapper(int x, int y){
 
 void display(void){
 
+	time_elapsed = glutGet(GLUT_ELAPSED_TIME) - prev_time;
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	state->update();
+	state->update(time_elapsed);
 	state->display();
 	glutSwapBuffers();
 
@@ -44,7 +48,8 @@ void init(void)
 	glutKeyboardUpFunc(keyboard_up_wrapper);
 	glutPassiveMotionFunc(mouse_wrapper);
 
-	state = new Menu_State();
+	state = new Game_State();
+	prev_time = 0;
 }
 
 
