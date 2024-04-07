@@ -20,13 +20,6 @@ Game_State::Game_State() {
     Object* object = new Object("models/bunny.obj");
     objects.push_back(object);
 
-    cameraPosition = vec3(0.0f, 0.0f, 5.0f);
-    lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
-    upVector = vec3(0.0f, 1.0f, 0.0f);
-    world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
-
-    projection = frustum(left, right, bottom, top, near, far);
-
     program = loadShaders("shaders/game_state.vert", "shaders/game_state.frag");
     glUseProgram(program);
     

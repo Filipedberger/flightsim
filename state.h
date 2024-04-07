@@ -8,6 +8,7 @@
 
 class State {
     public:
+    State();
     virtual void keyboard(unsigned char key, int x, int y) = 0;
     virtual void keyboard_up(unsigned char key, int x, int y) = 0;
     virtual void mouse(int x, int y) = 0;
@@ -24,10 +25,9 @@ class State {
     vec3 lookAtPoint;
     vec3 upVector;
 
-    virtual void upload2shader() {
-        glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
-        glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
-    }
+    virtual void upload2shader();
+    void create_world2view(vec3 cameraPosition = vec3(0.0f, 0.0f, 50.0f), vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f), vec3 upVector = vec3(0.0f, 1.0f, 0.0f));
+    void create_projection(float near = 1.0, float far = 200.0, float right = 0.5, float left = -0.5, float top = 0.5, float bottom = -0.5);
 };
 
 #endif
