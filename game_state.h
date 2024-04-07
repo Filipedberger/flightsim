@@ -15,7 +15,7 @@ class Game_State : public State {
     void keyboard(unsigned char key, int x, int y) override;
     void keyboard_up(unsigned char key, int x, int y) override;
     void mouse(int x, int y) override;
-    void update() override;
+    void update(int time_elapsed) override;
     void display() override;
     ~Game_State() override;
 

@@ -46,7 +46,7 @@ void Game_State::mouse(int x, int y) {
     return;
 }
 
-void Game_State::update() {
+void Game_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
     for (Object* object : objects) {
