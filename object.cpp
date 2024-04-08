@@ -3,12 +3,12 @@
 #include "LittleOBJLoader.h"
 #include "VectorUtils4.h"
 
-Object::Object(std::string filename, vec3 pos, float sc) {
+Object::Object(const std::string& filename, vec3 pos, float sc) {
     rotationMatrix = IdentityMatrix();
     create_model(filename, pos, sc);
 }
 
-void Object::create_model(std::string filename, vec3 pos, float sc) {
+void Object::create_model(const std::string& filename, vec3 pos, float sc) {
     model = LoadModel(filename.c_str());
     move(pos);
     scale(sc);
@@ -19,7 +19,7 @@ void Object::update(int time_elapsed) {
     return;
 }
 
-void Object::display(GLuint program) {
+void Object::display(const GLuint& program) {
     upload2shader(program);
     DrawModel(model, program, "in_Position", "in_Normal", "in_TexCoord");
 }
@@ -44,8 +44,12 @@ void Object::scale(float sc) {
 
 }
 
+void Object::reset() {
+    return;
+}
 
-void Object::upload2shader(GLuint program) {
+
+void Object::upload2shader(const GLuint& program) {
         glUniformMatrix4fv(glGetUniformLocation(program, "translationMatrix"), 1, GL_TRUE, translationMatrix.m);
         glUniformMatrix4fv(glGetUniformLocation(program, "rotationMatrix"), 1, GL_TRUE, rotationMatrix.m);
         glUniformMatrix4fv(glGetUniformLocation(program, "scaleMatrix"), 1, GL_TRUE, scaleMatrix.m);
