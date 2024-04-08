@@ -4,6 +4,7 @@
 #include "MicroGlut.h"
 #include "GL_utilities.h"
 #include "VectorUtils4.h"
+#include "frustum.h"
 
 
 class State {
@@ -24,6 +25,8 @@ class State {
     vec3 cameraPosition;
     vec3 lookAtPoint;
     vec3 upVector;
+    Frustum frustum_obj;
+
 
     virtual void upload2shader();
     void create_world2view(vec3 cameraPosition = vec3(0.0f, 0.0f, 50.0f), vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f), vec3 upVector = vec3(0.0f, 1.0f, 0.0f));
