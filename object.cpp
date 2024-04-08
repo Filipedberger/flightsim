@@ -44,6 +44,10 @@ void Object::scale(float sc) {
 
 }
 
+void Object::reset() {
+    return;
+}
+
 
 void Object::upload2shader(const GLuint& program) {
         glUniformMatrix4fv(glGetUniformLocation(program, "translationMatrix"), 1, GL_TRUE, translationMatrix.m);

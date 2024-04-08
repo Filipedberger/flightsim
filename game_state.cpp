@@ -9,13 +9,6 @@
 
 #include <iostream>
 
-#define near 1.0
-#define far 20.0
-#define right 0.5
-#define left -0.5
-#define top 0.5
-#define bottom -0.5
-
 Game_State::Game_State() {
     Object* object = new Object("models/bunny.obj");
     objects.push_back(object);

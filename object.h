@@ -17,14 +17,21 @@ class Object {
     virtual void move(vec3 coordinates);
     virtual void rotate(float angle, vec3 axis);
     virtual void scale(float sc);
+
+    virtual void reset();
+
     virtual ~Object() = default;
+
+    float radius;
+    vec3 position = vec3(0,0,0);
+    vec3 center;
 
     protected:
     Model* model;
     mat4 translationMatrix;
     mat4 rotationMatrix = IdentityMatrix();
     mat4 scaleMatrix = IdentityMatrix();
-    vec3 position = vec3(0,0,0);
+    
     float scale_factor;
 
     void upload2shader(const GLuint& program);

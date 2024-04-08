@@ -8,9 +8,13 @@
 #include "game_state.h"
 #include "menu_state.h"
 
+#include <iostream> 
+#include <time.h> 
+
 State* state = nullptr;
 int prev_time;
 int time_elapsed;
+int temp_time;
 
 
 static void keyboard_wrapper(unsigned char key, int x, int y){
@@ -26,8 +30,10 @@ static void mouse_wrapper(int x, int y){
 }
 
 void display(void){
+	temp_time = glutGet(GLUT_ELAPSED_TIME);
+	time_elapsed = temp_time - prev_time;
+	prev_time = temp_time;
 
-	time_elapsed = glutGet(GLUT_ELAPSED_TIME) - prev_time;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	state->update(time_elapsed);
@@ -50,6 +56,8 @@ void init(void)
 
 	state = new Menu_State();
 	prev_time = 0;
+
+	srand(time(NULL));
 }
 
 
