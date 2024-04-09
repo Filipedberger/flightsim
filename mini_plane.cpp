@@ -15,7 +15,7 @@ Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj,
     return;
 }
 
-void Mini_Plane::update(int time_elapsed) {
+void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
     translate(direction * time_elapsed * speed);
     return;
 }
