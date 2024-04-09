@@ -1,7 +1,9 @@
 #include "frustum.h"
+#include "helper.h"
 
 #include "VectorUtils4.h"
 #include <iostream>
+
 
 
 Frustum::Frustum(float near, float far, float right, float left, float top, float bottom) 
@@ -26,6 +28,31 @@ Frustum::Frustum(float near, float far, float right, float left, float top, floa
     create_normal(bottom_normal, bottom_p, left_near_bottom, left_far_bottom, right_near_bottom);
     create_normal(near_normal, near_p, left_near_bottom, right_near_bottom, left_near_top);
     create_normal(far_normal, far_p, left_far_top, right_far_top, left_far_bottom);
+
+    std::cout << "Left Normal: " << vec2str(left_normal) << std::endl;
+    std::cout << "Left Point: " << vec2str(left_p) << std::endl;
+    std::cout << '\n';
+
+    std::cout << "Right Normal: " << vec2str(right_normal) << std::endl;
+    std::cout << "Right Point: " << vec2str(right_p) << std::endl;
+    std::cout << '\n';
+
+    std::cout << "Top Normal: " << vec2str(top_normal) << std::endl;
+    std::cout << "Top Point: " << vec2str(top_p) << std::endl;
+    std::cout << '\n';
+
+    std::cout << "Bottom Normal: " << vec2str(bottom_normal) << std::endl;
+    std::cout << "Bottom Point: " << vec2str(bottom_p) << std::endl;
+    std::cout << '\n';
+
+    std::cout << "Near Normal: " << vec2str(near_normal) << std::endl;
+    std::cout << "Near Point: " << vec2str(near_p) << std::endl;
+    std::cout << '\n';  
+
+    std::cout << "Far Normal: " << vec2str(far_normal) << std::endl;
+    std::cout << "Far Point: " << vec2str(far_p) << std::endl;
+    std::cout << '\n';
+
 }
 
 void Frustum::create_normal(vec3& normal, vec3& p, const vec3& p1, const vec3& p2, const vec3& p3) {

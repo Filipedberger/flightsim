@@ -14,10 +14,10 @@
 #include <time.h> 
 #include <jsoncpp/json/json.h>
 
+#define FPS 60
+#define FRAME_DURATION (1000 / FPS) // Duration of each frame in milliseconds
+
 State* state = nullptr;
-int prev_time;
-int time_elapsed;
-int temp_time;
 
 Context* context = new Context();
 
@@ -35,15 +35,18 @@ static void mouse_wrapper(int x, int y){
 }
 
 void display(void){
-	temp_time = glutGet(GLUT_ELAPSED_TIME);
-	time_elapsed = temp_time - prev_time;
-	prev_time = temp_time;
+	static int prev_time = glutGet(GLUT_ELAPSED_TIME);
+    int curr_time = glutGet(GLUT_ELAPSED_TIME);
+    int time_elapsed = curr_time - prev_time;
 
+    if (time_elapsed >= FRAME_DURATION) {
+        prev_time = curr_time;
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	state->update(time_elapsed);
-	state->display();
-	glutSwapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        state->update(time_elapsed);
+        state->display();
+        glutSwapBuffers();
+    }
 
 }
 
@@ -73,9 +76,7 @@ void init(void)
 	context -> next_state = nullptr;
 	context -> settings = settings;
 
-	state = new Menu_State(context);
-	prev_time = 0;
-	
+	state = new Menu_State(context);	
 }
 
 
@@ -83,11 +84,11 @@ void init(void)
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (1920, 1080);
 	glutCreateWindow ("Flight Simulator");
-	glutFullScreen(); 
+	//glutFullScreen(); 
 	glutDisplayFunc(display);
 	init ();
 	glutRepeatingTimer(20);
