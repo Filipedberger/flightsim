@@ -10,11 +10,13 @@ ifeq ($(OS),Darwin)
     os = Mac/
     ext = m
     flags = -framework OpenGL -framework Cocoa -lm -ljsoncpp -L/opt/homebrew/Cellar/jsoncpp/1.9.5/lib -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
+    oflag =  -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
 else ifeq ($(OS),Linux)
     # Commands for Linux
     os = Linux/
     ext = c
-    flags = -lXt -lX11 -lGL -lm -lstdc++ -ljsoncpp 
+    flags = -lXt -lX11 -lGL -lm -lstdc++ -ljsoncpp
+    oflag = 
 else
     $(error Unsupported operating system: $(OS))
 endif
@@ -25,7 +27,7 @@ $(file) : $(OBJ_FILES) GL_utilities.o LoadTGA.o MicroGlut.o
 	g++ -std=c++17 $(CCFLAGS) -o $(file).out -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES GL_utilities.o LoadTGA.o MicroGlut.o $(OBJ_FILES) $(flags)
 
 %.o : %.cpp
-	g++ -std=c++17 $(CCFLAGS) -c -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES $< -o $@
+	g++ -std=c++17 $(CCFLAGS) -c -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES $< -o $@ $(oflag)
 
 MicroGlut.o : $(commondir)$(os)MicroGlut.$(ext) $(commondir)$(os)MicroGlut.h
 	gcc -c -Wno-deprecated-declarations  -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES  $(commondir)$(os)MicroGlut.$(ext) -o MicroGlut.o
