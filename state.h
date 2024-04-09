@@ -33,7 +33,7 @@ class State {
     // Objects:
     std::vector<Object*> objects;
     Object* ground;
-    Object* skybox;
+    Object* skydome;
 
 
     virtual void upload2shader();

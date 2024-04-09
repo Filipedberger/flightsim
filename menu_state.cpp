@@ -1,6 +1,7 @@
 #include "menu_state.h"
 #include "mini_plane.h"
 #include "ground.h"
+#include "skydome.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -23,6 +24,9 @@ Menu_State::Menu_State() {
     glUseProgram(program);
 
     ground = new Ground();
+    filename = "models/skydome.obj";
+    sc = 1;
+    skydome = new Skydome(const std::string& filename, const vec3& cameraPosition, float sc)
     
     return;
 }
@@ -43,6 +47,7 @@ void Menu_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
     ground->update(time_elapsed, cameraPosition, lookAtPoint);
+    skydome->update(time_elapsed);
 
     for (Object* object : objects) {
         object->update(time_elapsed, cameraPosition, lookAtPoint);
@@ -60,6 +65,7 @@ void Menu_State::display() {
     upload2shader();
 
     ground->display(program);
+    skydome->display(program);
     
     
     for (Object* object : objects) {

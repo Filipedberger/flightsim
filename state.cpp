@@ -34,5 +34,5 @@ State::~State() {
         delete object;
     }
     delete ground;
-    delete skybox;
+    delete skydome;
 }
