@@ -2,7 +2,7 @@
 #define CONTEXT_H
 
 #include "state.h"
-#include <json.h>
+#include <jsoncpp/json/json.h>
 
 class State; // Forward declaration
 

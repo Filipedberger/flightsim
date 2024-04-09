@@ -9,7 +9,7 @@
 #include "LittleOBJLoader.h"
 #include "LoadTGA.h"
 
-#include <json.h>
+#include <jsoncpp/json/json.h>
 
 #include <iostream>
 
@@ -19,7 +19,7 @@ Menu_State::Menu_State(Context* c) : State(c){
 
     Json::Value settings = context->settings["mini_planes"][1];
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1; i++) {
         object = new Mini_Plane(settings["path"].asString(), frustum_obj, settings["rotation"], vec3(0,0,0), settings["scale"].asFloat());
         objects.push_back(object);
     }

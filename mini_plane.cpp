@@ -5,7 +5,7 @@
 #include "cmath"
 #include <iostream>
 #include <random>
-#include <json.h>
+#include <jsoncpp/json/json.h>
 
 Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj, vec3 pos, float sc)
     : Object(filename, pos, sc) {
@@ -34,7 +34,8 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj, 
 
 
 void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
-    translate(direction * time_elapsed * speed);
+    //translate(direction * time_elapsed * speed);
+    move(vec3(0,30,0));
     return;
 }
 

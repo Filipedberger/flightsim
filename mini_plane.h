@@ -3,7 +3,7 @@
 
 #include "object.h"
 #include "frustum.h"
-#include <json.h>
+#include <jsoncpp/json/json.h>
 
 class Mini_Plane : public Object {
     public:
