@@ -9,7 +9,7 @@ ifeq ($(OS),Darwin)
     # Commands for macOS
     os = Mac/
     ext = m
-    flags = -framework OpenGL -framework Cocoa -lm
+    flags = -framework OpenGL -framework Cocoa -lm -ljsoncpp -L/opt/homebrew/Cellar/jsoncpp/1.9.5/lib -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
 else ifeq ($(OS),Linux)
     # Commands for Linux
     os = Linux/
@@ -22,7 +22,7 @@ endif
 all : $(file)
 
 $(file) : $(OBJ_FILES) GL_utilities.o LoadTGA.o MicroGlut.o
-	g++ -std=c++17 $(CCFLAGS) -o $(file).out -I$(commondir) -I$(commondir)$(os) -L$(commondir)jsoncpp/1.9.5/lib -I$(commondir)/jsoncpp/1.9.5/include/json -ljsoncpp -DGL_GLEXT_PROTOTYPES GL_utilities.o LoadTGA.o MicroGlut.o $(OBJ_FILES) $(flags)
+	g++ -std=c++17 $(CCFLAGS) -o $(file).out -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES GL_utilities.o LoadTGA.o MicroGlut.o $(OBJ_FILES) $(flags)
 
 %.o : %.cpp
 	g++ -std=c++17 $(CCFLAGS) -c -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES $< -o $@
