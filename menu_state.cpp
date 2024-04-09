@@ -14,7 +14,7 @@
 Menu_State::Menu_State() {
     Object* object;
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1; i++) {
         object = new Mini_Plane("models/airplane.obj", frustum_obj, vec3(0,0,0), 0.007);
         objects.push_back(object);
     }
@@ -28,7 +28,7 @@ Menu_State::Menu_State() {
 }
 
 void Menu_State::keyboard(unsigned char key, int x, int y) {
-    return;
+    State::keyboard(key, x, y);
 }
 
 void Menu_State::keyboard_up(unsigned char key, int x, int y) {

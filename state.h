@@ -1,22 +1,25 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include "frustum.h"
+#include "object.h"
+
 #include "MicroGlut.h"
 #include "GL_utilities.h"
 #include "VectorUtils4.h"
-#include "frustum.h"
+#include <vector>
 
 
 class State {
     public:
     State();
-    virtual void keyboard(unsigned char key, int x, int y) = 0;
+    virtual void keyboard(unsigned char key, int x, int y);
     virtual void keyboard_up(unsigned char key, int x, int y) = 0;
     virtual void mouse(int x, int y) = 0;
     virtual void update(int time_elapsed) = 0;
     virtual void display() = 0;
 
-    virtual ~State() = default;
+    virtual ~State();
 
     protected:
     GLuint program;
@@ -26,6 +29,11 @@ class State {
     vec3 lookAtPoint;
     vec3 upVector;
     Frustum frustum_obj;
+
+    // Objects:
+    std::vector<Object*> objects;
+    Object* ground;
+    Object* skybox;
 
 
     virtual void upload2shader();

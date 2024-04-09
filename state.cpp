@@ -20,3 +20,19 @@ void State::create_projection(float near, float far, float right, float left, fl
     projection = frustum(left, right, bottom, top, near, far);
     frustum_obj =  Frustum(near, far, right, left, top, bottom); 
 }
+
+void State::keyboard(unsigned char key, int x, int y) {
+    switch(key) {
+        case 27:
+            exit(0);
+            break;
+    }
+}
+
+State::~State() {
+    for (Object* object : objects) {
+        delete object;
+    }
+    delete ground;
+    delete skybox;
+}
