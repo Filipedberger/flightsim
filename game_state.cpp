@@ -35,7 +35,7 @@ void Game_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
     for (Object* object : objects) {
-        object->update(time_elapsed);
+        object->update(time_elapsed, cameraPosition, lookAtPoint);
     
     }
 }

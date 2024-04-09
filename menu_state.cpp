@@ -44,10 +44,10 @@ void Menu_State::mouse(int x, int y) {
 void Menu_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
-    ground->update(time_elapsed);
+    ground->update(time_elapsed, cameraPosition, lookAtPoint);
 
     for (Object* object : objects) {
-        object->update(time_elapsed);
+        object->update(time_elapsed, cameraPosition, lookAtPoint);
         if (frustum_obj.side_culling(object->center + object -> position, object->radius, world2view)) {
             object->reset();
         }

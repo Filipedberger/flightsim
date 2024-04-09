@@ -8,7 +8,7 @@ class Mini_Plane : public Object {
     public:
     Mini_Plane();
     Mini_Plane(const std::string& filename, const Frustum& frustum_obj, vec3 pos = vec3(0,0,0), float sc = 1);
-    void update(int time_elapsed) override;
+    void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
 
     void reset() override;
 
