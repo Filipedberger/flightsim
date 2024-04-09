@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-Game_State::Game_State(){
+Game_State::Game_State(Context* c) : State(c) {
     Object* object = new Object("models/bunny.obj");
     objects.push_back(object);
 

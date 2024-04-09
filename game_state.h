@@ -11,7 +11,7 @@
 
 class Game_State : public State {
     public:
-    Game_State();
+    Game_State(Context* c);
     void keyboard(unsigned char key, int x, int y) override;
     void keyboard_up(unsigned char key, int x, int y) override;
     void mouse(int x, int y) override;

@@ -3,11 +3,13 @@
 
 #include "object.h"
 #include "frustum.h"
+#include <json.h>
 
 class Mini_Plane : public Object {
     public:
     Mini_Plane();
     Mini_Plane(const std::string& filename, const Frustum& frustum_obj, vec3 pos = vec3(0,0,0), float sc = 1);
+    Mini_Plane(const std::string& filename, const Frustum& frustum_obj,  Json::Value rotation, vec3 pos = vec3(0,0,0), float sc = 1);
     void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
 
     void reset() override;

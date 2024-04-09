@@ -12,14 +12,14 @@
 #include <iostream> 
 #include <fstream>
 #include <time.h> 
-//#include <json.h>
+#include <json.h>
 
 State* state = nullptr;
 int prev_time;
 int time_elapsed;
 int temp_time;
 
-Context* context;
+Context* context = new Context();
 
 
 static void keyboard_wrapper(unsigned char key, int x, int y){
@@ -59,22 +59,22 @@ void init(void)
 	glutKeyboardUpFunc(keyboard_up_wrapper);
 	glutPassiveMotionFunc(mouse_wrapper);
 
-	state = new Menu_State();
-	prev_time = 0;
-
 	srand(time(NULL));
 
 	// Read settings from json file
-    //std::ifstream file("settings.json");
+    std::ifstream file("settings.json");
     //json reader
-    //Json::Reader reader;
+    Json::Reader reader;
     //contain complete JSON data
-    //Json::Value settings;
+    Json::Value settings;
     // reader reads the data and stores it in settings
-    //reader.parse(file, settings);
+    reader.parse(file, settings);
 
 	context -> next_state = nullptr;
-	//context -> settings = settings;
+	context -> settings = settings;
+
+	state = new Menu_State(context);
+	prev_time = 0;
 	
 }
 

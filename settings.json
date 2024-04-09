@@ -14,12 +14,17 @@
             ]
         },
         {
-            "name": "Boeing 747",
-            "path": "models/airplane.obj",
-        },
-        {
             "name": "Airbus A380",
-            "path": "models/airplane.obj",
+            "path": "models/a380.obj",
+            "scale": 1,
+            "rotation": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "z": 1,
+                    "angle": -90
+                    }
+            ]
         }
     ]
 }

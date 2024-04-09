@@ -2,13 +2,15 @@
 #define CONTEXT_H
 
 #include "state.h"
-//#include <json.h>
+#include <json.h>
+
+class State; // Forward declaration
 
 
 struct Context
 {
-    State*                      next_state;
-    //Json::Value                 settings;
+    State*                      next_state{};
+    Json::Value                 settings;
 };
 
 #endif

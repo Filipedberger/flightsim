@@ -3,18 +3,18 @@
 
 #include "frustum.h"
 #include "object.h"
+#include "context.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
 #include "VectorUtils4.h"
 #include <vector>
 
-//struct Context; //Forward declaration
 
 
 class State {
     public:
-    State();
+    State(Context* c);
     virtual void keyboard(unsigned char key, int x, int y);
     virtual void keyboard_up(unsigned char key, int x, int y) = 0;
     virtual void mouse(int x, int y) = 0;
@@ -37,7 +37,7 @@ class State {
     Object* ground;
     Object* skybox;
 
-    //Context* context;
+    Context* context;
 
 
     virtual void upload2shader();

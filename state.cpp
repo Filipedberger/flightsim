@@ -1,11 +1,12 @@
 #include "state.h"
 #include "frustum.h"
+#include "context.h"
 
 
-State::State() {
+State::State(Context* c) {
     create_world2view();
     create_projection();
-    //this->context = context;
+    context = c;
 }
 
 void State::upload2shader() {

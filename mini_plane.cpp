@@ -5,6 +5,7 @@
 #include "cmath"
 #include <iostream>
 #include <random>
+#include <json.h>
 
 Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj, vec3 pos, float sc)
     : Object(filename, pos, sc) {
@@ -14,6 +15,23 @@ Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj,
     std::cout << "MINI PLANE CREATED" << std::endl;
     return;
 }
+
+Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj,  Json::Value rotation, vec3 pos, float sc) 
+    : Object(filename, pos, sc){
+    
+
+    float angle;
+    vec3 axis;
+    for (int i = 0; i < rotation.size(); i++) {
+        angle = rotation[i]["angle"].asFloat(); // NEED TO CHANGE TO RADIAN
+        axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
+        rotate(angle, axis);
+    }
+    random_pos_direction();
+    calculate_radius();
+    std::cout << "MINI PLANE CREATED" << std::endl;
+}
+
 
 void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
     translate(direction * time_elapsed * speed);
