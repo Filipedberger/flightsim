@@ -1,0 +1,25 @@
+{
+    "mini_planes": [
+        {
+            "name": "Private Jet",
+            "path": "models/airplane.obj",
+            "scale": 0.007,
+            "rotation": [
+                {
+                    "x": 1,
+                    "y": 0,
+                    "z": 0,
+                    "angle": -90
+                    }
+            ]
+        },
+        {
+            "name": "Boeing 747",
+            "path": "models/airplane.obj",
+        },
+        {
+            "name": "Airbus A380",
+            "path": "models/airplane.obj",
+        }
+    ]
+}

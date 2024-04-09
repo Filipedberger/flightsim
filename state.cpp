@@ -5,6 +5,7 @@
 State::State() {
     create_world2view();
     create_projection();
+    //this->context = context;
 }
 
 void State::upload2shader() {

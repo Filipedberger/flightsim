@@ -9,6 +9,8 @@
 #include "VectorUtils4.h"
 #include <vector>
 
+//struct Context; //Forward declaration
+
 
 class State {
     public:
@@ -34,6 +36,8 @@ class State {
     std::vector<Object*> objects;
     Object* ground;
     Object* skybox;
+
+    //Context* context;
 
 
     virtual void upload2shader();
