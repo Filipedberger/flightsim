@@ -27,6 +27,7 @@ class Object {
     vec3 center;
 
     protected:
+    GLuint object_program;
     Model* model;
     mat4 translationMatrix;
     mat4 rotationMatrix = IdentityMatrix();

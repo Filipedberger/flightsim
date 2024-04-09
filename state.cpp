@@ -10,6 +10,7 @@ State::State() {
 void State::upload2shader() {
     glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    
 }
 
 void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector) {

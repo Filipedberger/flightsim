@@ -4,7 +4,7 @@ in vec3 in_Position;
 in vec3 in_Normal;
 in vec2 in_TexCoord;
 
-out vec3 normal;
+out vec2 fragTexCoord;
 
 mat4 mdlMatrix;
 uniform mat4 viewMatrix;
@@ -19,5 +19,5 @@ void main(void)
 	//gl_Position = mdlMatrix * vec4(in_Position, 1.0);
 	mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 	gl_Position = in_projectionMatrix * viewMatrix* mdlMatrix * vec4(in_Position, 1.0);
-	normal = in_Normal;
+	fragTexCoord = in_TexCoord;
 }

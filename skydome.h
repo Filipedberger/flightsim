@@ -10,12 +10,12 @@ class Skydome : public Object {
         Skydome(const std::string& filename, const vec3& camera_pos, float sc);
         void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
         void display(const GLuint& program) override;
-
         void reset() override;
 
         ~Skydome() override;
 
     private:
-        //float speed = 0.020f; // Pixels per millisecond
+        void upload2shader(const GLuint& program);
+        GLuint skyBoxtex;
 };
 #endif
