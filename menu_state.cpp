@@ -17,10 +17,17 @@
 Menu_State::Menu_State(Context* c) : State(c){
     Object* object;
 
-    Json::Value settings = context->settings["mini_planes"][1];
+    Json::Value settings = context->settings["mini_planes"];
 
-    for (int i = 0; i < 1; i++) {
-        object = new Mini_Plane(settings["path"].asString(), frustum_obj, settings["rotation"], vec3(0,0,0), settings["scale"].asFloat());
+    int nr_of_planes = settings.size();
+
+    std::cout << "nr of planes: " << nr_of_planes << std::endl;
+
+    int index = 0;
+    for (int i = 0; i < 10; i++) {
+        index = rand() % nr_of_planes;
+        settings = context->settings["mini_planes"][0];
+        object = new Mini_Plane(settings["path"].asString(), frustum_obj, settings, vec3(0,0,0), settings["scale"].asFloat());
         objects.push_back(object);
     }
 

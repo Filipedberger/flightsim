@@ -16,17 +16,24 @@ Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj,
     return;
 }
 
-Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj,  Json::Value rotation, vec3 pos, float sc) 
+Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj,  Json::Value settings, vec3 pos, float sc) 
     : Object(filename, pos, sc){
     
 
     float angle;
     vec3 axis;
+
+    Json::Value rotation = settings["rotation"];
+
     for (int i = 0; i < rotation.size(); i++) {
-        angle = rotation[i]["angle"].asFloat(); // NEED TO CHANGE TO RADIAN
+        angle = rotation[i]["angle"].asFloat();
+        angle = angle * M_PI / 180;
         axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
         rotate(angle, axis);
+        standard_rotation = standard_rotation * ArbRotate(axis, angle);
     }
+    Json::Value dir_axis = settings["direction_axis"];
+    direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
     random_pos_direction();
     calculate_radius();
     std::cout << "MINI PLANE CREATED" << std::endl;
@@ -34,14 +41,14 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj, 
 
 
 void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
-    //translate(direction * time_elapsed * speed);
-    move(vec3(0,30,0));
+    translate(direction * time_elapsed * speed);
+    //move(vec3(0,30,0));
     return;
 }
 
 void Mini_Plane::random_direction() {
     float rand_angle = (rand() % 360) * M_PI / 180;
-    rotate(rand_angle, vec3(0,0,1));
+    rotate(rand_angle, direction_axis);
     direction = vec3(-sin(rand_angle),0, -cos(rand_angle));
     return;
 }
@@ -72,9 +79,11 @@ void Mini_Plane::random_pos_direction() {
     std::random_device rd;  // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
 
-    vec3 temp_pos = vec3(0,30,0);
+    vec3 temp_pos = vec3(0,0,0);
     std::uniform_int_distribution<> distrib(-50, 50);
     temp_pos.x = distrib(gen);
+    std::uniform_int_distribution<> distrib1(20, 50);
+    temp_pos.y = distrib1(gen);
     std::uniform_int_distribution<> distrib2(-200, 10);
     temp_pos.z = distrib2(gen);
 
@@ -84,8 +93,7 @@ void Mini_Plane::random_pos_direction() {
 }
 
 void Mini_Plane::reset() {
-    rotationMatrix = IdentityMatrix();
-    rotate(-M_PI_2, vec3(1,0,0));
+    rotationMatrix = standard_rotation;
     random_pos_direction();
     return;
 }

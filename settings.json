@@ -6,12 +6,11 @@
             "scale": 0.007,
             "rotation": [
                 {
-                    "x": 1,
-                    "y": 0,
-                    "z": 0,
+                    "axis" : [1,0,0],
                     "angle": -90
                     }
-            ]
+            ],
+            "direction_axis" : [0,0,1]
         },
         {
             "name": "Airbus A380",
@@ -19,12 +18,10 @@
             "scale": 1,
             "rotation": [
                 {
-                    "x": 0,
-                    "y": 0,
-                    "z": 1,
-                    "angle": -90
+
                     }
-            ]
+            ],
+            "direction_axis" : [0,1,0]
         }
     ]
 }

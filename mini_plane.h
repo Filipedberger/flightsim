@@ -21,6 +21,8 @@ class Mini_Plane : public Object {
     private:
     vec3 direction;
     float speed = 0.020f; // Pixels per millisecond
+    mat4 standard_rotation = IdentityMatrix();
+    vec3 direction_axis;
 
     void random_direction();
     void calculate_radius();
