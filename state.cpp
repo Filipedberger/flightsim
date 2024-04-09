@@ -13,6 +13,9 @@ void State::upload2shader() {
 }
 
 void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector) {
+    this -> cameraPosition = cameraPosition;
+    this -> lookAtPoint = lookAtPoint;
+    this -> upVector = upVector;
     world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
 }
 

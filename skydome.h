@@ -1,5 +1,5 @@
-#ifndef MINI_PLANE_H
-#define MINI_PLANE_H
+#ifndef SKYDOME_H
+#define SKYDOME_H
 
 #include "object.h"
 #include "frustum.h"
@@ -8,7 +8,7 @@ class Skydome : public Object {
     public:
         Skydome() = default;
         Skydome(const std::string& filename, const vec3& camera_pos, float sc);
-        void update(int time_elapsed, vec3 camera_pos) override;
+        void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
         void display(const GLuint& program) override;
 
         void reset() override;

@@ -6,15 +6,15 @@
 #include <iostream>
 #include <random>
 
-Skydome::Skydome(const std::string& filename, const vec3& camera_pos, float sc)
-    : Object(filename, camera_pos, sc) // Loads model based on filename, positions and scales
+Skydome::Skydome(const std::string& filename, const vec3& cameraPosition, float sc)
+    : Object(filename, cameraPosition, sc) // Loads model based on filename, positions and scales
     {
     std::cout << "SKYDOME CREATED" << std::endl;
     return;
 }
 
-void Skydome::update(int time_elapsed, vec3 camera_pos) {
-    translate(camepra_pos);
+void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
+    move(cameraPosition); 
     //rotate(rotation.x, vec3(1,0,0));
     return;
 }

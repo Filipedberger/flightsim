@@ -24,9 +24,9 @@ Menu_State::Menu_State() {
     glUseProgram(program);
 
     ground = new Ground();
-    filename = "models/skydome.obj";
-    sc = 1;
-    skydome = new Skydome(const std::string& filename, const vec3& cameraPosition, float sc)
+    std::string filename = "models/skybox-full.obj";
+    float sc = 1.0f;
+    skydome = new Skydome(filename, cameraPosition, sc);
     
     return;
 }
@@ -46,8 +46,9 @@ void Menu_State::mouse(int x, int y) {
 void Menu_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
+
     ground->update(time_elapsed, cameraPosition, lookAtPoint);
-    skydome->update(time_elapsed);
+    skydome->update(time_elapsed, cameraPosition, lookAtPoint);
 
     for (Object* object : objects) {
         object->update(time_elapsed, cameraPosition, lookAtPoint);
@@ -63,9 +64,10 @@ void Menu_State::display() {
     // We make sure to use the program before uploading matrices.
     glUseProgram(program);
     upload2shader();
-
-    ground->display(program);
+    
     skydome->display(program);
+    ground->display(program);
+    
     
     
     for (Object* object : objects) {
