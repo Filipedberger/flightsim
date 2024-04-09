@@ -10,10 +10,12 @@
 #include <map>
 #include "PerlinNoise.hpp"
 
-const siv::PerlinNoise::seed_type seed = 123456u;
+using namespace std;
+using namespace siv;
 
-const siv::PerlinNoise perlin{seed};
-std::map<std::pair<int, int>, Model *> chunks;
+const PerlinNoise::seed_type seed = 123456u;
+const PerlinNoise perlin{seed};
+map<pair<int, int>, Model *> chunks;
 
 vec3 cameraPosition = vec3(0.0f, 0.0f, 10.0f);
 vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f);
@@ -25,10 +27,8 @@ double phi = 0;
 int deltaX = -1;
 int deltaY = -1;
 
-// Function to handle mouse movement
 void mouseMoved(int x, int y)
 {
-    // Warp the cursor back to the center of the window
     glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
     if (deltaX == -1 && deltaY == -1)
     {
@@ -36,24 +36,13 @@ void mouseMoved(int x, int y)
         deltaY = 0;
         return;
     }
-
-    // Calculate the delta from the center of the window
-    int deltaX = x - glutGet(GLUT_WINDOW_WIDTH) / 2;
-    int deltaY = y - glutGet(GLUT_WINDOW_HEIGHT) / 2;
-
-    // Update theta and phi based on the mouse movement
-    // The 0.005f factor is a sensitivity adjustment - you can change this value to make the camera more or less sensitive to mouse movement
+    deltaX = x - glutGet(GLUT_WINDOW_WIDTH) / 2;
+    deltaY = y - glutGet(GLUT_WINDOW_HEIGHT) / 2;
     theta += deltaX * 0.001f;
     phi -= deltaY * 0.001f;
-
-    // Clamp phi to be between -pi/2 and pi/2 to prevent the camera from flipping upside down
-    float epsilon = 0.01f; // Small value to prevent phi from reaching exactly 0 or pi/2
+    float epsilon = 0.01f;
     phi = std::max(std::min(phi, M_PI / 2.0f - epsilon), epsilon - M_PI / 2.0f);
-
-    // Calculate the direction vector
     vec3 direction(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
-
-    // Update the lookAtPoint based on the camera position and the direction
     lookAtPoint = cameraPosition + direction;
 }
 
@@ -64,71 +53,62 @@ bool rightMove = false;
 bool upMove = false;
 bool downMove = false;
 
-// Function to handle keyboard input for when a key is pressed
 void keyboard(unsigned char key, int x, int y)
 {
-    if (key == 'w')
+    switch (key)
     {
+    case 'w':
         forwardMove = true;
         backwardMove = false;
-    }
-    if (key == 's')
-    {
+        break;
+    case 's':
         backwardMove = true;
         forwardMove = false;
-    }
-    if (key == 'a')
-    {
+        break;
+    case 'a':
         leftMove = true;
         rightMove = false;
-    }
-    if (key == 'd')
-    {
+        break;
+    case 'd':
         rightMove = true;
         leftMove = false;
-    }
-    if (key == 'z')
-    {
+        break;
+    case 'z':
         upMove = false;
         downMove = true;
-    }
-    if (key == ' ')
-    {
+        break;
+    case ' ':
         downMove = false;
         upMove = true;
-    }
-    if (key == 27)
-    {
+        break;
+    case 27:
         exit(0);
+        break;
     }
 }
 
-// Function to handle keyboard input for when a key is released
 void keyboardUp(unsigned char key, int x, int y)
 {
-    if (key == 'w')
+    switch (key)
     {
+    case 'w':
         forwardMove = false;
-    }
-    if (key == 's')
-    {
+        break;
+    case 's':
         backwardMove = false;
-    }
-    if (key == 'a')
-    {
+        break;
+    case 'a':
         leftMove = false;
-    }
-    if (key == 'd')
-    {
+        break;
+    case 'd':
         rightMove = false;
-    }
-    if (key == 'z')
-    {
+        break;
+    case 'z':
         downMove = false;
-    }
-    if (key == ' ')
-    {
+        break;
+    case ' ':
         upMove = false;
+        break;
     }
 }
 
@@ -138,37 +118,31 @@ void moveCamera(float deltaTime)
 {
     vec3 forwardDirection = normalize(lookAtPoint - cameraPosition) * stepSize * deltaTime;
     vec3 sideDirection = normalize(cross(forwardDirection, upVector)) * stepSize * deltaTime;
-
     if (forwardMove)
     {
         cameraPosition += forwardDirection;
         lookAtPoint += forwardDirection;
     }
-
     else if (backwardMove)
     {
         cameraPosition -= forwardDirection;
         lookAtPoint -= forwardDirection;
     }
-
     if (leftMove)
     {
         cameraPosition -= sideDirection;
         lookAtPoint -= sideDirection;
     }
-
     else if (rightMove)
     {
         cameraPosition += sideDirection;
         lookAtPoint += sideDirection;
     }
-
     if (upMove)
     {
         cameraPosition.y += stepSize * deltaTime;
         lookAtPoint.y += stepSize * deltaTime;
     }
-
     else if (downMove)
     {
         cameraPosition.y -= stepSize * deltaTime;
@@ -177,19 +151,16 @@ void moveCamera(float deltaTime)
 }
 
 mat4 projectionMatrix;
-// vertex array object
-Model *m, *m2, *tm;
-// Reference to shader program
 GLuint program;
 GLuint tex1, tex2;
-TextureData ttex; // terrain
+TextureData ttex;
 
 mat4 octagonPos, spherePos;
-int terrainWidth = 16; // Replace with your desired terrain width
-int terrainHeight = 16;
+int terrainWidth = 8;
+int terrainHeight = 8;
+
 Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
-    // Replace with your desired terrain height
     int vertexCount = terrainWidth * terrainHeight;
     int triangleCount = (terrainWidth - 1) * (terrainHeight - 1) * 2;
     int x, z;
@@ -202,28 +173,23 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
     for (x = 0; x < terrainWidth; x++)
         for (z = 0; z < terrainHeight; z++)
         {
-            // Vertex array. You need to scale this properly
             float perlin_noise = 0.0f;
-            float amplitude = 100.0f;
-            float frequency = 1.0f / 50.0f;
-            for (int i = 0; i < 4; ++i) // 4 octaves
+            float amplitude = 200.0f;
+            float frequency = 1.0f / 200.0f;
+            for (int i = 0; i < 4; ++i)
             {
                 perlin_noise += perlin.noise2D((x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
-                frequency *= 2.0f; // Double the frequency each octave
-                amplitude *= 0.5f; // Halve the amplitude each octave
+                frequency *= 2.0f;
+                amplitude *= 0.5f;
             }
-            printf("Perlin noise: %f\n", perlin_noise);
             vertexArray[x + z * terrainWidth] = vec3((x) / 1.0, perlin_noise, (z) / 1.0);
-            // Normal vectors. You need to calculate these.
             normalArray[x + z * terrainWidth] = vec3(0.0, 1.0, 0.0);
-            // Texture coordinates. You may want to scale them.
             texCoordArray[x + z * terrainWidth] = vec2(x + offsetX, z + offsetZ);
         }
     for (x = 0; x < terrainWidth; x++)
     {
         for (z = 0; z < terrainHeight; z++)
         {
-            // Normal vectors. You need to calculate these.
             if ((x != 0) && (x != (terrainWidth - 1)) && (z != 0) && (z != (terrainHeight - 1)))
             {
                 vec3 left = vertexArray[(x - 1 + z * terrainWidth)];
@@ -231,7 +197,6 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
                 vec3 up = vertexArray[(x + (z - 1) * terrainWidth)];
                 vec3 down = vertexArray[(x + (z + 1) * terrainWidth)];
 
-                // If the vertex is at the edge of a chunk, look up the vertices in the neighboring chunks
                 if (x == 0)
                     left = chunks[{offsetX - 1, offsetZ}]->vertexArray[(terrainWidth - 1 + z * terrainWidth)];
                 if (x == terrainWidth - 1)
@@ -256,25 +221,18 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
             }
         }
     }
-
     for (x = 0; x < terrainWidth - 1; x++)
     {
         for (z = 0; z < terrainHeight - 1; z++)
         {
-            // Triangle 1
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 0] = x + z * terrainWidth;
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 1] = x + (z + 1) * terrainWidth;
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 2] = x + 1 + z * terrainWidth;
-            // Triangle 2
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 3] = x + 1 + z * terrainWidth;
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 4] = x + (z + 1) * terrainWidth;
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 5] = x + 1 + (z + 1) * terrainWidth;
         }
     }
-
-    // End of terrain generation
-
-    // Create Model and upload to GPU:
 
     Model *model = LoadDataToModel(
         vertexArray,
@@ -287,108 +245,107 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
 
     return model;
 }
+
 void init(void)
 {
     glutKeyboardFunc(keyboard);
     glutPassiveMotionFunc(mouseMoved);
     glutKeyboardUpFunc(keyboardUp);
     glutHideCursor();
-
-    // GL inits
     glClearColor(0.2, 0.2, 0.5, 0);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
-    printError("GL inits");
 
-    projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 400.0);
-
-    // Load and compile shader
+    projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000.0);
     program = loadShaders("terrain6.vert", "terrain6.frag");
     glUseProgram(program);
-    printError("init shader");
-
     glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, GL_TRUE, projectionMatrix.m);
-
-    // Maskros
-    glUniform1i(glGetUniformLocation(program, "tex1"), 0); // Texture unit 0
+    glUniform1i(glGetUniformLocation(program, "tex1"), 0);
     LoadTGATextureSimple("maskros512.tga", &tex1);
-
     LoadTGATextureSimple("fft-terrain.tga", &tex2);
     glUniform1i(glGetUniformLocation(program, "tex2"), 1);
-
-    // Load terrain data
-
-    // LoadTGATextureData("44-terrain.tga", &ttex);
-    printError("init terrain");
-
-    // printf("Note: The call to DrawModel will report warnings about inNormal not existing. This is because inNormal is not used in the shader yet so it is optimized away.\n");
 }
 
 int prevTime = 0;
 float angle = 0;
-int CHUNKS = 16;
+int CHUNKS = 64;
+
 void display(void)
 {
+    // Calculate the current chunk coordinates of the camera
+    int cameraChunkX = static_cast<int>(cameraPosition.x / (terrainWidth - 2));
+    int cameraChunkZ = static_cast<int>(cameraPosition.z / (terrainHeight - 2));
 
-    int cameraChunkX = cameraPosition.x / terrainWidth - 2;
-    int cameraChunkZ = cameraPosition.z / terrainHeight - 2;
-    for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
+    // Calculate the range of chunks to load based on the camera's position
+    int loadChunksXMin = cameraChunkX - CHUNKS;
+    int loadChunksXMax = cameraChunkX + CHUNKS;
+    int loadChunksZMin = cameraChunkZ - CHUNKS;
+    int loadChunksZMax = cameraChunkZ + CHUNKS;
+
+    // Load chunks within the calculated range
+    for (int x = loadChunksXMin; x <= loadChunksXMax; ++x)
     {
-        for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
+        for (int z = loadChunksZMin; z <= loadChunksZMax; ++z)
         {
             if (chunks.find({x, z}) == chunks.end())
             {
-                // Generate new chunk
                 chunks[{x, z}] = GeneratePerlinTerrain(x * (terrainWidth - 2), z * (terrainHeight - 2));
             }
         }
     }
-    // clear the screen
+
+    // Offload chunks that are too far from the camera
+    auto it = chunks.begin();
+    while (it != chunks.end())
+    {
+        int chunkX = it->first.first;
+        int chunkZ = it->first.second;
+
+        // Calculate the distance between the chunk and the camera
+        float distanceX = abs(cameraChunkX - chunkX);
+        float distanceZ = abs(cameraChunkZ - chunkZ);
+        float distance = sqrt(distanceX * distanceX + distanceZ * distanceZ);
+
+        // If the chunk is beyond a certain distance, remove it from the map
+        if (distance > CHUNKS)
+        {
+            delete it->second;
+            it = chunks.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    // Render the scene
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     mat4 total, modelView, camMatrix;
-
-    printError("pre display");
-
-    // Handle movement
     int currentTime = glutGet(GLUT_ELAPSED_TIME);
-    // Calculate the time since the last frame and convert to seconds
     float deltaTime = (currentTime - prevTime) * 0.01f;
     prevTime = currentTime;
-
-    // Move the camera
     moveCamera(deltaTime);
-
     glUseProgram(program);
     camMatrix = lookAtv(cameraPosition, lookAtPoint, upVector);
-
     modelView = IdentityMatrix();
     total = camMatrix * modelView;
     glUniformMatrix4fv(glGetUniformLocation(program, "mdlMatrix"), 1, GL_TRUE, total.m);
-
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tex1); // Bind Our Texture tex1
-
+    glBindTexture(GL_TEXTURE_2D, tex1);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, tex2); // Bind Our Texture tex2
-
-    // We should use a texture when drawing the terrain
+    glBindTexture(GL_TEXTURE_2D, tex2);
     glUniform1i(glGetUniformLocation(program, "useTexture"), 1);
     for (const auto &pair : chunks)
-    { // Calculate chunk position
-      // Calculate chunk position
+    {
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
-
-        // Pass chunk position to shader
         glUniform3f(glGetUniformLocation(program, "chunkPosition"), chunkX, 0, chunkZ);
-
         DrawModel(pair.second, program, "inPosition", "inNormal", "inTexCoord");
     }
-    printError("display 2");
-
     glutSwapBuffers();
 }
+
+
 
 int main(int argc, char **argv)
 {
@@ -400,9 +357,6 @@ int main(int argc, char **argv)
     glutDisplayFunc(display);
     init();
     glutRepeatingTimer(20);
-
-    // glutPassiveMotionFunc(mouse);
-
     glutMainLoop();
     exit(0);
 }
