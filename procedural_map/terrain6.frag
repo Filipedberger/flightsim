@@ -20,15 +20,15 @@ void main(void)
 		vec3 blue = vec3(0.0, 0.0, 1.0);
 		float intensity = max(dot(normalize(world_normal), lightInit), 0.0);
 
-		if (surfPos.y > 20) {
-			outColor = vec4(0.25,0.25,0.25, 1.0);
+		if (surfPos.y > 35) {
+			outColor = vec4(1.0,1.0,1.0, 1.0);
 			//outColor = vec4(0.01, 0.01, 0.01, 1.0);
 		}
 		else if (surfPos.y < 10) {
-			outColor = vec4(0.0, 0.0, 1.0, 1.0);
+			outColor = vec4(0.25, 0.25, 0.25, 1.0);
 		}
 		else {
-			outColor = vec4(0.0, 0.9, 0.0, 1.0);
+			outColor = vec4(0.5, 0.5, 0.5, 1.0);
 			//outColor = texture(tex1, texCoord);
 		}
 		outColor = outColor*intensity;

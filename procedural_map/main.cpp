@@ -185,8 +185,8 @@ GLuint tex1, tex2;
 TextureData ttex; // terrain
 
 mat4 octagonPos, spherePos;
-int terrainWidth = 256; // Replace with your desired terrain width
-int terrainHeight = 256;
+int terrainWidth = 16; // Replace with your desired terrain width
+int terrainHeight = 16;
 Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
     // Replace with your desired terrain height
@@ -231,14 +231,22 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ)
                 vec3 up = vertexArray[(x + (z - 1) * terrainWidth)];
                 vec3 down = vertexArray[(x + (z + 1) * terrainWidth)];
 
+                // If the vertex is at the edge of a chunk, look up the vertices in the neighboring chunks
+                if (x == 0)
+                    left = chunks[{offsetX - 1, offsetZ}]->vertexArray[(terrainWidth - 1 + z * terrainWidth)];
+                if (x == terrainWidth - 1)
+                    right = chunks[{offsetX + 1, offsetZ}]->vertexArray[(z * terrainWidth)];
+                if (z == 0)
+                    up = chunks[{offsetX, offsetZ - 1}]->vertexArray[(x + (terrainHeight - 1) * terrainWidth)];
+                if (z == terrainHeight - 1)
+                    down = chunks[{offsetX, offsetZ + 1}]->vertexArray[(x * terrainWidth)];
+
                 vec3 normal = normalize(CrossProduct(up - down, right - left));
 
                 if (normal.y < 0)
                 {
                     normal = -normal;
                 }
-
-                // std::cout << "x: " << normal.x << " y: " << normal.y << " z: " << normal.z << std::endl;
 
                 normalArray[(x + z * terrainWidth)] = normal;
             }
@@ -318,20 +326,20 @@ void init(void)
 
 int prevTime = 0;
 float angle = 0;
-
+int CHUNKS = 16;
 void display(void)
 {
 
-    int cameraChunkX = cameraPosition.x / terrainWidth;
-    int cameraChunkZ = cameraPosition.z / terrainHeight;
-    for (int x = cameraChunkX - 2; x <= cameraChunkX + 2; ++x)
+    int cameraChunkX = cameraPosition.x / terrainWidth - 2;
+    int cameraChunkZ = cameraPosition.z / terrainHeight - 2;
+    for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
     {
-        for (int z = cameraChunkZ - 2; z <= cameraChunkZ + 2; ++z)
+        for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
         {
             if (chunks.find({x, z}) == chunks.end())
             {
                 // Generate new chunk
-                chunks[{x, z}] = GeneratePerlinTerrain(x * terrainWidth, z * terrainHeight);
+                chunks[{x, z}] = GeneratePerlinTerrain(x * (terrainWidth - 2), z * (terrainHeight - 2));
             }
         }
     }
@@ -345,7 +353,7 @@ void display(void)
     // Handle movement
     int currentTime = glutGet(GLUT_ELAPSED_TIME);
     // Calculate the time since the last frame and convert to seconds
-    float deltaTime = (currentTime - prevTime) * 0.001f;
+    float deltaTime = (currentTime - prevTime) * 0.01f;
     prevTime = currentTime;
 
     // Move the camera
@@ -369,8 +377,8 @@ void display(void)
     for (const auto &pair : chunks)
     { // Calculate chunk position
       // Calculate chunk position
-        float chunkX = pair.first.first * terrainWidth;
-        float chunkZ = pair.first.second * terrainHeight;
+        float chunkX = pair.first.first * (terrainWidth - 2);
+        float chunkZ = pair.first.second * (terrainHeight - 2);
 
         // Pass chunk position to shader
         glUniform3f(glGetUniformLocation(program, "chunkPosition"), chunkX, 0, chunkZ);
