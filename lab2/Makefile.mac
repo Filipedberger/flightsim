@@ -1,5 +1,5 @@
 commondir = ../common/
-files = lab3-3
+files = lab2-7
 
 all : $(files)
 
