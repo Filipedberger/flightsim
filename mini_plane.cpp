@@ -7,7 +7,7 @@
 #include <random>
 #include <jsoncpp/json/json.h>
 
-Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj, vec3 pos, float sc)
+Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& f, vec3 pos, float sc)
     : Object(filename, pos, sc) {
     rotate(-M_PI_2, vec3(1,0,0));
     random_pos_direction();
@@ -16,12 +16,13 @@ Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& frustum_obj,
     return;
 }
 
-Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj,  Json::Value settings, vec3 pos, float sc) 
+Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& f,  Json::Value settings, vec3 pos, float sc) 
     : Object(filename, pos, sc){
     
 
     float angle;
     vec3 axis;
+    frustum_obj = f;
 
     Json::Value rotation = settings["rotation"];
 
@@ -36,6 +37,7 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& frustum_obj, 
     direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
     random_pos_direction();
     calculate_radius();
+    speed = settings["speed"].asFloat();
     std::cout << "MINI PLANE CREATED" << std::endl;
 }
 
@@ -79,13 +81,34 @@ void Mini_Plane::random_pos_direction() {
     std::random_device rd;  // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
 
+    int side = rand() % 2;
+    //side = 1;
+
     vec3 temp_pos = vec3(0,0,0);
-    std::uniform_int_distribution<> distrib(-50, 50);
+    std::uniform_int_distribution<> distrib2(20, 50);
+    temp_pos.y = distrib2(gen);
+    if (side == 0) {
+        // Far
+        std::uniform_int_distribution<> distrib(frustum_obj.left_far_bottom.x+20, frustum_obj.right_far_bottom.x-20);
+        temp_pos.x = distrib(gen);
+        temp_pos.z = - frustum_obj.far + 50;
+
+    }
+    else if (side == 1) {
+        // Near
+        std::uniform_int_distribution<> distrib(-10, 10);
+        temp_pos.x = distrib(gen);
+        temp_pos.z = frustum_obj.near+20;
+
+    }
+    //std::cout << "temp_pos: " << '(' << temp_pos.x << ',' << temp_pos.y << ',' << temp_pos.z << ')' << '\n';
+
+    
+    /*std::uniform_int_distribution<> distrib(-50, 50);
     temp_pos.x = distrib(gen);
     std::uniform_int_distribution<> distrib1(20, 50);
-    temp_pos.y = distrib1(gen);
-    std::uniform_int_distribution<> distrib2(-200, 10);
-    temp_pos.z = distrib2(gen);
+    temp_pos.y = distrib1(gen);*/
+    
 
     
     move(temp_pos);

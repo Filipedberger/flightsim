@@ -87,6 +87,7 @@ int main(int argc, char **argv)
 	glutInitContextVersion(3, 2);
 	glutInitWindowSize (1920, 1080);
 	glutCreateWindow ("Flight Simulator");
+	glutFullScreen(); 
 	glutDisplayFunc(display);
 	init ();
 	glutRepeatingTimer(20);

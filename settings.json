@@ -10,7 +10,8 @@
                     "angle": -90
                     }
             ],
-            "direction_axis" : [0,0,1]
+            "direction_axis" : [0,0,1],
+            "speed": 0.020
         },
         {
             "name": "Airbus A380",
@@ -21,7 +22,25 @@
 
                     }
             ],
-            "direction_axis" : [0,1,0]
+            "direction_axis" : [0,1,0],
+            "speed": 0.020
+        },
+        {
+            "name": "Jas Gripen",
+            "path": "models/gripen.obj",
+            "scale": 1,
+            "rotation": [
+                {
+                    "axis" : [1,0,0],
+                    "angle": -90
+                    },
+                {
+                    "axis" : [0,0,1],
+                    "angle": -90
+                    }
+            ],
+            "direction_axis" : [0,0,1],
+            "speed": 0.060
         }
     ]
 }

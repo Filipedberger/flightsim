@@ -42,7 +42,7 @@ class State {
 
     virtual void upload2shader();
     void create_world2view(vec3 cameraPosition = vec3(0.0f, 0.0f, 50.0f), vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f), vec3 upVector = vec3(0.0f, 1.0f, 0.0f));
-    void create_projection(float near = 1.0, float far = 200.0, float right = 0.5, float left = -0.5, float top = 0.5, float bottom = -0.5);
+    void create_projection(float near = 1.0, float far = 500.0, float right = 0.5, float left = -0.5, float top = 0.5, float bottom = -0.5);
 };
 
 #endif

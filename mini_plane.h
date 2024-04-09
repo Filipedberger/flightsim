@@ -8,8 +8,8 @@
 class Mini_Plane : public Object {
     public:
     Mini_Plane();
-    Mini_Plane(const std::string& filename, const Frustum& frustum_obj, vec3 pos = vec3(0,0,0), float sc = 1);
-    Mini_Plane(const std::string& filename, const Frustum& frustum_obj,  Json::Value rotation, vec3 pos = vec3(0,0,0), float sc = 1);
+    Mini_Plane(const std::string& filename, const Frustum& f, vec3 pos = vec3(0,0,0), float sc = 1);
+    Mini_Plane(const std::string& filename, const Frustum& f,  Json::Value rotation, vec3 pos = vec3(0,0,0), float sc = 1);
     void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
 
     void reset() override;
@@ -20,9 +20,10 @@ class Mini_Plane : public Object {
 
     private:
     vec3 direction;
-    float speed = 0.020f; // Pixels per millisecond
+    float speed; // Pixels per millisecond
     mat4 standard_rotation = IdentityMatrix();
     vec3 direction_axis;
+    Frustum frustum_obj;
 
     void random_direction();
     void calculate_radius();
