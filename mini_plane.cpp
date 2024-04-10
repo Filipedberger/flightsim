@@ -48,8 +48,8 @@ void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint)
     return;
 }
 
-void Mini_Plane::random_direction() {
-    float rand_angle = (rand() % 360) * M_PI / 180;
+void Mini_Plane::random_direction(int min, int max) {
+    float rand_angle = (rand() % (max - min) + min) * M_PI / 180;
     rotate(rand_angle, direction_axis);
     direction = vec3(-sin(rand_angle),0, -cos(rand_angle));
     return;
@@ -76,13 +76,12 @@ void Mini_Plane::calculate_radius() {
 
 void Mini_Plane::random_pos_direction() {
     //HARD CODED FOR NOW
-    random_direction();
 
     std::random_device rd;  // Will be used to obtain a seed for the random number engine
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
 
     int side = rand() % 2;
-    //side = 1;
+    side = 1;
 
     vec3 temp_pos = vec3(0,0,0);
     std::uniform_int_distribution<> distrib2(20, 50);
@@ -90,15 +89,18 @@ void Mini_Plane::random_pos_direction() {
     if (side == 0) {
         // Far
         std::uniform_int_distribution<> distrib(frustum_obj.left_far_bottom.x+20, frustum_obj.right_far_bottom.x-20);
-        temp_pos.x = distrib(gen);
-        temp_pos.z = - frustum_obj.far + 50;
+        std::cout << "test: " << distrib(gen) << '\n';
+        temp_pos.x = -100;
+        temp_pos.z = - frustum_obj.far + 200;
+        random_direction(135, 225);
 
     }
     else if (side == 1) {
         // Near
         std::uniform_int_distribution<> distrib(-10, 10);
         temp_pos.x = distrib(gen);
-        temp_pos.z = frustum_obj.near+20;
+        temp_pos.z = frustum_obj.near;
+        random_direction(-45, 45);
 
     }
     //std::cout << "temp_pos: " << '(' << temp_pos.x << ',' << temp_pos.y << ',' << temp_pos.z << ')' << '\n';

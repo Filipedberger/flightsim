@@ -85,13 +85,17 @@ bool Frustum::side_culling(const vec3& p, float r, const mat4& world2view) {
     vec3 p_view = world2view * vec4(p, 1.0);
     /*std::cout << "LEFT: " << left_dist(p_view) << std::endl;
     std::cout << "RIGHT: " << right_dist(p_view) << std::endl;*/
+    // SOMETHING IS WRONG WITH THE LEFT AND RIGHT DISTANCES
     if (left_dist(p_view) - r > 0) {
+        std::cout << "LEFT" << std::endl;
         return true;
     }
     if (right_dist(p_view) - r > 0) {
+        std::cout << "RIGHT" << std::endl;
         return true;
     }
     if (far_dist(p_view) - r > 0) {
+        std::cout << "FAR" << std::endl;
         return true;
     }
     if (near_dist(p_view) - r > 0) {

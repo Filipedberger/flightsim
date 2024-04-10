@@ -4,7 +4,7 @@
 
 Ground::Ground() {
 
-    Object();
+    float kGroundSize = 100.0f;
 
     vertices[0] = vec3(-kGroundSize,0.0f,-kGroundSize);
     vertices[1] = vec3(-kGroundSize,0.0f,kGroundSize);

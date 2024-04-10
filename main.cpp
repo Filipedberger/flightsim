@@ -7,6 +7,7 @@
 
 #include "game_state.h"
 #include "menu_state.h"
+#include "test_state.h"
 #include "context.h"
 
 #include <iostream> 
@@ -18,6 +19,7 @@
 #define FRAME_DURATION (1000 / FPS) // Duration of each frame in milliseconds
 
 State* state = nullptr;
+int prev_time;
 
 Context* context = new Context();
 
@@ -35,9 +37,9 @@ static void mouse_wrapper(int x, int y){
 }
 
 void display(void){
-	static int prev_time = glutGet(GLUT_ELAPSED_TIME);
     int curr_time = glutGet(GLUT_ELAPSED_TIME);
     int time_elapsed = curr_time - prev_time;
+	prev_time = curr_time;
 
     //if (time_elapsed >= FRAME_DURATION) {
      //   prev_time = curr_time;
@@ -72,6 +74,8 @@ void init(void)
 
 	context -> next_state = nullptr;
 	context -> settings = settings;
+
+	prev_time = 0;
 
 	state = new Menu_State(context);	
 }

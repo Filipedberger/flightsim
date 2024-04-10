@@ -25,7 +25,7 @@ class Mini_Plane : public Object {
     vec3 direction_axis;
     Frustum frustum_obj;
 
-    void random_direction();
+    void random_direction(int min = 0, int max = 360);
     void calculate_radius();
     void random_pos_direction();
 };
