@@ -17,7 +17,7 @@ uniform mat4 scaleMatrix;
 void main(void)
 {
 	//gl_Position = mdlMatrix * vec4(in_Position, 1.0);
-	mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
-	gl_Position = in_projectionMatrix * viewMatrix* mdlMatrix * vec4(in_Position, 1.0);
+	//mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
+	//gl_Position = in_projectionMatrix * viewMatrix* mdlMatrix * vec4(in_Position, 1.0);
 	fragTexCoord = in_TexCoord;
 }

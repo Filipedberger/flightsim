@@ -19,7 +19,7 @@ Skydome::Skydome(const std::string& filename, const vec3& cameraPosition, float 
 }
 
 void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
-    move(cameraPosition); 
+    //move(cameraPosition); 
     //rotate(rotation.x, vec3(1,0,0));
     return;
 }
@@ -28,7 +28,8 @@ void Skydome::display(const GLuint& program) {
     glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
     glUseProgram(object_program);
-    upload2shader(object_program);
+    Skydome::upload2shader(object_program);
+    Object::upload2shader(program);
 
     DrawModel(model, object_program, "in_Position", "in_Normal", "in_TexCoord");
 
@@ -39,12 +40,12 @@ void Skydome::display(const GLuint& program) {
 }
 
 void Skydome::upload2shader(const GLuint& object_program) {
-    glUseProgram(object_program);
-    Object::upload2shader(object_program);
-
+    //glUseProgram(object_program);
 	glUniform1i(glGetUniformLocation(object_program, "texUnit"), 0);
+    printError("Skybox texUnit error");
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, skyBoxtex);
+
 }
 
 void Skydome::reset() {
