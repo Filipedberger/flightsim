@@ -27,7 +27,7 @@ Mini_Plane::Mini_Plane(Model* m, const Frustum& f, Json::Value settings) {
     Json::Value rotation = settings["rotation"];
     speed = settings["speed"].asFloat();
 
-    for (int i = 0; i < rotation.size(); i++) {
+    for (int i = 0; i < static_cast<int>(rotation.size()); i++) {
         angle = rotation[i]["angle"].asFloat();
         angle = angle * M_PI / 180;
         axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
@@ -51,7 +51,7 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& f,  Json::Val
 
     Json::Value rotation = settings["rotation"];
 
-    for (int i = 0; i < rotation.size(); i++) {
+    for (int i = 0; i < static_cast<int>(rotation.size()); i++) {
         angle = rotation[i]["angle"].asFloat();
         angle = angle * M_PI / 180;
         axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
@@ -117,7 +117,7 @@ void Mini_Plane::random_pos_direction() {
         std::uniform_int_distribution<> distrib(frustum_obj.left_far_bottom.x+20, frustum_obj.right_far_bottom.x-20);
         std::cout << "Spawned at far\n";
         temp_pos.x = distrib(gen);
-        temp_pos.z = - frustum_obj.far + 50;
+        temp_pos.z = - frustum_obj.far + 100;
         random_direction(135, 225);
 
     }
@@ -125,8 +125,8 @@ void Mini_Plane::random_pos_direction() {
         // Near
         std::uniform_int_distribution<> distrib(-10, 10);
         std::cout << "Spawned at near\n";
-        temp_pos.x = distrib(gen);
-        temp_pos.z = frustum_obj.near;
+        temp_pos.x = 0;
+        temp_pos.z = frustum_obj.near - 30;
         random_direction(-45, 45);
 
     }

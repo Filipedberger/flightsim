@@ -23,6 +23,9 @@ class State {
 
     virtual ~State();
 
+    State& operator=(const State& other) = delete;
+    State(const State& other) = delete;
+
     protected:
     GLuint program;
     mat4 world2view;

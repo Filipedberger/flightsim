@@ -2,7 +2,7 @@ commondir = common/
 file = main
 CPP_FILES := $(wildcard *.cpp)
 OBJ_FILES := $(addsuffix .o, $(basename $(CPP_FILES)))
-CCFLAGS= -Wall -Wextra -Wpedantic -Weffc++ -Wno-deprecated-declarations
+CCFLAGS= -Wall -Wextra -Wpedantic -Wno-deprecated-declarations -Wno-unused-parameter
 
 OS := $(shell uname)
 ifeq ($(OS),Darwin)

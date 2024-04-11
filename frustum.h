@@ -6,7 +6,17 @@
 class Frustum {
     public:
     Frustum()
-    : near(1.0), far(20.0), right(0.5), left(-0.5), top(0.5), bottom(-0.5) {};
+    : near(1.0), far(20.0), right(0.5), left(-0.5), top(0.5), bottom(-0.5),
+    left_normal(vec3(0.0, 0.0, 0.0)), left_p(vec3(0.0, 0.0, 0.0)),
+    right_normal(vec3(0.0, 0.0, 0.0)), right_p(vec3(0.0, 0.0, 0.0)),
+    top_normal(vec3(0.0, 0.0, 0.0)), top_p(vec3(0.0, 0.0, 0.0)),
+    bottom_normal(vec3(0.0, 0.0, 0.0)), bottom_p(vec3(0.0, 0.0, 0.0)),
+    near_normal(vec3(0.0, 0.0, 0.0)), near_p(vec3(0.0, 0.0, 0.0)),
+    far_normal(vec3(0.0, 0.0, 0.0)), far_p(vec3(0.0, 0.0, 0.0)),
+    left_near_bottom(vec3(0.0, 0.0, 0.0)), left_near_top(vec3(0.0, 0.0, 0.0)),
+    right_near_bottom(vec3(0.0, 0.0, 0.0)), right_near_top(vec3(0.0, 0.0, 0.0)),
+    left_far_bottom(vec3(0.0, 0.0, 0.0)), left_far_top(vec3(0.0, 0.0, 0.0)),
+    right_far_bottom(vec3(0.0, 0.0, 0.0)), right_far_top(vec3(0.0, 0.0, 0.0)) {}
     
     Frustum(float near, float far, float right, float left, float top, float bottom);
     ~Frustum() = default;
@@ -48,10 +58,6 @@ class Frustum {
     float right_dist(const vec3& p);
     float far_dist(const vec3& p);
     float near_dist(const vec3& p);
-    /*float top_dist(const vec3& p);
-    float bottom_dist(const vec3& p);
-    float near_dist(const vec3& p);
-    float far_dist(const vec3& p);*/
 };
 
 #endif
