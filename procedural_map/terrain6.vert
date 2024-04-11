@@ -11,7 +11,7 @@ out vec3 world_normal;
 
 uniform mat4 projMatrix;
 uniform mat4 mdlMatrix;
-
+uniform int current_terrain;
 out vec3 surfPos;
 
 void main(void)
