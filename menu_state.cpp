@@ -81,13 +81,13 @@ void Menu_State::display() {
     glUseProgram(program);
     upload2shader();
     
-    skydome->display(program);
-    ground->display(program);
+    skydome->display(program, world2view, projection);
+    ground->display(program, world2view, projection);
     
     
     
     for (Object* object : objects) {
-        object->display(program);
+        object->display(program, world2view, projection);
     }
     
 }

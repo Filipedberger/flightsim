@@ -10,7 +10,7 @@ class Object {
     Object() = default;
     Object(const std::string& filename, vec3 pos = vec3(0,0,0), float sc = 1);
     virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint);
-    virtual void display(const GLuint& program);
+    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection);
     virtual void create_model(const std::string& filename, vec3 pos, float sc);
 
     virtual void translate(vec3 translation);

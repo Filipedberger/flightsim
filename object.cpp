@@ -19,7 +19,7 @@ void Object::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
     return;
 }
 
-void Object::display(const GLuint& program) {
+void Object::display(const GLuint& program, const mat4& world2view, const mat4& projection) {
     upload2shader(program);
     DrawModel(model, program, "in_Position", "in_Normal", "in_TexCoord");
 }
