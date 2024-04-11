@@ -206,8 +206,8 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ, int terrain_type)
         {
             // Calculate the Perlin noise value for the current vertex
             float perlin_noise = 0.0f;
-            float amplitude = 400.0f;
-            float frequency = 1.0f / 300.0f;
+            float amplitude = 50.0f;
+            float frequency = 1.0f / 200.0f;
             if (terrain_type == 1)
             {
                 amplitude = 20.0f;
@@ -303,7 +303,7 @@ void init(void)
     glDisable(GL_CULL_FACE);
 
     // Set the projection matrix
-    projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 500.0);
+    projectionMatrix = frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000.0);
 
     // Load the shaders
     program = loadShaders("terrain6.vert", "terrain6.frag");
@@ -323,7 +323,7 @@ void init(void)
 
 int prevTime = 0;
 float angle = 0;
-int CHUNKS = 4;
+int CHUNKS = 8;
 int terrain_types[2] = {0, 1};
 int terrain_type = 0;
 int terrain_i = 0;
