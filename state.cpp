@@ -1,16 +1,23 @@
 #include "state.h"
 #include "frustum.h"
 #include "context.h"
+#include "helper.h"
+#include <iostream>
 
 
-State::State(Context* c) 
-    :cameraPosition(vec3(0.0f, 0.0f, 50.0f)), lookAtPoint(vec3(0.0f, 0.0f, 0.0f)), 
-    upVector(vec3(0.0f, 1.0f, 0.0f)) {
+State::State(Json::Value s, Context* c)  {
 
-    create_world2view();
+    cameraPosition = json2vec(s["camera_pos"]);
+    lookAtPoint = json2vec(s["look_at"]);
+    upVector = json2vec(s["up"]);
+
+    create_world2view(cameraPosition, lookAtPoint, upVector);
     create_projection();
+
     context = c;
+    settings = s;
 }
+
 
 void State::upload2shader() {
     glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
@@ -24,6 +31,10 @@ void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVect
 void State::create_projection(float near, float far, float right, float left, float top, float bottom) {
     projection = frustum(left, right, bottom, top, near, far);
     frustum_obj =  Frustum(near, far, right, left, top, bottom); 
+}
+
+void State::create_projection_from_json(Json::Value s) {
+    create_projection(s["near"].asFloat(), s["far"].asFloat(), s["right"].asFloat(), s["left"].asFloat(), s["top"].asFloat(), s["bottom"].asFloat());
 }
 
 void State::keyboard(unsigned char key, int x, int y) {

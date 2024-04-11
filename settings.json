@@ -42,5 +42,16 @@
             "direction_axis" : [0,0,1],
             "speed": 0.040
         }
-    ]
+    ],
+    "menu_state": {
+        "shader_vert": "shaders/game_state.vert",
+        "shader_frag": "shaders/game_state.frag",
+
+        "nr_of_planes": 30,
+
+        "camera_pos" : [0,0,50],
+        "look_at" : [0,0,0],
+        "up" : [0,1,0],
+
+    }
 }

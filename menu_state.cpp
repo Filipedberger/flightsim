@@ -14,32 +14,35 @@
 #include <iostream>
 
 
-Menu_State::Menu_State(Context* c) : State(c){
+Menu_State::Menu_State(Context* c) : State(c->settings["menu_state"], c) {
     Object* object;
 
-    Json::Value settings = context->settings["mini_planes"];
+    // Read settings from json file
+    Json::Value plane_settings = context->settings["mini_planes"];
+    int nr_of_planes = plane_settings.size(); // Number of different planes
 
-    int nr_of_planes = settings.size();
-
-    std::cout << "nr of planes: " << nr_of_planes << std::endl;
+    // Load all planes
     for (int i = 0; i < nr_of_planes; i++) {
-        planes.push_back(LoadModel(settings[i]["path"].asString().c_str()));
+        planes.push_back(LoadModel(plane_settings[i]["path"].asString().c_str()));
     }
-    std::cout << "here: " << std::endl;
+
     int index = 0;
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < settings["nr_of_planes"].asInt(); i++) {
+        // Randomize plane
         index = rand() % nr_of_planes;
-        settings = context->settings["mini_planes"][index];
-        
-        object = new Mini_Plane(planes[index], frustum_obj, settings);
+
+        plane_settings = context->settings["mini_planes"][index];
+        object = new Mini_Plane(planes[index], frustum_obj, plane_settings);
+
         objects.push_back(object);
     }
 
-    program = loadShaders("shaders/game_state.vert", "shaders/game_state.frag");
+    program = loadShaders(settings["shader_vert"].asString().c_str(), settings["shader_frag"].asString().c_str());
     glUseProgram(program);
 
     ground = new Ground();
     
+   
     return;
 }
 

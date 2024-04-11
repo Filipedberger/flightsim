@@ -4,15 +4,21 @@
 #include "LittleOBJLoader.h"
 #include "VectorUtils4.h"
 #include <string>
+#include <jsoncpp/json/json.h>
 
 class Object {
     public:
+    
+    // Constructors:
     Object() = default;
     Object(const std::string& filename, vec3 pos = vec3(0,0,0), float sc = 1);
+
+    // Standard functions:
     virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint);
     virtual void display(const GLuint& program);
     virtual void create_model(const std::string& filename, vec3 pos, float sc);
 
+    // Transformation functions:
     virtual void translate(vec3 translation);
     virtual void move(vec3 coordinates);
     virtual void rotate(float angle, vec3 axis);
@@ -35,6 +41,8 @@ class Object {
     mat4 translationMatrix;
     mat4 rotationMatrix = IdentityMatrix();
     mat4 scaleMatrix = IdentityMatrix();
+
+    Json::Value settings;
     
     float scale_factor;
 
