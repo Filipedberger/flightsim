@@ -1,10 +1,15 @@
 #include "state.h"
 #include "frustum.h"
+#include "context.h"
 
 
-State::State() {
+State::State(Context* c) 
+    :cameraPosition(vec3(0.0f, 0.0f, 50.0f)), lookAtPoint(vec3(0.0f, 0.0f, 0.0f)), 
+    upVector(vec3(0.0f, 1.0f, 0.0f)) {
+
     create_world2view();
     create_projection();
+    context = c;
 }
 
 void State::upload2shader() {

@@ -2,6 +2,7 @@
 #include "mini_plane.h"
 #include "ground.h"
 #include "skydome.h"
+#include "context.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -9,14 +10,29 @@
 #include "LittleOBJLoader.h"
 #include "LoadTGA.h"
 
+#include <jsoncpp/json/json.h>
+
 #include <iostream>
 
 
-Menu_State::Menu_State() {
+Menu_State::Menu_State(Context* c) : State(c){
     Object* object;
 
-    for (int i = 0; i < 1; i++) {
-        object = new Mini_Plane("models/airplane.obj", frustum_obj, vec3(0,0,0), 0.007);
+    Json::Value settings = context->settings["mini_planes"];
+
+    int nr_of_planes = settings.size();
+
+    std::cout << "nr of planes: " << nr_of_planes << std::endl;
+    for (int i = 0; i < nr_of_planes; i++) {
+        planes.push_back(LoadModel(settings[i]["path"].asString().c_str()));
+    }
+    std::cout << "here: " << std::endl;
+    int index = 0;
+    for (int i = 0; i < 40; i++) {
+        index = rand() % nr_of_planes;
+        settings = context->settings["mini_planes"][index];
+        
+        object = new Mini_Plane(planes[index], frustum_obj, settings);
         objects.push_back(object);
     }
 
@@ -77,5 +93,12 @@ void Menu_State::display() {
 }
 
 Menu_State::~Menu_State() {
-    return;
+    for (Object* object : objects) {
+        delete object;
+    }
+    delete ground;
+    glDeleteProgram(program);
+    for (Model* plane : planes) {
+        delete plane;
+    }
 }

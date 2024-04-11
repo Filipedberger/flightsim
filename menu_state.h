@@ -15,13 +15,16 @@
 
 class Menu_State : public State {
     public:
-    Menu_State();
+    Menu_State(Context* c);
     void keyboard(unsigned char key, int x, int y) override;
     void keyboard_up(unsigned char key, int x, int y) override;
     void mouse(int x, int y) override;
     void update(int time_elapsed) override;
     void display() override;
     ~Menu_State() override;
+
+    private:
+    std::vector<Model*> planes;
 
 };
 

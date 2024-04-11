@@ -26,6 +26,10 @@ class Object {
     vec3 position = vec3(0,0,0);
     vec3 center;
 
+    Object& operator=(const Object& other) = delete;
+    Object(const Object& other) = delete;
+
+
     protected:
     GLuint object_program;
     Model* model;

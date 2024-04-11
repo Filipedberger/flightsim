@@ -1,7 +1,9 @@
 #include "frustum.h"
+#include "helper.h"
 
 #include "VectorUtils4.h"
 #include <iostream>
+
 
 
 Frustum::Frustum(float near, float far, float right, float left, float top, float bottom) 
@@ -12,7 +14,7 @@ Frustum::Frustum(float near, float far, float right, float left, float top, floa
     right_near_top = vec3(right, top, -near);
 
 
-    float x = (far * near) / right;
+    float x = (right * far) / near;
 
 
     left_far_bottom = vec3(-x, bottom, -far); //THESE FAR POINTS ARE NOT CORRECT
@@ -26,6 +28,7 @@ Frustum::Frustum(float near, float far, float right, float left, float top, floa
     create_normal(bottom_normal, bottom_p, left_near_bottom, left_far_bottom, right_near_bottom);
     create_normal(near_normal, near_p, left_near_bottom, right_near_bottom, left_near_top);
     create_normal(far_normal, far_p, left_far_top, right_far_top, left_far_bottom);
+
 }
 
 void Frustum::create_normal(vec3& normal, vec3& p, const vec3& p1, const vec3& p2, const vec3& p3) {
@@ -56,15 +59,16 @@ float Frustum::near_dist(const vec3& p) {
 
 bool Frustum::side_culling(const vec3& p, float r, const mat4& world2view) {
     vec3 p_view = world2view * vec4(p, 1.0);
-    /*std::cout << "LEFT: " << left_dist(p_view) << std::endl;
-    std::cout << "RIGHT: " << right_dist(p_view) << std::endl;*/
     if (left_dist(p_view) - r > 0) {
+        std::cout << "LEFT" << std::endl;
         return true;
     }
     if (right_dist(p_view) - r > 0) {
+        std::cout << "RIGHT" << std::endl;
         return true;
     }
     if (far_dist(p_view) - r > 0) {
+        std::cout << "FAR" << std::endl;
         return true;
     }
     if (near_dist(p_view) - r > 0) {

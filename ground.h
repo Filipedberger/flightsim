@@ -15,8 +15,6 @@ class Ground : public Object {
 
     private:
 
-    const float kGroundSize = 100.0f;
-
     vec3 vertices[4];
 
     vec3 vertex_normals[4];
