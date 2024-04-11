@@ -39,7 +39,7 @@ class Object {
     
     float scale_factor;
 
-    void upload2shader(const GLuint& program);
+    virtual void upload2shader(const GLuint& program);
 
 };
 

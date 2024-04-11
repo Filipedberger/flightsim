@@ -15,7 +15,7 @@ class Skydome : public Object {
         ~Skydome() override;
 
     private:
-        void upload2shader(const GLuint& program);
+        void upload2shader(const GLuint& program) override;
         GLuint skyBoxtex;
 };
 #endif

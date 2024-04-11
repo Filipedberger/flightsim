@@ -41,7 +41,7 @@ Menu_State::Menu_State(Context* c) : State(c){
 
     ground = new Ground();
     std::string filename = "models/skybox-full.obj";
-    float sc = 1.0f;
+    float sc = 100.0f;
     skydome = new Skydome(filename, cameraPosition, sc);
     
     return;
