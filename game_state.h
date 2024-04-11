@@ -20,7 +20,21 @@ class Game_State : public State {
     ~Game_State() override;
 
     private:
-    std::vector<Object*> objects;
+    // Mouse movement
+    double theta = - M_PI / 2.0f;
+    double phi = 0;
+    int deltaX = -1;
+    int deltaY = -1;
+
+    // Keyboard movement
+    bool forward_move = false;
+    bool backward_move = false;
+    bool left_move = false;
+    bool right_move = false;
+    bool up_move = false;
+    bool down_move = false;
+
+    void move_camera(int time_elapsed);
 };
 
 #endif

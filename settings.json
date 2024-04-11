@@ -59,5 +59,27 @@
         "left": -0.5,
         "top": 0.5,
         "bottom": -0.5
+    },
+    "skydome" : {
+        "filename" : "models/skybox-full.obj",
+        "scale": 100.0,
+        "shader_vert": "shaders/skydome.vert",
+        "shader_frag": "shaders/skydome.frag",
+        "texture": "textures/DaylightBoxUV.tga"
+    },
+    "game_state": {
+        "shader_vert": "shaders/game_state.vert",
+        "shader_frag": "shaders/game_state.frag",
+
+        "camera_pos" : [0,0,50],
+        "look_at" : [0,0,0],
+        "up" : [0,1,0],
+
+        "near": 1.0,
+        "far": 400.0,
+        "right": 0.5,
+        "left": -0.5,
+        "top": 0.5,
+        "bottom": -0.5
     }
 }

@@ -7,6 +7,18 @@
 #include "cmath"
 #include <iostream>
 #include <random>
+#include <jsoncpp/json/json.h>
+
+Skydome::Skydome(Json::Value& c, const vec3& cameraPosition)
+    : Object(c["filename"].asString(), cameraPosition, c["scale"].asFloat()) {
+    std::cout << "SKYDOME CREATED" << "\n";
+
+    object_program = loadShaders(c["shader_vert"].asString().c_str(), c["shader_frag"].asString().c_str());
+
+    LoadTGATextureSimple(c["texture"].asString().c_str(), &skyBoxtex);
+    return;
+}
+    
 
 Skydome::Skydome(const std::string& filename, const vec3& cameraPosition, float sc)
     : Object(filename, cameraPosition, sc) // Loads model based on filename, positions and scales
@@ -57,6 +69,7 @@ void Skydome::reset() {
 
 Skydome::~Skydome() {
     delete model;
+    glDeleteProgram(object_program);
 }
 
 

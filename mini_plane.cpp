@@ -129,15 +129,6 @@ void Mini_Plane::random_pos_direction() {
         random_direction(-45, 45);
 
     }
-    //std::cout << "temp_pos: " << '(' << temp_pos.x << ',' << temp_pos.y << ',' << temp_pos.z << ')' << '\n';
-
-    
-    /*std::uniform_int_distribution<> distrib(-50, 50);
-    temp_pos.x = distrib(gen);
-    std::uniform_int_distribution<> distrib1(20, 50);
-    temp_pos.y = distrib1(gen);*/
-    
-
     
     move(temp_pos);
 

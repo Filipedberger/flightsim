@@ -39,13 +39,11 @@ Menu_State::Menu_State(Context* c) : State(c->settings["menu_state"], c) {
         objects.push_back(object);
     }
 
-    program = loadShaders(settings["shader_vert"].asString().c_str(), settings["shader_frag"].asString().c_str());
-    glUseProgram(program);
-
     ground = new Ground();
-    std::string filename = "models/skybox-full.obj";
-    float sc = 100.0f;
-    skydome = new Skydome(filename, cameraPosition, sc);
+
+    skydome = new Skydome(context->settings["skydome"], cameraPosition);
+
+    glutShowCursor();
     
    
     return;
@@ -53,6 +51,13 @@ Menu_State::Menu_State(Context* c) : State(c->settings["menu_state"], c) {
 
 void Menu_State::keyboard(unsigned char key, int x, int y) {
     State::keyboard(key, x, y);
+
+    switch (key)
+    {
+    case 'p':
+        context->game_state = true;
+        return;
+    }
 }
 
 void Menu_State::keyboard_up(unsigned char key, int x, int y) {
@@ -98,11 +103,9 @@ void Menu_State::display() {
 }
 
 Menu_State::~Menu_State() {
-    for (Object* object : objects) {
-        delete object;
-    }
-    delete ground;
-    glDeleteProgram(program);
+    // Objects, ground and skydome are deleted in State
+    // Program is deleted in State
+
     for (Model* plane : planes) {
         delete plane;
     }

@@ -13,6 +13,7 @@ State::State(Json::Value s, Context* c)  {
 
     create_world2view(cameraPosition, lookAtPoint, upVector);
     create_projection_from_json(s);
+    program = loadShaders(s["shader_vert"].asString().c_str(), s["shader_frag"].asString().c_str());
 
     context = c;
     settings = s;
@@ -55,4 +56,5 @@ State::~State() {
     }
     delete ground;
     delete skydome;
+    glDeleteProgram(program);
 }

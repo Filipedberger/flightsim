@@ -45,6 +45,23 @@ void display(void){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	state->update(time_elapsed);
+
+	if (context -> next_state != nullptr){
+		delete state;
+		state = context -> next_state;
+		context -> next_state = nullptr;
+	}
+	if (context -> menu_state){
+		context -> next_state = new Menu_State(context);
+		context -> menu_state = false;
+	}
+
+	if (context -> game_state){
+		context -> next_state = new Game_State(context);
+		context -> game_state = false;
+	}
+
+
 	state->display();
 	glutSwapBuffers();
     //}
@@ -76,7 +93,7 @@ void init(void)
 
 	prev_time = 0;
 
-	state = new Menu_State(context);	
+	state = new Game_State(context);	
 }
 
 
