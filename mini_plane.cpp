@@ -115,7 +115,7 @@ void Mini_Plane::random_pos_direction() {
     if (side == 0) {
         // Far
         std::uniform_int_distribution<> distrib(frustum_obj.left_far_bottom.x+20, frustum_obj.right_far_bottom.x-20);
-        std::cout << "test: " << distrib(gen) << '\n';
+        std::cout << "Spawned at far\n";
         temp_pos.x = distrib(gen);
         temp_pos.z = - frustum_obj.far + 50;
         random_direction(135, 225);
@@ -124,6 +124,7 @@ void Mini_Plane::random_pos_direction() {
     else if (side == 1) {
         // Near
         std::uniform_int_distribution<> distrib(-10, 10);
+        std::cout << "Spawned at near\n";
         temp_pos.x = distrib(gen);
         temp_pos.z = frustum_obj.near;
         random_direction(-45, 45);

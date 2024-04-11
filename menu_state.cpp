@@ -27,7 +27,7 @@ Menu_State::Menu_State(Context* c) : State(c){
     }
     std::cout << "here: " << std::endl;
     int index = 0;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 40; i++) {
         index = rand() % nr_of_planes;
         settings = context->settings["mini_planes"][index];
         
