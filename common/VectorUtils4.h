@@ -1140,7 +1140,7 @@ mat4 ArbRotate(vec3 axis, GLfloat fi)
 		R.m[12] = 0.0; R.m[13] = 0.0; R.m[14] = 0.0;  R.m[15] = 1.0;
 	}
 
-	Rt = Transpose(R); // Transpose = Invert -> felet ej i Transpose, och det Šr en ortonormal matris
+	Rt = Transpose(R); // Transpose = Invert -> felet ej i Transpose, och det ï¿½r en ortonormal matris
 
 	Raxel = Rx(fi); // Rotate around x axis
 
@@ -1505,7 +1505,7 @@ mat4 InvertMat4(mat4 a)
 	b.m[14]=(-n*u+p*B-r*A)*q;
 	b.m[15]=(k*u-l*B+o*A)*q;
 	return b;
-};
+}
 
 
 // Two convenient printing functions suggested by Christian Luckey 2015.
