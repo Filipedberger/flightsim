@@ -12,7 +12,7 @@ State::State(Json::Value s, Context* c)  {
     upVector = json2vec(s["up"]);
 
     create_world2view(cameraPosition, lookAtPoint, upVector);
-    create_projection();
+    create_projection_from_json(s);
 
     context = c;
     settings = s;

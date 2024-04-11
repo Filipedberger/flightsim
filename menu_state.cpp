@@ -2,6 +2,7 @@
 #include "mini_plane.h"
 #include "ground.h"
 #include "context.h"
+#include "helper.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -65,7 +66,8 @@ void Menu_State::update(int time_elapsed) {
 
     for (Object* object : objects) {
         object->update(time_elapsed, cameraPosition, lookAtPoint);
-        if (frustum_obj.side_culling(object->center + object -> position, object->radius, world2view)) {
+        vec3 p = object->center + object->position;
+        if (frustum_obj.side_culling(p, object->radius, world2view)) {
             object->reset();
         }
     

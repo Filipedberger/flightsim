@@ -18,8 +18,6 @@ class Mini_Plane : public Object {
 
     ~Mini_Plane() override;
 
-    vec3 center;
-
     private:
     vec3 direction;
     float speed; // Pixels per millisecond

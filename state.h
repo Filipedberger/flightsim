@@ -50,7 +50,7 @@ class State {
 
     virtual void upload2shader();
     void create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector);
-    void create_projection(float near = 1.0, float far = 500.0, float right = 0.5, float left = -0.5, float top = 0.5, float bottom = -0.5);
+    void create_projection(float near, float far, float right, float left, float top, float bottom);
     void create_projection_from_json(Json::Value s);
 };  
 

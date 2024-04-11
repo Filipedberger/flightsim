@@ -47,11 +47,17 @@
         "shader_vert": "shaders/game_state.vert",
         "shader_frag": "shaders/game_state.frag",
 
-        "nr_of_planes": 30,
+        "nr_of_planes": 20,
 
         "camera_pos" : [0,0,50],
         "look_at" : [0,0,0],
         "up" : [0,1,0],
 
+        "near": 1.0,
+        "far": 400.0,
+        "right": 0.5,
+        "left": -0.5,
+        "top": 0.5,
+        "bottom": -0.5
     }
 }
