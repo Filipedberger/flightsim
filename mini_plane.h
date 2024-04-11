@@ -9,7 +9,9 @@ class Mini_Plane : public Object {
     public:
     Mini_Plane();
     Mini_Plane(const std::string& filename, const Frustum& f, vec3 pos = vec3(0,0,0), float sc = 1);
-    Mini_Plane(const std::string& filename, const Frustum& f,  Json::Value rotation, vec3 pos = vec3(0,0,0), float sc = 1);
+    Mini_Plane(const std::string& filename, const Frustum& f,  Json::Value settings, vec3 pos = vec3(0,0,0), float sc = 1);
+    Mini_Plane(Model* m, const Frustum& f, Json::Value settings);
+
     void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
 
     void reset() override;

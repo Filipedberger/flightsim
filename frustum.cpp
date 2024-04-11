@@ -14,7 +14,7 @@ Frustum::Frustum(float near, float far, float right, float left, float top, floa
     right_near_top = vec3(right, top, -near);
 
 
-    float x = (far * near) / right;
+    float x = (right * far) / near;
 
 
     left_far_bottom = vec3(-x, bottom, -far); //THESE FAR POINTS ARE NOT CORRECT
@@ -83,6 +83,7 @@ float Frustum::near_dist(const vec3& p) {
 
 bool Frustum::side_culling(const vec3& p, float r, const mat4& world2view) {
     vec3 p_view = world2view * vec4(p, 1.0);
+    //std::cout << "P_VIEW: " << vec2str(p_view) << std::endl;
     /*std::cout << "LEFT: " << left_dist(p_view) << std::endl;
     std::cout << "RIGHT: " << right_dist(p_view) << std::endl;*/
     // SOMETHING IS WRONG WITH THE LEFT AND RIGHT DISTANCES

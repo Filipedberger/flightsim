@@ -16,6 +16,31 @@ Mini_Plane::Mini_Plane(const std::string& filename,  const Frustum& f, vec3 pos,
     return;
 }
 
+Mini_Plane::Mini_Plane(Model* m, const Frustum& f, Json::Value settings) {
+    scale(settings["scale"].asFloat());
+
+    model = m;
+    float angle;
+    vec3 axis;
+    frustum_obj = f;
+
+    Json::Value rotation = settings["rotation"];
+    speed = settings["speed"].asFloat();
+
+    for (int i = 0; i < rotation.size(); i++) {
+        angle = rotation[i]["angle"].asFloat();
+        angle = angle * M_PI / 180;
+        axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
+        rotate(angle, axis);
+        standard_rotation = standard_rotation * ArbRotate(axis, angle);
+    }
+    Json::Value dir_axis = settings["direction_axis"];
+    direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
+    random_pos_direction();
+    calculate_radius();
+    std::cout << "MINI PLANE CREATED" << std::endl;
+}
+
 Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& f,  Json::Value settings, vec3 pos, float sc) 
     : Object(filename, pos, sc){
     
@@ -37,6 +62,8 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& f,  Json::Val
     direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
     random_pos_direction();
     calculate_radius();
+    //move(vec3(0,20,-20));
+    //random_direction(-89,-90);
     speed = settings["speed"].asFloat();
     std::cout << "MINI PLANE CREATED" << std::endl;
 }
@@ -81,7 +108,6 @@ void Mini_Plane::random_pos_direction() {
     std::mt19937 gen(rd()); // Standard mersenne_twister_engine seeded with rd()
 
     int side = rand() % 2;
-    side = 1;
 
     vec3 temp_pos = vec3(0,0,0);
     std::uniform_int_distribution<> distrib2(20, 50);
@@ -90,8 +116,8 @@ void Mini_Plane::random_pos_direction() {
         // Far
         std::uniform_int_distribution<> distrib(frustum_obj.left_far_bottom.x+20, frustum_obj.right_far_bottom.x-20);
         std::cout << "test: " << distrib(gen) << '\n';
-        temp_pos.x = -100;
-        temp_pos.z = - frustum_obj.far + 200;
+        temp_pos.x = distrib(gen);
+        temp_pos.z = - frustum_obj.far + 50;
         random_direction(135, 225);
 
     }
@@ -124,6 +150,6 @@ void Mini_Plane::reset() {
 }
 
 Mini_Plane::~Mini_Plane() {
-    delete model;
+    //delete model;
 }
 

@@ -22,6 +22,9 @@ class Menu_State : public State {
     void display() override;
     ~Menu_State() override;
 
+    private:
+    std::vector<Model*> planes;
+
 };
 
 #endif

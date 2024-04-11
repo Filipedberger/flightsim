@@ -22,13 +22,16 @@ Menu_State::Menu_State(Context* c) : State(c){
     int nr_of_planes = settings.size();
 
     std::cout << "nr of planes: " << nr_of_planes << std::endl;
-
+    for (int i = 0; i < nr_of_planes; i++) {
+        planes.push_back(LoadModel(settings[i]["path"].asString().c_str()));
+    }
+    std::cout << "here: " << std::endl;
     int index = 0;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
         index = rand() % nr_of_planes;
         settings = context->settings["mini_planes"][index];
-        std::cout << settings["path"].asString() << std::endl;
-        object = new Mini_Plane(settings["path"].asString(), frustum_obj, settings, vec3(0,0,0), settings["scale"].asFloat());
+        
+        object = new Mini_Plane(planes[index], frustum_obj, settings);
         objects.push_back(object);
     }
 
@@ -82,5 +85,12 @@ void Menu_State::display() {
 }
 
 Menu_State::~Menu_State() {
-    return;
+    for (Object* object : objects) {
+        delete object;
+    }
+    delete ground;
+    glDeleteProgram(program);
+    for (Model* plane : planes) {
+        delete plane;
+    }
 }

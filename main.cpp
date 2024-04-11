@@ -7,7 +7,6 @@
 
 #include "game_state.h"
 #include "menu_state.h"
-#include "test_state.h"
 #include "context.h"
 
 #include <iostream> 
@@ -87,9 +86,9 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
-	glutInitWindowSize (600, 600);
+	glutInitWindowSize (1920, 1080);
 	glutCreateWindow ("Flight Simulator");
-	glutFullScreen(); 
+	//glutFullScreen(); 
 	glutDisplayFunc(display);
 	init ();
 	glutRepeatingTimer(20);
