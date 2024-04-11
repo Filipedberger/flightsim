@@ -13,7 +13,6 @@ uniform mat4 rotationMatrix;
 uniform mat4 scaleMatrix;
 
 out vec4 view_position;
-
 out vec3 normal;
 
 void main(void)

@@ -22,9 +22,13 @@ State::State(Json::Value s, Context* c)  {
 void State::upload2shader() {
     glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    
 }
 
 void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector) {
+    this -> cameraPosition = cameraPosition;
+    this -> lookAtPoint = lookAtPoint;
+    this -> upVector = upVector;
     world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
 }
 
@@ -50,5 +54,5 @@ State::~State() {
         delete object;
     }
     delete ground;
-    delete skybox;
+    delete skydome;
 }

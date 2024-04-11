@@ -47,7 +47,7 @@ void Game_State::display() {
     upload2shader();
     
     for (Object* object : objects) {
-        object->display(program);
+        object->display(program, world2view, projection);
     }
 }
 

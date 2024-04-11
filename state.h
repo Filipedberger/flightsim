@@ -42,7 +42,7 @@ class State {
     // Objects:
     std::vector<Object*> objects;
     Object* ground;
-    Object* skybox;
+    Object* skydome;
 
     Context* context;
     Json::Value settings;

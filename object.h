@@ -15,7 +15,7 @@ class Object {
 
     // Standard functions:
     virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint);
-    virtual void display(const GLuint& program);
+    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection);
     virtual void create_model(const std::string& filename, vec3 pos, float sc);
 
     // Transformation functions:
@@ -37,6 +37,7 @@ class Object {
 
 
     protected:
+    GLuint object_program;
     Model* model;
     mat4 translationMatrix;
     mat4 rotationMatrix = IdentityMatrix();
@@ -46,7 +47,7 @@ class Object {
     
     float scale_factor;
 
-    void upload2shader(const GLuint& program);
+    virtual void upload2shader(const GLuint& program);
 
 };
 

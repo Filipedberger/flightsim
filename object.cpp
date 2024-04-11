@@ -19,7 +19,7 @@ void Object::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
     return;
 }
 
-void Object::display(const GLuint& program) {
+void Object::display(const GLuint& program, const mat4& world2view, const mat4& projection) {
     upload2shader(program);
     DrawModel(model, program, "in_Position", "in_Normal", "in_TexCoord");
 }
@@ -53,4 +53,4 @@ void Object::upload2shader(const GLuint& program) {
         glUniformMatrix4fv(glGetUniformLocation(program, "translationMatrix"), 1, GL_TRUE, translationMatrix.m);
         glUniformMatrix4fv(glGetUniformLocation(program, "rotationMatrix"), 1, GL_TRUE, rotationMatrix.m);
         glUniformMatrix4fv(glGetUniformLocation(program, "scaleMatrix"), 1, GL_TRUE, scaleMatrix.m);
-    }
+}

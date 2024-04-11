@@ -1,6 +1,7 @@
 #include "menu_state.h"
 #include "mini_plane.h"
 #include "ground.h"
+#include "skydome.h"
 #include "context.h"
 #include "helper.h"
 
@@ -42,6 +43,9 @@ Menu_State::Menu_State(Context* c) : State(c->settings["menu_state"], c) {
     glUseProgram(program);
 
     ground = new Ground();
+    std::string filename = "models/skybox-full.obj";
+    float sc = 100.0f;
+    skydome = new Skydome(filename, cameraPosition, sc);
     
    
     return;
@@ -62,7 +66,9 @@ void Menu_State::mouse(int x, int y) {
 void Menu_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
+
     ground->update(time_elapsed, cameraPosition, lookAtPoint);
+    skydome->update(time_elapsed, cameraPosition, lookAtPoint);
 
     for (Object* object : objects) {
         object->update(time_elapsed, cameraPosition, lookAtPoint);
@@ -79,12 +85,14 @@ void Menu_State::display() {
     // We make sure to use the program before uploading matrices.
     glUseProgram(program);
     upload2shader();
-
-    ground->display(program);
+    
+    skydome->display(program, world2view, projection);
+    ground->display(program, world2view, projection);
+    
     
     
     for (Object* object : objects) {
-        object->display(program);
+        object->display(program, world2view, projection);
     }
     
 }
