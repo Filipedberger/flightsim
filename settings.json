@@ -81,5 +81,49 @@
         "left": -0.5,
         "top": 0.5,
         "bottom": -0.5
-    }
+    },
+    "planes": [
+        {
+            "name": "Private Jet",
+            "path": "models/airplane.obj",
+            "scale": 0.007,
+            "rotation": [
+                {
+                    "axis" : [1,0,0],
+                    "angle": -90
+                    }
+            ],
+            "direction_axis" : [0,0,1],
+            "speed": 0.020
+        },
+        {
+            "name": "Airbus A380",
+            "path": "models/a380.obj",
+            "scale": 1,
+            "rotation": [
+                {
+
+                    }
+            ],
+            "direction_axis" : [0,1,0],
+            "speed": 0.020
+        },
+        {
+            "name": "Jas Gripen",
+            "path": "models/gripen.obj",
+            "scale": 0.8,
+            "rotation": [
+                {
+                    "axis" : [1,0,0],
+                    "angle": -90
+                    },
+                {
+                    "axis" : [0,0,1],
+                    "angle": -90
+                    }
+            ],
+            "direction_axis" : [0,0,1],
+            "speed": 0.040
+        }
+    ]
 }

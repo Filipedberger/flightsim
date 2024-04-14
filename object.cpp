@@ -4,7 +4,6 @@
 #include "VectorUtils4.h"
 
 Object::Object(const std::string& filename, vec3 pos, float sc) {
-    rotationMatrix = IdentityMatrix();
     create_model(filename, pos, sc);
 }
 
