@@ -9,14 +9,16 @@
 #include "GL_utilities.h"
 #include "VectorUtils4.h"
 #include <vector>
+#include <jsoncpp/json/json.h>
 
 
 
 class State {
     public:
-    State(Context* c);
+    State(Json::Value settings, Context* c);
+
     virtual void keyboard(unsigned char key, int x, int y);
-    virtual void keyboard_up(unsigned char key, int x, int y) = 0;
+    virtual void keyboard_up(unsigned char key, int x, int y);
     virtual void mouse(int x, int y) = 0;
     virtual void update(int time_elapsed) = 0;
     virtual void display() = 0;
@@ -28,6 +30,8 @@ class State {
 
     protected:
     GLuint program;
+
+    // Camera:
     mat4 world2view;
     mat4 projection;
     vec3 cameraPosition;
@@ -38,14 +42,19 @@ class State {
     // Objects:
     std::vector<Object*> objects;
     Object* ground;
-    Object* skybox;
+    Object* skydome;
 
     Context* context;
+    Json::Value settings;
+
+    // Keys:
+    std::map<char, bool> keys_pressed;
 
 
     virtual void upload2shader();
-    void create_world2view(vec3 cameraPosition = vec3(0.0f, 0.0f, 50.0f), vec3 lookAtPoint = vec3(0.0f, 0.0f, 0.0f), vec3 upVector = vec3(0.0f, 1.0f, 0.0f));
-    void create_projection(float near = 1.0, float far = 500.0, float right = 0.5, float left = -0.5, float top = 0.5, float bottom = -0.5);
-};
+    void create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector);
+    void create_projection(float near, float far, float right, float left, float top, float bottom);
+    void create_projection_from_json(Json::Value s);
+};  
 
 #endif
