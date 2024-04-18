@@ -23,12 +23,12 @@ Skydome::Skydome(Json::Value& c, const vec3& cameraPosition)
 Skydome::Skydome(const std::string& filename, const vec3& cameraPosition, float sc)
     : Object(filename, cameraPosition, sc) // Loads model based on filename, positions and scales
     {
-    std::cout << "SKYDOME CREATED" << "\n";
+    //std::cout << "SKYDOME CREATED 2" << "\n";
 
     object_program = loadShaders("shaders/skydome.vert", "shaders/skydome.frag");
     printError("Skybox Shader compile error");
 
-    LoadTGATextureSimple("textures/DaylightBoxUV.tga", &skyBoxtex);
+    LoadTGATextureSimple("textures/new_skybox.tga", &skyBoxtex);
     glUniform1i(glGetUniformLocation(object_program, "texUnit"), 0);
     printError("Skybox texUnit error");
 
@@ -43,6 +43,8 @@ void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, st
 
 void Skydome::display(const GLuint& program, const mat4& world2view, const mat4& projection) {
     glUseProgram(object_program);
+
+    //glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     
 	glUniformMatrix4fv(glGetUniformLocation(object_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(object_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
