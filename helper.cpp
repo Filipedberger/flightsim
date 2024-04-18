@@ -13,3 +13,7 @@ std::string vec2str(vec4 v) {
 vec3 json2vec(Json::Value json) {
     return vec3(json[0].asFloat(), json[1].asFloat(), json[2].asFloat());
 }
+
+float rad(float deg) {
+    return deg * M_PI / 180;
+}

@@ -18,7 +18,7 @@ class State {
     State(Json::Value settings, Context* c);
 
     virtual void keyboard(unsigned char key, int x, int y);
-    virtual void keyboard_up(unsigned char key, int x, int y) = 0;
+    virtual void keyboard_up(unsigned char key, int x, int y);
     virtual void mouse(int x, int y) = 0;
     virtual void update(int time_elapsed) = 0;
     virtual void display() = 0;
@@ -46,6 +46,9 @@ class State {
 
     Context* context;
     Json::Value settings;
+
+    // Keys:
+    std::map<char, bool> keys_pressed;
 
 
     virtual void upload2shader();

@@ -14,7 +14,7 @@ void Object::create_model(const std::string& filename, vec3 pos, float sc) {
 
 }
 
-void Object::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
+void Object::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
     return;
 }
 

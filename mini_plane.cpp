@@ -72,7 +72,7 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& f,  Json::Val
 }
 
 
-void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
+void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
     translate(direction * time_elapsed * speed);
     return;
 }

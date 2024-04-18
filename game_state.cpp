@@ -4,6 +4,7 @@
 #include "ground.h"
 #include "skydome.h"
 #include "helper.h"
+#include "plane.h"
 
 
 #include "MicroGlut.h"
@@ -17,7 +18,8 @@
 Game_State::Game_State(Context* c) : State(c->settings["game_state"], c)  {
     ground = new Ground();
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
-    objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
+    //objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
+    objects.push_back(new Plane(context->settings["planes"][0], cameraPosition)); 
     glutHideCursor();
     return;
 }
@@ -25,61 +27,8 @@ Game_State::Game_State(Context* c) : State(c->settings["game_state"], c)  {
 void Game_State::keyboard(unsigned char key, int x, int y) {
     State::keyboard(key, x, y);
 
-    switch (key)
-    {
-    case 'w':
-        forward_move = true;
-        backward_move = false;
-        break;
-    case 's':
-        backward_move = true;
-        forward_move = false;
-        break;
-    case 'a':
-        left_move = true;
-        right_move = false;
-        break;
-    case 'd':
-        right_move = true;
-        left_move = false;
-        break;
-    case 'z':
-        up_move = false;
-        down_move = true;
-        break;
-    case ' ':
-        down_move = false;
-        up_move = true;
-        break;
-
-    case 'p':
+    if (key == 'p') {
         context->menu_state = true;
-    return;
-    }
-}
-
-void Game_State::keyboard_up(unsigned char key, int x, int y) {
-    switch (key)
-    {
-    case 'w':
-        forward_move = false;
-        break;
-    case 's':
-        backward_move = false;
-        break;
-    case 'a':
-        left_move = false;
-        break;
-    case 'd':
-        right_move = false;
-        break;
-    case 'z':
-        down_move = false;
-        break;
-    case ' ':
-        up_move = false;
-        break;
-    return;
     }
 }
 
@@ -121,30 +70,30 @@ void Game_State::move_camera(int time_elapsed) {
     vec3 side_direction = normalize(cross(forward_direction, upVector)) * step_size * time_elapsed;
 
 
-    if (forward_move) {
+    /*if (keys_pressed['w']) {
         cameraPosition += forward_direction;
         lookAtPoint += forward_direction;
     }
-    else if (backward_move) {
+    else if (keys_pressed['s']) {
         cameraPosition -= forward_direction;
         lookAtPoint -= forward_direction;
     }
-    if (left_move) {
+    if (keys_pressed['a']) {
         cameraPosition -= side_direction;
         lookAtPoint -= side_direction;
     }
-    else if (right_move) {
+    else if (keys_pressed['d']) {
         cameraPosition += side_direction;
         lookAtPoint += side_direction;
     }
-    if (up_move) {
+    if (keys_pressed[' ']) {
         cameraPosition += upVector * step_size * time_elapsed;
         lookAtPoint += upVector * step_size * time_elapsed;
     }
-    else if (down_move) {
+    else if (keys_pressed['z']) {
         cameraPosition -= upVector * step_size * time_elapsed;
         lookAtPoint -= upVector * step_size * time_elapsed;
-    }
+    }*/
 
     world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
 }
@@ -156,11 +105,11 @@ void Game_State::update(int time_elapsed) {
     move_camera(time_elapsed);
     
 
-    ground->update(time_elapsed, cameraPosition, lookAtPoint);
-    skydome->update(time_elapsed, cameraPosition, lookAtPoint);
+    ground->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+    skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
 
     for (Object* object : objects) {
-        object->update(time_elapsed, cameraPosition, lookAtPoint);
+        object->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     
     }
 }

@@ -71,7 +71,7 @@
         "shader_vert": "shaders/game_state.vert",
         "shader_frag": "shaders/game_state.frag",
 
-        "camera_pos" : [0,0,50],
+        "camera_pos" : [0,30,50],
         "look_at" : [0,0,0],
         "up" : [0,1,0],
 
@@ -86,7 +86,7 @@
         {
             "name": "Private Jet",
             "path": "models/airplane.obj",
-            "scale": 0.007,
+            "scale": 0.003,
             "rotation": [
                 {
                     "axis" : [1,0,0],
@@ -94,7 +94,8 @@
                     }
             ],
             "direction_axis" : [0,0,1],
-            "speed": 0.020
+            "speed": 0.010,
+            "offset": [0,-5,-10]
         },
         {
             "name": "Airbus A380",
@@ -106,7 +107,8 @@
                     }
             ],
             "direction_axis" : [0,1,0],
-            "speed": 0.020
+            "speed": 0.020,
+            "offset": [0,0,0]
         },
         {
             "name": "Jas Gripen",
@@ -123,7 +125,8 @@
                     }
             ],
             "direction_axis" : [0,0,1],
-            "speed": 0.040
+            "speed": 0.040,
+            "offset": [0,0,0]
         }
     ]
 }

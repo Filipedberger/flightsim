@@ -72,11 +72,11 @@ void Menu_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
 
 
-    ground->update(time_elapsed, cameraPosition, lookAtPoint);
-    skydome->update(time_elapsed, cameraPosition, lookAtPoint);
+    ground->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+    skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
 
     for (Object* object : objects) {
-        object->update(time_elapsed, cameraPosition, lookAtPoint);
+        object->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
         vec3 p = object->center + object->position;
         if (frustum_obj.side_culling(p, object->radius, world2view)) {
             object->reset();

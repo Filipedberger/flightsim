@@ -35,7 +35,7 @@ Skydome::Skydome(const std::string& filename, const vec3& cameraPosition, float 
     return;
 }
 
-void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
+void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
     vec3 new_pos = vec3(cameraPosition.x, cameraPosition.y-10, cameraPosition.z);
     move(new_pos); 
     return;

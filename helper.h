@@ -13,4 +13,6 @@ std::string vec2str(vec4 v);
 
 vec3 json2vec(Json::Value json);
 
+float rad(float deg);
+
 #endif // HELPER_H

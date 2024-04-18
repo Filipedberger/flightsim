@@ -43,11 +43,16 @@ void State::create_projection_from_json(Json::Value s) {
 }
 
 void State::keyboard(unsigned char key, int x, int y) {
+    keys_pressed[key] = true;
     switch(key) {
         case 27:
             exit(0);
             break;
     }
+}
+
+void State::keyboard_up(unsigned char key, int x, int y) {
+    keys_pressed[key] = false;
 }
 
 State::~State() {
