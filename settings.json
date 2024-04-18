@@ -94,8 +94,8 @@
                     }
             ],
             "direction_axis" : [0,0,1],
-            "speed": 0.010,
-            "offset": [0,-5,-10]
+            "speed": 0.005,
+            "offset": [0,5,10]
         },
         {
             "name": "Airbus A380",

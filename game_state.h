@@ -25,6 +25,8 @@ class Game_State : public State {
     int deltaX = -1;
     int deltaY = -1;
 
+    Object* plane;
+
     void move_camera(int time_elapsed);
 };
 

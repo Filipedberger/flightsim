@@ -41,6 +41,7 @@ Plane::Plane(Json::Value settings, vec3 pos) {
     std::cout << "FORWARD DIRECTION: " << vec2str(forward_direction) << std::endl;
     //up_direction = standard_rotation * vec4(0,0,1,0);
     model_up = vec3(0,0,1);
+    model_right = vec3(1,0,0);
     std::cout << "UP DIRECTION: " << vec2str(up_direction) << std::endl;
     calculate_radius();
 
@@ -51,13 +52,20 @@ Plane::Plane(Json::Value settings, vec3 pos) {
 
 void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
     //position = cameraPosition + offset;
-    vec3 movement = forward_direction * speed * time_elapsed;
+    /*vec3 movement = world_forward * speed * time_elapsed;
     if (keys_pressed['w']) {
         position += movement;
     }
     else if (keys_pressed['s']) {
         position -= movement;
-    }
+    }*/
+    vec3 forward = vec3(sin(rad(turn_angle))*sin(rad(pitch_angle)),
+                        cos(rad(turn_angle))*sin(rad(pitch_angle)),
+                        cos(rad(pitch_angle)));
+
+    std::cout << "FORWARD: " << vec2str(forward) << std::endl;
+    position += (world_forward + world_up) * speed * time_elapsed;
+    position += forward * speed * time_elapsed;
     move(position);
     tilt(keys_pressed);
     return;
@@ -68,51 +76,65 @@ void Plane::tilt(std::map<char, bool> keys_pressed) {
         reset();
         return;}
 
-    if (keys_pressed['e']) {
-            rotate(-0.01, model_up); // TURN
-            //model_forward = ArbRotate(up_direction, -0.01) * model_forward;
-            std::cout << "TURNING" << std::endl;
-        }
-
-    if (keys_pressed['q']) {
-            rotate(0.01, model_up); // TURN
-            //model_forward = ArbRotate(up_direction, 0.01) * model_forward;
-        }
-
     if (keys_pressed['a'] || keys_pressed['d']) {
         
         if (keys_pressed['d']) {
             
-            if (angle == 60) {
-                return;
+            if (tilt_angle != 60) {
+                //tilt_angle += 1;
+                tilt_angle = 0;
             }
-            angle += 1;
-            
-            rotate(rad(1), model_forward); //TILT
-            
 
+            turn_angle -= 1;
         }
         
         if (keys_pressed['a']) {
-            if (angle == -60) {
-                return;
+            if (tilt_angle != -60) {
+                //tilt_angle -= 1;
+                tilt_angle = 0;
             }
-            angle -= 1;
-            
-            rotate(rad(-1), model_forward); //TILT
-            
+
+            turn_angle += 1;  
         }
     }
-    else if (angle != 0) {
-        if (angle > 0) {
-            angle -= 1;
-            rotate(rad(-1), model_forward); //TILT
+
+    // Return to standard tilt
+    /*else if (tilt_angle != 0) {
+        if (tilt_angle > 0) {
+            tilt_angle -= 1;
+            //rotate(rad(-1), model_forward); //TILT
         }
-        else if (angle < 0) {
-            angle += 1;
-            rotate(rad(1), model_forward); //TILT
+        else if (tilt_angle < 0) {
+            tilt_angle += 1;
+            //rotate(rad(1), model_forward); //TILT
+        }
+    }*/
+    
+    
+    if (keys_pressed['w']) {
+        if (pitch_angle < 89) {
+            pitch_angle += 1;
         }
     }
+    else if (keys_pressed['s']) {
+        if (pitch_angle > -89) {
+            pitch_angle -= 1;
+        }
+    }
+
+    //vec3 right = vec3(cos(rad(turn_angle)*sin))
+
+    pitch_matrix = ArbRotate(model_right, rad(pitch_angle));
+    vec3 up = pitch_matrix * model_up;
+
+    turn_matrix = ArbRotate(up, rad(turn_angle));
+    vec3 forward = turn_matrix * pitch_matrix * model_forward;
+    
+    tilt_matrix = ArbRotate(forward, rad(tilt_angle));
+
+    rotationMatrix = standard_rotation * tilt_matrix * turn_matrix * pitch_matrix;
+    world_forward = standard_rotation * forward;
+    world_up = standard_rotation * ArbRotate(model_right, rad(pitch_angle - 90)) * model_up;
 }
 
 void Plane::calculate_radius() {
@@ -133,6 +155,13 @@ void Plane::calculate_radius() {
     
 }
 
+vec3 Plane::get_pos() {
+    return position + ArbRotate(vec3(0,1,0), rad(turn_angle)) * offset;
+}
+
+vec3 Plane::get_lookAtPoint() {
+    return position;
+}
 
 void Plane::reset() {
     rotationMatrix = standard_rotation;

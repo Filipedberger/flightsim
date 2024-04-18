@@ -16,6 +16,10 @@ class Plane : public Object {
 
     ~Plane() override;
 
+    // Getters:
+    vec3 get_pos() override;
+    vec3 get_lookAtPoint() override;
+
     private:
     vec3 direction;
     float speed; // Pixels per millisecond
@@ -30,6 +34,13 @@ class Plane : public Object {
     vec3 up_direction;
     vec3 offset;
     int angle{0};
+
+    mat4 tilt_matrix = IdentityMatrix();
+    mat4 turn_matrix = IdentityMatrix();
+    mat4 pitch_matrix = IdentityMatrix();
+    float tilt_angle = 0;
+    float turn_angle = 0;
+    float pitch_angle = 0;
 
     void calculate_radius();
 

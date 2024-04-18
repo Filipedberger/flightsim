@@ -19,7 +19,8 @@ Game_State::Game_State(Context* c) : State(c->settings["game_state"], c)  {
     ground = new Ground();
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
     //objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
-    objects.push_back(new Plane(context->settings["planes"][0], cameraPosition)); 
+    //objects.push_back(new Plane(context->settings["planes"][0], cameraPosition)); 
+    plane = new Plane(context->settings["planes"][0], cameraPosition);
     glutHideCursor();
     return;
 }
@@ -59,41 +60,29 @@ void Game_State::mouse(int x, int y) {
     vec3 direction(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
 
     // Update the lookAtPoint based on the camera position and the direction
-    lookAtPoint = cameraPosition + direction;
+    //lookAtPoint = cameraPosition + direction;
 
-    world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+    //world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
 }
 
 void Game_State::move_camera(int time_elapsed) {
-    float step_size = 0.01f;
-    vec3 forward_direction = normalize(lookAtPoint - cameraPosition) * step_size * time_elapsed;
-    vec3 side_direction = normalize(cross(forward_direction, upVector)) * step_size * time_elapsed;
+    
+    //cameraPosition = plane -> position + vec3(0, 10, 10);
 
+    //cameraPosition = plane -> position + vec3(0, 5, 10);
+    cameraPosition = plane -> get_pos();
 
-    /*if (keys_pressed['w']) {
-        cameraPosition += forward_direction;
-        lookAtPoint += forward_direction;
-    }
-    else if (keys_pressed['s']) {
-        cameraPosition -= forward_direction;
-        lookAtPoint -= forward_direction;
-    }
-    if (keys_pressed['a']) {
-        cameraPosition -= side_direction;
-        lookAtPoint -= side_direction;
-    }
-    else if (keys_pressed['d']) {
-        cameraPosition += side_direction;
-        lookAtPoint += side_direction;
-    }
-    if (keys_pressed[' ']) {
-        cameraPosition += upVector * step_size * time_elapsed;
-        lookAtPoint += upVector * step_size * time_elapsed;
-    }
-    else if (keys_pressed['z']) {
-        cameraPosition -= upVector * step_size * time_elapsed;
-        lookAtPoint -= upVector * step_size * time_elapsed;
-    }*/
+    //std::cout << "CAMERA NEW: " << vec2str( plane -> get_pos()) << std::endl;
+    //std::cout << "CAMERA POSITION: " << vec2str(cameraPosition) << std::endl;
+
+    //std::cout << "CAMERA POSITION: " << vec2str(plane -> position) << std::endl;
+
+     // Calculate the direction vector
+    vec3 direction(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
+
+    // Update the lookAtPoint based on the camera position and the direction
+    //lookAtPoint = cameraPosition + direction;
+    lookAtPoint = plane -> get_lookAtPoint();
 
     world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
 }
@@ -101,17 +90,17 @@ void Game_State::move_camera(int time_elapsed) {
 
 void Game_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
-
-    move_camera(time_elapsed);
     
 
     ground->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+    plane->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
 
     for (Object* object : objects) {
         object->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     
     }
+    move_camera(time_elapsed);
 }
 
 void Game_State::display() {
@@ -122,6 +111,7 @@ void Game_State::display() {
 
     skydome->display(program, world2view, projection);
     ground->display(program, world2view, projection);
+    plane->display(program, world2view, projection);
     
     for (Object* object : objects) {
         object->display(program, world2view, projection);
@@ -131,5 +121,6 @@ void Game_State::display() {
 Game_State::~Game_State() {
     // Objects, ground and skydome are deleted in State
     // Program is deleted in State
+    delete plane;
     return;
 }
