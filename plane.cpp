@@ -34,14 +34,15 @@ Plane::Plane(Json::Value settings, vec3 pos) {
         rotate(angle, axis);
         standard_rotation = standard_rotation * ArbRotate(axis, angle);
     }
+    standard_inverse = transpose(standard_rotation);
     Json::Value dir_axis = settings["direction_axis"];
     //direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
     //forward_direction = standard_rotation * vec4(0,1,0,0);
-    model_forward = vec3(0,1,0);
+    //model_forward = vec3(0,1,0);
     std::cout << "FORWARD DIRECTION: " << vec2str(forward_direction) << std::endl;
     //up_direction = standard_rotation * vec4(0,0,1,0);
-    model_up = vec3(0,0,1);
-    model_right = vec3(1,0,0);
+    //model_up = vec3(0,0,1);
+    //model_right = vec3(1,0,0);
     std::cout << "UP DIRECTION: " << vec2str(up_direction) << std::endl;
     calculate_radius();
 
@@ -63,9 +64,22 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
                         cos(rad(turn_angle))*sin(rad(pitch_angle)),
                         cos(rad(pitch_angle)));
 
-    std::cout << "FORWARD: " << vec2str(forward) << std::endl;
-    position += (world_forward + world_up) * speed * time_elapsed;
-    position += forward * speed * time_elapsed;
+    //std::cout << "FORWARD: " << vec2str(forward) << std::endl;
+    //position += (world_forward + world_up) * speed * time_elapsed;
+
+    if (keys_pressed['w']) {
+        //position += vec3(1,0,0);
+        std::cout << "+x" << std::endl;
+    }
+    else if (keys_pressed['s']) {
+        //position = vec3(0,0,1);
+        std::cout << "+z" << std::endl;
+    }
+    if (keys_pressed['i']) {
+        position = vec3(0,10,0);
+    }
+    //position += forward * speed * time_elapsed;
+    position += model_forward * speed * time_elapsed;
     move(position);
     tilt(keys_pressed);
     return;
@@ -76,65 +90,55 @@ void Plane::tilt(std::map<char, bool> keys_pressed) {
         reset();
         return;}
 
+    roll = 0;
+    pitch = 0;
+
     if (keys_pressed['a'] || keys_pressed['d']) {
         
         if (keys_pressed['d']) {
-            
-            if (tilt_angle != 60) {
-                //tilt_angle += 1;
-                tilt_angle = 0;
-            }
-
-            turn_angle -= 1;
+            roll = 2;
         }
         
         if (keys_pressed['a']) {
-            if (tilt_angle != -60) {
-                //tilt_angle -= 1;
-                tilt_angle = 0;
-            }
-
-            turn_angle += 1;  
+            roll = -2;
         }
     }
-
-    // Return to standard tilt
-    /*else if (tilt_angle != 0) {
-        if (tilt_angle > 0) {
-            tilt_angle -= 1;
-            //rotate(rad(-1), model_forward); //TILT
-        }
-        else if (tilt_angle < 0) {
-            tilt_angle += 1;
-            //rotate(rad(1), model_forward); //TILT
-        }
-    }*/
-    
     
     if (keys_pressed['w']) {
-        if (pitch_angle < 89) {
-            pitch_angle += 1;
-        }
+        pitch = 1;
     }
     else if (keys_pressed['s']) {
-        if (pitch_angle > -89) {
-            pitch_angle -= 1;
-        }
+        pitch = -1;
     }
 
-    //vec3 right = vec3(cos(rad(turn_angle)*sin))
+    model_right = vec3(rotationMatrix.m[0], rotationMatrix.m[4], rotationMatrix.m[8]);
+    std::cout << "RIGHT TEMP: " << vec2str(model_right) << std::endl;
+    model_forward = vec3(rotationMatrix.m[1], rotationMatrix.m[5], rotationMatrix.m[9]);
+    std::cout << "FORWARD TEMP: " << vec2str(model_forward) << std::endl;
+    model_up = vec3(rotationMatrix.m[2], rotationMatrix.m[6], rotationMatrix.m[10]);
+    std::cout << "UP TEMP: " << vec2str(model_up) << std::endl;
 
-    pitch_matrix = ArbRotate(model_right, rad(pitch_angle));
-    vec3 up = pitch_matrix * model_up;
 
-    turn_matrix = ArbRotate(up, rad(turn_angle));
-    vec3 forward = turn_matrix * pitch_matrix * model_forward;
+    std::cout << "ROLL: " << roll << std::endl;
+    std::cout << "PITCH: " << pitch << std::endl;
+
+    if (roll != 0) {
+        tilt_matrix = ArbRotate(model_forward, rad(roll));
+        model_right = tilt_matrix * model_right;
+        model_up = tilt_matrix * model_up;
+    }
+    if (pitch != 0) {
+        pitch_matrix = ArbRotate(model_right, rad(pitch));
+        model_forward = pitch_matrix * model_forward;
+        model_up = pitch_matrix * model_up;
+    }
     
-    tilt_matrix = ArbRotate(forward, rad(tilt_angle));
+    rotationMatrix =  mat4(model_right.x, model_forward.x, model_up.x, 0,
+                           model_right.y, model_forward.y, model_up.y, 0,
+                           model_right.z, model_forward.z, model_up.z, 0,
+                           0, 0, 0, 1);
 
-    rotationMatrix = standard_rotation * tilt_matrix * turn_matrix * pitch_matrix;
-    world_forward = standard_rotation * forward;
-    world_up = standard_rotation * ArbRotate(model_right, rad(pitch_angle - 90)) * model_up;
+    std::cout << mat2str(rotationMatrix) << std::endl;
 }
 
 void Plane::calculate_radius() {
@@ -156,7 +160,7 @@ void Plane::calculate_radius() {
 }
 
 vec3 Plane::get_pos() {
-    return position + ArbRotate(vec3(0,1,0), rad(turn_angle)) * offset;
+    return position -  model_forward * 10 + model_up * 5;
 }
 
 vec3 Plane::get_lookAtPoint() {

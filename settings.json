@@ -94,7 +94,7 @@
                     }
             ],
             "direction_axis" : [0,0,1],
-            "speed": 0.005,
+            "speed": 0.01,
             "offset": [0,5,10]
         },
         {
