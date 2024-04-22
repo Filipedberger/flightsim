@@ -39,11 +39,11 @@ Plane::Plane(Json::Value settings, vec3 pos) {
     //direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
     //forward_direction = standard_rotation * vec4(0,1,0,0);
     //model_forward = vec3(0,1,0);
-    std::cout << "FORWARD DIRECTION: " << vec2str(forward_direction) << std::endl;
+    //std::cout << "FORWARD DIRECTION: " << vec2str(forward_direction) << std::endl;
     //up_direction = standard_rotation * vec4(0,0,1,0);
     //model_up = vec3(0,0,1);
     //model_right = vec3(1,0,0);
-    std::cout << "UP DIRECTION: " << vec2str(up_direction) << std::endl;
+    //std::cout << "UP DIRECTION: " << vec2str(up_direction) << std::endl;
     calculate_radius();
 
     speed = settings["speed"].asFloat();
@@ -60,14 +60,14 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
     else if (keys_pressed['s']) {
         position -= movement;
     }*/
-    vec3 forward = vec3(sin(rad(turn_angle))*sin(rad(pitch_angle)),
+    /*vec3 forward = vec3(sin(rad(turn_angle))*sin(rad(pitch_angle)),
                         cos(rad(turn_angle))*sin(rad(pitch_angle)),
-                        cos(rad(pitch_angle)));
+                        cos(rad(pitch_angle)));*/
 
     //std::cout << "FORWARD: " << vec2str(forward) << std::endl;
     //position += (world_forward + world_up) * speed * time_elapsed;
 
-    if (keys_pressed['w']) {
+    /*if (keys_pressed['w']) {
         //position += vec3(1,0,0);
         std::cout << "+x" << std::endl;
     }
@@ -77,7 +77,7 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
     }
     if (keys_pressed['i']) {
         position = vec3(0,10,0);
-    }
+    }*/
     //position += forward * speed * time_elapsed;
     position += model_forward * speed * time_elapsed;
     move(position);
@@ -160,7 +160,7 @@ void Plane::calculate_radius() {
 }
 
 vec3 Plane::get_pos() {
-    return position -  model_forward * 10 + model_up * 5;
+    return position -  model_forward * 10 + vec3(0,5,0);
 }
 
 vec3 Plane::get_lookAtPoint() {
