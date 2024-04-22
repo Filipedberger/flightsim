@@ -34,6 +34,11 @@ void Game_State::keyboard(unsigned char key, int x, int y) {
 }
 
 void Game_State::mouse(int x, int y) {
+
+    if (!keys_toggle['m']) {
+        return;
+    }
+    
     // Warp the cursor back to the center of the window
     glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
 	if (deltaX == -1 && deltaY == -1)
@@ -42,7 +47,6 @@ void Game_State::mouse(int x, int y) {
 		deltaY = 0;
 		return;
 	}
-	
     // Calculate the delta from the center of the window
     int deltaX = x - glutGet(GLUT_WINDOW_WIDTH) / 2;
     int deltaY = y - glutGet(GLUT_WINDOW_HEIGHT) / 2;
@@ -57,41 +61,31 @@ void Game_State::mouse(int x, int y) {
     phi = std::max(std::min(phi, M_PI / 2.0f - epsilon), epsilon - M_PI / 2.0f);
 
     // Calculate the direction vector
-    vec3 direction(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
+    //mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
+    mouse_direction = vec3(sin(theta), 0, cos(theta));
 
-    // Update the lookAtPoint based on the camera position and the direction
-    //lookAtPoint = cameraPosition + direction;
 
-    //world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
 }
 
 void Game_State::move_camera(int time_elapsed) {
-    
-    //cameraPosition = plane -> position + vec3(0, 10, 10);
-
-    //cameraPosition = plane -> position + vec3(0, 5, 10);
-    cameraPosition = plane -> get_pos();
-
-    //std::cout << "CAMERA NEW: " << vec2str( plane -> get_pos()) << std::endl;
-    //std::cout << "CAMERA POSITION: " << vec2str(cameraPosition) << std::endl;
-
-    //std::cout << "CAMERA POSITION: " << vec2str(plane -> position) << std::endl;
-
-     // Calculate the direction vector
-    vec3 direction(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
-
     // Update the lookAtPoint based on the camera position and the direction
-    //lookAtPoint = cameraPosition + direction;
-    lookAtPoint = plane -> get_lookAtPoint();
 
-    world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+    //world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+    if (!keys_toggle['m']) {
+        world2view = plane -> get_lookAtMatrix();
+    }
+    else {
+        cameraPosition = plane -> get_pos();
+        lookAtPoint = mouse_direction;
+        upVector = plane -> get_upVector();
+        world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+    }
 }
 
 
 void Game_State::update(int time_elapsed) {
     // Update camera etc. here, then update objects.
     
-
     ground->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     plane->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);

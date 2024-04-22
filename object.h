@@ -38,6 +38,8 @@ class Object {
     // Getters:
     virtual vec3 get_pos() {return position;}
     virtual vec3 get_lookAtPoint() {return position;}
+    virtual mat4 get_lookAtMatrix() {return IdentityMatrix();}
+    virtual vec3 get_upVector() {return vec3(0,1,0);}
 
 
     protected:

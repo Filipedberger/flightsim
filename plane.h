@@ -19,6 +19,8 @@ class Plane : public Object {
     // Getters:
     vec3 get_pos() override;
     vec3 get_lookAtPoint() override;
+    mat4 get_lookAtMatrix() override;
+    vec3 get_upVector() override;
 
     private:
     vec3 direction;
@@ -28,11 +30,7 @@ class Plane : public Object {
     vec3 model_up;
     vec3 model_forward;
     vec3 model_right;
-    vec3 world_up;
-    vec3 world_forward;
-    vec3 world_right;
-    vec3 forward_direction;
-    vec3 up_direction;
+
     vec3 offset;
     int angle{0};
 
@@ -49,8 +47,9 @@ class Plane : public Object {
     void calculate_radius();
 
     void tilt(std::map<char, bool> keys_pressed);
+
+    mat4 create_rotation_matrix(vec3 forward, vec3 up, vec3 right);
+
 };
-
-
 
 #endif

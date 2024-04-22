@@ -53,6 +53,7 @@ void State::keyboard(unsigned char key, int x, int y) {
 
 void State::keyboard_up(unsigned char key, int x, int y) {
     keys_pressed[key] = false;
+    keys_toggle[key] = !keys_toggle[key];
 }
 
 State::~State() {
