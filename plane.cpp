@@ -130,7 +130,7 @@ void Plane::calculate_radius() {
 }
 
 vec3 Plane::get_pos() {
-    return position - model_forward * 10 + model_up * 5;
+    return position - model_forward * 20 + model_up * 5;
 }
 
 
