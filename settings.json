@@ -65,7 +65,7 @@
         "scale": 100.0,
         "shader_vert": "shaders/skydome.vert",
         "shader_frag": "shaders/skydome.frag",
-        "texture": "textures/DaylightBoxUV.tga"
+        "texture": "textures/new_skybox.tga"
     },
     "game_state": {
         "shader_vert": "shaders/game_state.vert",

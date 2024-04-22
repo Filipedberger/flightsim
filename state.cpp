@@ -23,6 +23,10 @@ State::State(Json::Value s, Context* c)  {
 void State::upload2shader() {
     glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    GLint lightDirUniform = glGetUniformLocation(program, "light_direction");
+    glUniform3f(lightDirUniform, 0.0f, 1.0f, -1.0f); // Set the light direction
+    GLint lightIntensityUniform = glGetUniformLocation(program, "light_intensity");
+    glUniform3f(lightIntensityUniform, 0.8f, 0.8f, 0.8f); // Set the light direction
     
 }
 
