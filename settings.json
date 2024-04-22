@@ -61,11 +61,11 @@
         "bottom": -0.5
     },
     "skydome" : {
-        "filename" : "models/skybox-full.obj",
+        "filename" : "models/skybox.obj",
         "scale": 100.0,
         "shader_vert": "shaders/skydome.vert",
         "shader_frag": "shaders/skydome.frag",
-        "texture": "textures/new_skybox.tga"
+        "texture": "textures/skyboxes/Daylight-Box-mod2.tga"
     },
     "game_state": {
         "shader_vert": "shaders/game_state.vert",
