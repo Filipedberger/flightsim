@@ -73,6 +73,7 @@ void Game_State::move_camera(int time_elapsed) {
     //world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
     if (!keys_toggle['m']) {
         world2view = plane -> get_lookAtMatrix();
+        cameraPosition = plane -> get_pos();
     }
     else {
         cameraPosition = plane -> get_pos();
