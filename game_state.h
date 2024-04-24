@@ -24,6 +24,9 @@ class Game_State : public State {
     double phi = 0;
     int deltaX = -1;
     int deltaY = -1;
+    vec3 mouse_direction = vec3(0,0,-1);
+
+    Object* plane;
 
     void move_camera(int time_elapsed);
 };

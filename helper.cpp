@@ -17,3 +17,21 @@ vec3 json2vec(Json::Value json) {
 float rad(float deg) {
     return deg * M_PI / 180;
 }
+
+std::string mat2str(mat4 m) {
+    std::string s = "";
+    for (int i = 0; i < 4; i++) {
+        s += "[";
+        for (int j = 0; j < 4; j++) {
+            s += std::to_string(m.m[i*4 + j]);
+            if (j < 3) {
+                s += ", ";
+            }
+        }
+        s += "]";
+        if (i < 3) {
+            s += "\n";
+        }
+    }
+    return s;
+}

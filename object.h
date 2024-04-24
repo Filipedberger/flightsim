@@ -35,6 +35,12 @@ class Object {
     Object& operator=(const Object& other) = delete;
     Object(const Object& other) = delete;
 
+    // Getters:
+    virtual vec3 get_pos() {return position;}
+    virtual vec3 get_lookAtPoint() {return position;}
+    virtual mat4 get_lookAtMatrix() {return IdentityMatrix();}
+    virtual vec3 get_upVector() {return vec3(0,1,0);}
+
 
     protected:
     GLuint object_program;

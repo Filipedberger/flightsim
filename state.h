@@ -49,6 +49,7 @@ class State {
 
     // Keys:
     std::map<char, bool> keys_pressed;
+    std::map<char, bool> keys_toggle;
 
 
     virtual void upload2shader();

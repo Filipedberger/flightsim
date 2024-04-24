@@ -19,7 +19,10 @@ out vec3 normal;
 void main(void)
 {
 	mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
-	gl_Position = in_projectionMatrix * viewMatrix* mdlMatrix * vec4(in_Position, 1.0);
-	normal = in_Normal;
+	gl_Position = in_projectionMatrix * viewMatrix * mdlMatrix * vec4(in_Position, 1.0);
+
+	mat3 normalMatrix = transpose(inverse(mat3(mdlMatrix)));
+    normal = normalize(normalMatrix * in_Normal);
+
 	world_position = mdlMatrix * vec4(in_Position, 1.0);
 }
