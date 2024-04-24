@@ -10,6 +10,18 @@ TerrainMap::TerrainMap(vec3 cameraPosition, const Frustum &f)
     cameraChunkZ = cameraPosition.z / terrainHeight - 2;
 
     frustum_obj = f;
+
+
+    // Calculate the number of vertices and triangles
+    vertexCount = terrainWidth * terrainHeight;
+    triangleCount = (terrainWidth - 1) * (terrainHeight - 1) * 2;
+    
+    // Allocate memory for the vertex, normal, texture coordinate, and index arrays
+    vertexArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
+    normalArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
+    texCoordArray = (vec2 *)malloc(sizeof(GLfloat) * 2 * vertexCount);
+    indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
+
 }
 
 TerrainMap::~TerrainMap()
@@ -29,8 +41,15 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 
     for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
     {
+        float chunkX = x * (terrainWidth - 2);
+        
         for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
         {
+            
+            float chunkZ = z * (terrainHeight - 2);
+            //if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), 500, world2view)){
+            //    continue;
+            //}
             if (chunks.find({x, z}) == chunks.end())
             {
                 chunks[{x, z}] = GeneratePerlinTerrain(x * (terrainWidth - 2), z * (terrainHeight - 2));
@@ -78,6 +97,10 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
 
+        if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), 500, world2view)){
+                continue;
+            }
+
         // Pass the chunk position to the shader
         glUniform3f(glGetUniformLocation(terrain_program, "chunkPosition"), chunkX, 0, chunkZ);
 
@@ -89,16 +112,6 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
 
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
-    // Calculate the number of vertices and triangles
-    int vertexCount = terrainWidth * terrainHeight;
-    int triangleCount = (terrainWidth - 1) * (terrainHeight - 1) * 2;
-
-    // Allocate memory for the vertex, normal, texture coordinate, and index arrays
-    vec3 *vertexArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
-    vec3 *normalArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
-    vec2 *texCoordArray = (vec2 *)malloc(sizeof(GLfloat) * 2 * vertexCount);
-    GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
-
     auto t1 = std::chrono::high_resolution_clock::now();
 
     float amplitude = 200.0f;
@@ -114,7 +127,6 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
             // float perlin_noise = SimplexNoise::noise(x + offsetX, z + offsetZ, 4) * amplitude;
             //  Set the vertex position, normal, and texture coordinate
             vertexArray[x + z * terrainWidth] = vec3((x) / 1.0, perlin_noise, (z) / 1.0);
-            normalArray[x + z * terrainWidth] = vec3(0.0, 1.0, 0.0);
             texCoordArray[x + z * terrainWidth] = vec2(x + offsetX, z + offsetZ);
         }
     auto t2 = std::chrono::high_resolution_clock::now();
@@ -196,6 +208,7 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
     std::cout << "Copy normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count() << " ms" << std::endl;
     std::cout << "Generate indices: " << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count() << " ms" << std::endl;
     std::cout << "Load data to model: " << std::chrono::duration_cast<std::chrono::milliseconds>(t7 - t6).count() << " ms" << std::endl;
+
 
     return model;
 }
