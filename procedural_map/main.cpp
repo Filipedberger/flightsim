@@ -206,7 +206,7 @@ Model *GeneratePerlinTerrain(int offsetX, int offsetZ, int terrain_type)
         {
             // Calculate the Perlin noise value for the current vertex
             float perlin_noise = 0.0f;
-            float amplitude = 50.0f;
+            float amplitude = 100.0f;
             float frequency = 1.0f / 200.0f;
             if (terrain_type == 1)
             {

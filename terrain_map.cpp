@@ -105,7 +105,7 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
         {
             // Calculate the Perlin noise value for the current vertex
             float perlin_noise = 0.0f;
-            float amplitude = 1000.0f;
+            float amplitude = 100.0f;
             float frequency = 1.0f / 200.0f;
 
             for (int i = 0; i < 4; ++i) // 4 octaves
