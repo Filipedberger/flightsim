@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include "PerlinNoise.hpp"
+#include "SimplexNoise.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -17,7 +18,7 @@
 class TerrainMap
 {
 public:
-    TerrainMap(vec3 cameraPosition, const Frustum& f);
+    TerrainMap(vec3 cameraPosition, const Frustum &f);
     ~TerrainMap();
     void update(vec3 cameraPosition, const mat4 &world2view);
     void display(const GLuint &program, const mat4 &world2view, const mat4 &projection);
@@ -32,11 +33,10 @@ private:
     vec3 cameraPos;
     int cameraChunkX;
     int cameraChunkZ;
-    int CHUNKS = 2;
+    int CHUNKS = 8;
     const int MAX_CHUNK_DISTANCE = 3 * CHUNKS;
     GLuint terrain_program = loadShaders("shaders/terrain_shader.vert", "shaders/terrain_shader.frag");
     Frustum frustum_obj;
-
 };
 
 #endif

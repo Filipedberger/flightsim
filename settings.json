@@ -6,11 +6,19 @@
             "scale": 0.007,
             "rotation": [
                 {
-                    "axis" : [1,0,0],
+                    "axis": [
+                        1,
+                        0,
+                        0
+                    ],
                     "angle": -90
-                    }
+                }
             ],
-            "direction_axis" : [0,0,1],
+            "direction_axis": [
+                0,
+                0,
+                1
+            ],
             "speed": 0.020
         },
         {
@@ -18,11 +26,13 @@
             "path": "models/a380.obj",
             "scale": 1,
             "rotation": [
-                {
-
-                    }
+                {}
             ],
-            "direction_axis" : [0,1,0],
+            "direction_axis": [
+                0,
+                1,
+                0
+            ],
             "speed": 0.020
         },
         {
@@ -31,28 +41,49 @@
             "scale": 0.8,
             "rotation": [
                 {
-                    "axis" : [1,0,0],
+                    "axis": [
+                        1,
+                        0,
+                        0
+                    ],
                     "angle": -90
-                    },
+                },
                 {
-                    "axis" : [0,0,1],
+                    "axis": [
+                        0,
+                        0,
+                        1
+                    ],
                     "angle": -90
-                    }
+                }
             ],
-            "direction_axis" : [0,0,1],
+            "direction_axis": [
+                0,
+                0,
+                1
+            ],
             "speed": 0.040
         }
     ],
     "menu_state": {
         "shader_vert": "shaders/game_state.vert",
         "shader_frag": "shaders/game_state.frag",
-
         "nr_of_planes": 20,
-
-        "camera_pos" : [0,0,50],
-        "look_at" : [0,0,0],
-        "up" : [0,1,0],
-
+        "camera_pos": [
+            0,
+            0,
+            50
+        ],
+        "look_at": [
+            0,
+            0,
+            0
+        ],
+        "up": [
+            0,
+            1,
+            0
+        ],
         "near": 1.0,
         "far": 400.0,
         "right": 0.5,
@@ -60,8 +91,8 @@
         "top": 0.5,
         "bottom": -0.5
     },
-    "skydome" : {
-        "filename" : "models/skybox-full.obj",
+    "skydome": {
+        "filename": "models/skybox-full.obj",
         "scale": 100.0,
         "shader_vert": "shaders/skydome.vert",
         "shader_frag": "shaders/skydome.frag",
@@ -70,13 +101,23 @@
     "game_state": {
         "shader_vert": "shaders/game_state.vert",
         "shader_frag": "shaders/game_state.frag",
-
-        "camera_pos" : [0,30,50],
-        "look_at" : [0,0,0],
-        "up" : [0,1,0],
-
+        "camera_pos": [
+            0,
+            30,
+            50
+        ],
+        "look_at": [
+            0,
+            0,
+            0
+        ],
+        "up": [
+            0,
+            1,
+            0
+        ],
         "near": 1.0,
-        "far": 400.0,
+        "far": 2000.0,
         "right": 0.5,
         "left": -0.5,
         "top": 0.5,
@@ -89,26 +130,44 @@
             "scale": 0.003,
             "rotation": [
                 {
-                    "axis" : [1,0,0],
+                    "axis": [
+                        1,
+                        0,
+                        0
+                    ],
                     "angle": -90
-                    }
+                }
             ],
-            "direction_axis" : [0,0,1],
+            "direction_axis": [
+                0,
+                0,
+                1
+            ],
             "speed": 0.1,
-            "offset": [0,5,10]
+            "offset": [
+                0,
+                5,
+                10
+            ]
         },
         {
             "name": "Airbus A380",
             "path": "models/a380.obj",
             "scale": 1,
             "rotation": [
-                {
-
-                    }
+                {}
             ],
-            "direction_axis" : [0,1,0],
+            "direction_axis": [
+                0,
+                1,
+                0
+            ],
             "speed": 0.020,
-            "offset": [0,0,0]
+            "offset": [
+                0,
+                0,
+                0
+            ]
         },
         {
             "name": "Jas Gripen",
@@ -116,17 +175,33 @@
             "scale": 0.8,
             "rotation": [
                 {
-                    "axis" : [1,0,0],
+                    "axis": [
+                        1,
+                        0,
+                        0
+                    ],
                     "angle": -90
-                    },
+                },
                 {
-                    "axis" : [0,0,1],
+                    "axis": [
+                        0,
+                        0,
+                        1
+                    ],
                     "angle": -90
-                    }
+                }
             ],
-            "direction_axis" : [0,0,1],
+            "direction_axis": [
+                0,
+                0,
+                1
+            ],
             "speed": 0.040,
-            "offset": [0,0,0]
+            "offset": [
+                0,
+                0,
+                0
+            ]
         }
     ]
 }
