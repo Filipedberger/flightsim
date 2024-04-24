@@ -5,8 +5,8 @@
 #include "state.h"
 #include "terrain_map.h"
 #include "object.h"
-//#include "ground.h" //might not be needed here
-//#include "skydome.h"
+// #include "ground.h" //might not be needed here
+// #include "skydome.h"
 
 #include "LittleOBJLoader.h"
 #include "VectorUtils4.h"
@@ -26,7 +26,6 @@ public:
 
 private:
     std::vector<Model *> planes;
-    TerrainMap *terrain_map;
 };
 
 #endif

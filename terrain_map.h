@@ -19,7 +19,7 @@ public:
     TerrainMap(vec3 pos = vec3(0, 50.0, 0), float sc = 1);
     ~TerrainMap();
     void update(vec3 cameraPosition);
-    void display();
+    void display(const GLuint &program, const mat4 &world2view, const mat4 &projection);
     void create_chunk(int offsetX, int offsetZ);
 
 private:

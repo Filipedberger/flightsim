@@ -57,10 +57,12 @@ void TerrainMap::update(vec3 cameraPosition)
     }
 }
 
-void TerrainMap::display()
+void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection)
 {
+    glUseProgram(terrain_program);
 
-    glUniform1i(glGetUniformLocation(terrain_program, "current_terrain"), 0);
+    glUniformMatrix4fv(glGetUniformLocation(terrain_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
+    glUniformMatrix4fv(glGetUniformLocation(terrain_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
 
     // Render all chunks
     for (const auto &pair : chunks)
@@ -73,8 +75,9 @@ void TerrainMap::display()
         glUniform3f(glGetUniformLocation(terrain_program, "chunkPosition"), chunkX, 0, chunkZ);
 
         // Draw the chunk
-        DrawModel(pair.second, terrain_program, "inPosition", "inNormal", "inTexCoord");
+        DrawModel(pair.second, terrain_program, "in_Position", "in_Normal", "in_TexCoord");
     }
+    glUseProgram(program);
 }
 
 void TerrainMap::create_chunk(int offsetX, int offsetZ)

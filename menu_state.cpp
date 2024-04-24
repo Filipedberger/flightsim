@@ -5,7 +5,6 @@
 #include "context.h"
 #include "helper.h"
 
-#include "terrain_map.h"
 #include "MicroGlut.h"
 #include "GL_utilities.h"
 #include "VectorUtils4.h"
@@ -89,7 +88,6 @@ void Menu_State::update(int time_elapsed)
             object->reset();
         }
     }
-    terrain_map->update(cameraPosition);
 }
 
 void Menu_State::display()
@@ -106,7 +104,6 @@ void Menu_State::display()
     {
         object->display(program, world2view, projection);
     }
-    terrain_map->display();
 }
 
 Menu_State::~Menu_State()
@@ -118,6 +115,4 @@ Menu_State::~Menu_State()
     {
         delete plane;
     }
-    delete terrain_map;
-    terrain_map = nullptr;
 }

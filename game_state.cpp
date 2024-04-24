@@ -5,7 +5,7 @@
 #include "skydome.h"
 #include "helper.h"
 #include "plane.h"
-
+#include "terrain_map.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -15,38 +15,43 @@
 
 #include <iostream>
 
-Game_State::Game_State(Context* c) : State(c->settings["game_state"], c)  {
-    ground = new Ground();
+Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
+{
+    map = new TerrainMap();
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
-    //objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
-    //objects.push_back(new Plane(context->settings["planes"][0], cameraPosition)); 
+    // objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
+    // objects.push_back(new Plane(context->settings["planes"][0], cameraPosition));
     plane = new Plane(context->settings["planes"][0], cameraPosition);
     glutHideCursor();
     return;
 }
 
-void Game_State::keyboard(unsigned char key, int x, int y) {
+void Game_State::keyboard(unsigned char key, int x, int y)
+{
     State::keyboard(key, x, y);
 
-    if (key == 'p') {
+    if (key == 'p')
+    {
         context->menu_state = true;
     }
 }
 
-void Game_State::mouse(int x, int y) {
+void Game_State::mouse(int x, int y)
+{
 
-    if (!keys_toggle['m']) {
+    if (!keys_toggle['m'])
+    {
         return;
     }
-    
+
     // Warp the cursor back to the center of the window
     glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
-	if (deltaX == -1 && deltaY == -1)
-	{
-		deltaX = 0;
-		deltaY = 0;
-		return;
-	}
+    if (deltaX == -1 && deltaY == -1)
+    {
+        deltaX = 0;
+        deltaY = 0;
+        return;
+    }
     // Calculate the delta from the center of the window
     int deltaX = x - glutGet(GLUT_WINDOW_WIDTH) / 2;
     int deltaY = y - glutGet(GLUT_WINDOW_HEIGHT) / 2;
@@ -57,65 +62,70 @@ void Game_State::mouse(int x, int y) {
     phi -= deltaY * 0.001f;
 
     // Clamp phi to be between -pi/2 and pi/2 to prevent the camera from flipping upside down
-	float epsilon = 0.01f; // Small value to prevent phi from reaching exactly 0 or pi/2
+    float epsilon = 0.01f; // Small value to prevent phi from reaching exactly 0 or pi/2
     phi = std::max(std::min(phi, M_PI / 2.0f - epsilon), epsilon - M_PI / 2.0f);
 
     // Calculate the direction vector
-    //mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
+    // mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
     mouse_direction = vec3(sin(theta), 0, cos(theta));
-
-
 }
 
-void Game_State::move_camera(int time_elapsed) {
+void Game_State::move_camera(int time_elapsed)
+{
     // Update the lookAtPoint based on the camera position and the direction
 
-    //world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
-    if (!keys_toggle['m']) {
-        world2view = plane -> get_lookAtMatrix();
-        cameraPosition = plane -> get_pos();
+    // world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+    if (!keys_toggle['m'])
+    {
+        world2view = plane->get_lookAtMatrix();
+        cameraPosition = plane->get_pos();
     }
-    else {
-        cameraPosition = plane -> get_pos();
+    else
+    {
+        cameraPosition = plane->get_pos();
         lookAtPoint = mouse_direction;
-        upVector = plane -> get_upVector();
+        upVector = plane->get_upVector();
         world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
     }
 }
 
-
-void Game_State::update(int time_elapsed) {
+void Game_State::update(int time_elapsed)
+{
     // Update camera etc. here, then update objects.
-    
-    ground->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+
+    map->update(cameraPosition);
     skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     plane->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
 
-    for (Object* object : objects) {
+    for (Object *object : objects)
+    {
         object->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
-    
     }
     move_camera(time_elapsed);
 }
 
-void Game_State::display() {
+void Game_State::display()
+{
     // Upload matrices to shader, then display objects, map etc.
     // We make sure to use the program before uploading matrices.
     glUseProgram(program);
     upload2shader();
 
     skydome->display(program, world2view, projection);
-    ground->display(program, world2view, projection);
+    map->display(program, world2view, projection);
     plane->display(program, world2view, projection);
-    
-    for (Object* object : objects) {
+
+    for (Object *object : objects)
+    {
         object->display(program, world2view, projection);
     }
 }
 
-Game_State::~Game_State() {
+Game_State::~Game_State()
+{
     // Objects, ground and skydome are deleted in State
     // Program is deleted in State
     delete plane;
+    delete map;
     return;
 }
