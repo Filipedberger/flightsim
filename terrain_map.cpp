@@ -97,7 +97,7 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
 
-        if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), 500, world2view)){
+        if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), terrainWidth, world2view)){
                 continue;
             }
 
