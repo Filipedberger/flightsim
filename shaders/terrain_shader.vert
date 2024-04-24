@@ -13,6 +13,7 @@ uniform vec3 chunkPosition; // New uniform for the chunk position
 out vec3 world_normal;
 out vec3 surfPos;
 
+
 void main(void)
 {
     world_normal = in_Normal;

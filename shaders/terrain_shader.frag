@@ -2,12 +2,6 @@
 
 out vec4 outColor;
 in vec3 world_normal;
-uniform sampler2D tex1;
-uniform sampler2D tex2;
-uniform mat4 projMatrix;
-uniform int useTexture;
-
-uniform int current_terrain;
 
 vec3 ambientLight = vec3(0.1, 0.1, 0.1); // Ambient light color
 
@@ -15,6 +9,7 @@ const vec3 lightInit = vec3(0.58, 0.99, 0.58); // Pos of light source
 vec3 base_color = vec3(0.8);
 
 in vec3 surfPos;
+
 
 void main(void)
 {
