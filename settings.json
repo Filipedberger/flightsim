@@ -127,7 +127,7 @@
         {
             "name": "Private Jet",
             "path": "models/airplane.obj",
-            "scale": 0.003,
+            "scale": 0.002,
             "rotation": [
                 {
                     "axis": [
