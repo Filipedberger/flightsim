@@ -47,6 +47,11 @@ private:
     vec3 *normalArray;
     vec2 *texCoordArray;
     GLuint *indexArray;
+
+
+
+    //TESTING
+    SimplexNoise* noise_test;
     
 };
 

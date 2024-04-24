@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 
 	glutCreateWindow("Flight Simulator");
 
-	// glutFullScreen();
+	glutFullScreen();
 	glutDisplayFunc(display);
 	init();
 	glutRepeatingTimer(20);
