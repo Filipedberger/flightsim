@@ -4,15 +4,21 @@
 #include "LittleOBJLoader.h"
 #include "VectorUtils4.h"
 #include <string>
+#include <jsoncpp/json/json.h>
 
 class Object {
     public:
+    
+    // Constructors:
     Object() = default;
     Object(const std::string& filename, vec3 pos = vec3(0,0,0), float sc = 1);
-    virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint);
-    virtual void display(const GLuint& program);
+
+    // Standard functions:
+    virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed);
+    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection);
     virtual void create_model(const std::string& filename, vec3 pos, float sc);
 
+    // Transformation functions:
     virtual void translate(vec3 translation);
     virtual void move(vec3 coordinates);
     virtual void rotate(float angle, vec3 axis);
@@ -29,16 +35,25 @@ class Object {
     Object& operator=(const Object& other) = delete;
     Object(const Object& other) = delete;
 
+    // Getters:
+    virtual vec3 get_pos() {return position;}
+    virtual vec3 get_lookAtPoint() {return position;}
+    virtual mat4 get_lookAtMatrix() {return IdentityMatrix();}
+    virtual vec3 get_upVector() {return vec3(0,1,0);}
+
 
     protected:
+    GLuint object_program;
     Model* model;
     mat4 translationMatrix;
     mat4 rotationMatrix = IdentityMatrix();
     mat4 scaleMatrix = IdentityMatrix();
+
+    Json::Value settings;
     
     float scale_factor;
 
-    void upload2shader(const GLuint& program);
+    virtual void upload2shader(const GLuint& program);
 
 };
 

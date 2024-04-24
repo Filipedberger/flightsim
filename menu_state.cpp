@@ -1,7 +1,9 @@
 #include "menu_state.h"
 #include "mini_plane.h"
 #include "ground.h"
+#include "skydome.h"
 #include "context.h"
+#include "helper.h"
 
 #include "terrain_map.h"
 #include "MicroGlut.h"
@@ -14,34 +16,37 @@
 
 #include <iostream>
 
-Menu_State::Menu_State(Context *c) : State(c)
+Menu_State::Menu_State(Context *c) : State(c->settings["menu_state"], c)
 {
     Object *object;
 
-    Json::Value settings = context->settings["mini_planes"];
+    // Read settings from json file
+    Json::Value plane_settings = context->settings["mini_planes"];
+    int nr_of_planes = plane_settings.size(); // Number of different planes
 
-    int nr_of_planes = settings.size();
-
-    std::cout << "nr of planes: " << nr_of_planes << std::endl;
+    // Load all planes
     for (int i = 0; i < nr_of_planes; i++)
     {
-        planes.push_back(LoadModel(settings[i]["path"].asString().c_str()));
+        planes.push_back(LoadModel(plane_settings[i]["path"].asString().c_str()));
     }
-    std::cout << "here: " << std::endl;
-    int index = 0;
-    for (int i = 0; i < 0; i++)
-    {
-        index = rand() % nr_of_planes;
-        settings = context->settings["mini_planes"][index];
 
-        object = new Mini_Plane(planes[index], frustum_obj, settings);
+    int index = 0;
+    for (int i = 0; i < settings["nr_of_planes"].asInt(); i++)
+    {
+        // Randomize plane
+        index = rand() % nr_of_planes;
+
+        plane_settings = context->settings["mini_planes"][index];
+        object = new Mini_Plane(planes[index], frustum_obj, plane_settings);
+
         objects.push_back(object);
     }
 
-    program = loadShaders("shaders/game_state.vert", "shaders/game_state.frag");
-    glUseProgram(program);
-    terrain_map = new TerrainMap(vec3(0, 0, 0), 1);
-    // ground = new Ground();
+    ground = new Ground();
+
+    skydome = new Skydome(context->settings["skydome"], cameraPosition);
+
+    glutShowCursor();
 
     return;
 }
@@ -49,6 +54,13 @@ Menu_State::Menu_State(Context *c) : State(c)
 void Menu_State::keyboard(unsigned char key, int x, int y)
 {
     State::keyboard(key, x, y);
+
+    switch (key)
+    {
+    case 'p':
+        context->game_state = true;
+        return;
+    }
 }
 
 void Menu_State::keyboard_up(unsigned char key, int x, int y)
@@ -65,12 +77,14 @@ void Menu_State::update(int time_elapsed)
 {
     // Update camera etc. here, then update objects.
 
-    // ground->update(time_elapsed, cameraPosition, lookAtPoint);
+    ground->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+    skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
 
     for (Object *object : objects)
     {
-        object->update(time_elapsed, cameraPosition, lookAtPoint);
-        if (frustum_obj.side_culling(object->center + object->position, object->radius, world2view))
+        object->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+        vec3 p = object->center + object->position;
+        if (frustum_obj.side_culling(p, object->radius, world2view))
         {
             object->reset();
         }
@@ -85,23 +99,21 @@ void Menu_State::display()
     glUseProgram(program);
     upload2shader();
 
-    // ground->display(program);
+    skydome->display(program, world2view, projection);
+    ground->display(program, world2view, projection);
 
     for (Object *object : objects)
     {
-        object->display(program);
+        object->display(program, world2view, projection);
     }
     terrain_map->display();
 }
 
 Menu_State::~Menu_State()
 {
-    for (Object *object : objects)
-    {
-        delete object;
-    }
-    // delete ground;
-    glDeleteProgram(program);
+    // Objects, ground and skydome are deleted in State
+    // Program is deleted in State
+
     for (Model *plane : planes)
     {
         delete plane;

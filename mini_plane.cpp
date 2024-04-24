@@ -1,5 +1,6 @@
 #include "mini_plane.h"
 #include "frustum.h"
+#include "helper.h"
 
 #include "math.h"
 #include "cmath"
@@ -23,6 +24,8 @@ Mini_Plane::Mini_Plane(Model* m, const Frustum& f, Json::Value settings) {
     float angle;
     vec3 axis;
     frustum_obj = f;
+
+    std::cout << frustum_obj.far << std::endl;
 
     Json::Value rotation = settings["rotation"];
     speed = settings["speed"].asFloat();
@@ -69,9 +72,8 @@ Mini_Plane::Mini_Plane(const std::string& filename, const Frustum& f,  Json::Val
 }
 
 
-void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) {
+void Mini_Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
     translate(direction * time_elapsed * speed);
-    //move(vec3(0,30,0));
     return;
 }
 
@@ -90,7 +92,6 @@ void Mini_Plane::calculate_radius() {
     }
 
     center = (center / model->numVertices) * scale_factor;
-    
     for (int i = 0; i < model->numVertices; i++) {
         vec3 dist_vec = model->vertexArray[i] - center;
         float dist = dist_vec * dist_vec;
@@ -110,35 +111,24 @@ void Mini_Plane::random_pos_direction() {
     int side = rand() % 2;
 
     vec3 temp_pos = vec3(0,0,0);
-    std::uniform_int_distribution<> distrib2(20, 50);
+    std::uniform_int_distribution<> distrib2(30, 60);
     temp_pos.y = distrib2(gen);
     if (side == 0) {
         // Far
         std::uniform_int_distribution<> distrib(frustum_obj.left_far_bottom.x+20, frustum_obj.right_far_bottom.x-20);
-        std::cout << "Spawned at far\n";
         temp_pos.x = distrib(gen);
-        temp_pos.z = - frustum_obj.far + 100;
+        temp_pos.z = -frustum_obj.far + 100.0f;
         random_direction(135, 225);
 
     }
     else if (side == 1) {
         // Near
         std::uniform_int_distribution<> distrib(-10, 10);
-        std::cout << "Spawned at near\n";
         temp_pos.x = 0;
-        temp_pos.z = frustum_obj.near - 30;
+        temp_pos.z = - frustum_obj.near - 10.0f;
         random_direction(-45, 45);
 
     }
-    //std::cout << "temp_pos: " << '(' << temp_pos.x << ',' << temp_pos.y << ',' << temp_pos.z << ')' << '\n';
-
-    
-    /*std::uniform_int_distribution<> distrib(-50, 50);
-    temp_pos.x = distrib(gen);
-    std::uniform_int_distribution<> distrib1(20, 50);
-    temp_pos.y = distrib1(gen);*/
-    
-
     
     move(temp_pos);
 

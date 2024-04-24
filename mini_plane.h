@@ -12,13 +12,11 @@ class Mini_Plane : public Object {
     Mini_Plane(const std::string& filename, const Frustum& f,  Json::Value settings, vec3 pos = vec3(0,0,0), float sc = 1);
     Mini_Plane(Model* m, const Frustum& f, Json::Value settings);
 
-    void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint) override;
+    void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) override;
 
     void reset() override;
 
     ~Mini_Plane() override;
-
-    vec3 center;
 
     private:
     vec3 direction;

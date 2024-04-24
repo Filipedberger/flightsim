@@ -1,6 +1,6 @@
 # set this variable to the director in which you saved the common files
 commondir = ../common/
-files = lab2-3
+files = lab2-7
 
 all : $(files)
 

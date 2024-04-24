@@ -13,13 +13,16 @@ uniform mat4 rotationMatrix;
 uniform mat4 scaleMatrix;
 
 out vec4 view_position;
-
+out vec4 world_position;
 out vec3 normal;
 
 void main(void)
 {
 	mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
-	gl_Position = in_projectionMatrix * viewMatrix* mdlMatrix * vec4(in_Position, 1.0);
-	normal = in_Normal;
-	view_position = viewMatrix* mdlMatrix * vec4(in_Position, 1.0);
+	gl_Position = in_projectionMatrix * viewMatrix * mdlMatrix * vec4(in_Position, 1.0);
+
+	mat3 normalMatrix = transpose(inverse(mat3(mdlMatrix)));
+    normal = normalize(normalMatrix * in_Normal);
+
+	world_position = mdlMatrix * vec4(in_Position, 1.0);
 }
