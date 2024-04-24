@@ -36,14 +36,6 @@ Plane::Plane(Json::Value settings, vec3 pos) {
     }
     standard_inverse = transpose(standard_rotation);
     Json::Value dir_axis = settings["direction_axis"];
-    //direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
-    //forward_direction = standard_rotation * vec4(0,1,0,0);
-    //model_forward = vec3(0,1,0);
-    //std::cout << "FORWARD DIRECTION: " << vec2str(forward_direction) << std::endl;
-    //up_direction = standard_rotation * vec4(0,0,1,0);
-    //model_up = vec3(0,0,1);
-    //model_right = vec3(1,0,0);
-    //std::cout << "UP DIRECTION: " << vec2str(up_direction) << std::endl;
     calculate_radius();
 
     speed = settings["speed"].asFloat();
