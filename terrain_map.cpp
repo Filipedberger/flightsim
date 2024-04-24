@@ -67,6 +67,7 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
         }
     }
 
+    auto t2 = std::chrono::high_resolution_clock::now();
     if (count > 0) {
         std::cout << "Chunks generated: " << count << std::endl;
     }
@@ -96,8 +97,9 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
         }
     }
 
-    auto t2 = std::chrono::high_resolution_clock::now();
+    auto t3 = std::chrono::high_resolution_clock::now();
     //std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
+    //std::cout << "Delete chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl; 
 }
 
 void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection)
