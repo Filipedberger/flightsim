@@ -346,19 +346,7 @@ void display(void)
             }
         }
     }
-    if (terrain_i % 8 == 4)
-    {
 
-        if (terrain_type == 0)
-        {
-            terrain_type = 0;
-        }
-        else
-        {
-            terrain_type = 0;
-        }
-        terrain_i = 0;
-    }
     std::cout << "Terrain_type and terrain_i: " << terrain_type << terrain_i << std::endl;
     const int MAX_CHUNK_DISTANCE = 3 * CHUNKS;
 

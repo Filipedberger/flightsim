@@ -103,10 +103,11 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitContextVersion(3, 2);
-	glutInitWindowSize (600, 600);
+	//glutInitWindowSize (600, 600);
+
 	glutCreateWindow ("Flight Simulator");
 
-	//glutFullScreen(); 
+	glutFullScreen(); 
 	glutDisplayFunc(display);
 	init ();
 	glutRepeatingTimer(20);

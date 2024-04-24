@@ -17,7 +17,7 @@
 
 Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
 {
-    map = new TerrainMap();
+    map = new TerrainMap(cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
     // objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
     // objects.push_back(new Plane(context->settings["planes"][0], cameraPosition));
@@ -86,6 +86,7 @@ void Game_State::move_camera(int time_elapsed)
         lookAtPoint = mouse_direction;
         upVector = plane->get_upVector();
         world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
+        cameraPosition = plane->get_pos();
     }
 }
 
@@ -93,7 +94,7 @@ void Game_State::update(int time_elapsed)
 {
     // Update camera etc. here, then update objects.
 
-    map->update(cameraPosition);
+    map->update(cameraPosition, world2view);
     skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
     plane->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
 

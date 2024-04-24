@@ -1,19 +1,17 @@
 #include "terrain_map.h"
 #include "iostream"
+#include <chrono>
+#include <omp.h>
+#include "frustum.h"
 
-TerrainMap::TerrainMap(vec3 pos, float sc)
+
+TerrainMap::TerrainMap(vec3 cameraPosition, const Frustum& f)
 {
-    for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
-    {
-        for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
-        {
-            if (chunks.find({x, z}) == chunks.end())
-            {
-                std::cout << "Generating terrain at " << x << ", " << z << std::endl;
-                chunks[{x, z}] = GeneratePerlinTerrain(x * (terrainWidth - 2), z * (terrainHeight - 2));
-            }
-        }
-    }
+    cameraChunkX = cameraPosition.x / terrainWidth - 2;
+    cameraChunkZ = cameraPosition.z / terrainHeight - 2;
+
+    frustum_obj = f;
+
 }
 
 TerrainMap::~TerrainMap()
@@ -26,12 +24,27 @@ TerrainMap::~TerrainMap()
     chunks.clear();
 }
 
-void TerrainMap::update(vec3 cameraPosition)
+void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 {
-    cameraPos = cameraPosition;
     cameraChunkX = cameraPosition.x / terrainWidth - 2;
     cameraChunkZ = cameraPosition.z / terrainHeight - 2;
 
+    for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
+    {
+        for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
+        {
+            /*if (frustum_obj.side_culling(vec3(x, 0, z), 0, world2view)){
+                std::cout << "Culling" << std::endl;
+                continue;
+            }*/
+            if (chunks.find({x, z}) == chunks.end())
+            {
+                chunks[{x, z}] = GeneratePerlinTerrain(x * (terrainWidth - 2), z * (terrainHeight - 2));
+            }
+        }
+    }
+    
+    //std::cout << chunks.size() << std::endl;
     // Iterate over all chunks
     for (auto it = chunks.begin(); it != chunks.end();)
     {
@@ -80,21 +93,12 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
     glUseProgram(program);
 }
 
-void TerrainMap::create_chunk(int offsetX, int offsetZ)
-{
-    if (chunks.find({offsetX, offsetZ}) == chunks.end())
-    {
-        chunks[{offsetX, offsetZ}] = GeneratePerlinTerrain(offsetX * (terrainWidth - 2), offsetZ * (terrainHeight - 2));
-    }
-}
 
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
-    std::cout << "Generating terrain at " << offsetX << ", " << offsetZ << std::endl;
     // Calculate the number of vertices and triangles
     int vertexCount = terrainWidth * terrainHeight;
     int triangleCount = (terrainWidth - 1) * (terrainHeight - 1) * 2;
-    int x, z;
 
     // Allocate memory for the vertex, normal, texture coordinate, and index arrays
     vec3 *vertexArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
@@ -102,21 +106,25 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
     vec2 *texCoordArray = (vec2 *)malloc(sizeof(GLfloat) * 2 * vertexCount);
     GLuint *indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
 
+    auto t1 = std::chrono::high_resolution_clock::now();
+
+    float amplitude = 100.0f;
+    float frequency = 1.0f / 200.0f;
     // Generate the vertices, normals, and texture coordinates using Perlin noise
-    for (x = 0; x < terrainWidth; x++)
-        for (z = 0; z < terrainHeight; z++)
+    #pragma omp parallel for collapse(2)
+    for (int x = 0; x < terrainWidth; x++)
+        for (int z = 0; z < terrainHeight; z++)
         {
             // Calculate the Perlin noise value for the current vertex
-            float perlin_noise = 0.0f;
-            float amplitude = 100.0f;
-            float frequency = 1.0f / 200.0f;
+            
 
-            for (int i = 0; i < 4; ++i) // 4 octaves
+            float perlin_noise = perlin.octave2D((x + offsetX) * frequency, (z + offsetZ) * frequency, 4) * amplitude;
+            /*for (int i = 0; i < 4; ++i) // 4 octaves
             {
                 perlin_noise += perlin.noise2D((x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
                 frequency *= 2.0f; // Double the frequency each octave
                 amplitude *= 0.5f; // Halve the amplitude each octave
-            }
+            }*/
 
             // Set the vertex position, normal, and texture coordinate
             vertexArray[x + z * terrainWidth] = vec3((x) / 1.0, perlin_noise, (z) / 1.0);
@@ -124,10 +132,12 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
             texCoordArray[x + z * terrainWidth] = vec2(x + offsetX, z + offsetZ);
         }
 
+    auto t2 = std::chrono::high_resolution_clock::now();
     // Calculate the normals for the vertices
-    for (x = 0; x < terrainWidth; x++)
+    #pragma omp parallel for collapse(2)
+    for (int x = 0; x < terrainWidth; x++)
     {
-        for (z = 0; z < terrainHeight; z++)
+        for (int z = 0; z < terrainHeight; z++)
         {
             // If the vertex is not on the edge of the terrain, calculate the normal
             if ((x != 0) && (x != (terrainWidth - 1)) && (z != 0) && (z != (terrainHeight - 1)))
@@ -148,20 +158,24 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
             }
         }
     }
+
+    auto t3 = std::chrono::high_resolution_clock::now();
     // Copy the normals from the neighboring vertices for the edge vertices
-    for (x = 0; x < terrainWidth; x++)
+    for (int x = 0; x < terrainWidth; x++)
     {
         normalArray[x] = normalArray[x + terrainWidth];                                                            // Top edge
         normalArray[x + (terrainHeight - 1) * terrainWidth] = normalArray[x + (terrainHeight - 2) * terrainWidth]; // Bottom edge
     }
-    for (z = 0; z < terrainHeight; z++)
+    auto t4 = std::chrono::high_resolution_clock::now();
+    for (int z = 0; z < terrainHeight; z++)
     {
         normalArray[z * terrainWidth] = normalArray[1 + z * terrainWidth];                                       // Left edge
         normalArray[(terrainWidth - 1) + z * terrainWidth] = normalArray[(terrainWidth - 2) + z * terrainWidth]; // Right edge
     }
+    auto t5 = std::chrono::high_resolution_clock::now();
     // Generate the triangle indices
-    for (x = 0; x < terrainWidth - 1; x++)
-        for (z = 0; z < terrainHeight - 1; z++)
+    for (int x = 0; x < terrainWidth - 1; x++)
+        for (int z = 0; z < terrainHeight - 1; z++)
         {
             // Triangle 1
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 0] = x + z * terrainWidth;
@@ -172,6 +186,7 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 4] = x + (z + 1) * terrainWidth;
             indexArray[(x + z * (terrainWidth - 1)) * 6 + 5] = x + 1 + (z + 1) * terrainWidth;
         }
+    auto t6 = std::chrono::high_resolution_clock::now();
 
     // Load the data into a model and return it
     Model *model = LoadDataToModel(
@@ -182,6 +197,15 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
         indexArray,
         vertexCount,
         triangleCount * 3);
+    auto t7 = std::chrono::high_resolution_clock::now();
+
+    /*std::cout << "Perlin noise: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
+    std::cout << "Calculate normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
+    std::cout << "Copy normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count() << " ms" << std::endl;
+    std::cout << "Copy normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count() << " ms" << std::endl;
+    std::cout << "Generate indices: " << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count() << " ms" << std::endl;
+    std::cout << "Load data to model: " << std::chrono::duration_cast<std::chrono::milliseconds>(t7 - t6).count() << " ms" << std::endl;*/
+
 
     return model;
 }
