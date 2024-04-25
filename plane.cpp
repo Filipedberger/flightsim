@@ -15,7 +15,11 @@ Plane::Plane(Json::Value settings, vec3 pos)
     std::string filename = settings["path"].asString();
     offset = settings["offset"].asFloat();
     float sc = settings["scale"].asFloat();
-    position = pos + offset;
+    position = pos;
+
+    pitch_speed = settings["pitch_speed"].asInt();
+    roll_speed = settings["roll_speed"].asInt();
+
 
     create_model(filename, position, sc);
 

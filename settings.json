@@ -28,11 +28,7 @@
             "rotation": [
                 {}
             ],
-            "direction_axis": [
-                0,
-                1,
-                0
-            ],
+
             "speed": 0.020
         },
         {
@@ -130,6 +126,8 @@
             "scale": 0.002,
             "rotation": [],
             "speed": 0.1,
+            "roll_speed": 2,
+            "pitch_speed": 1,
             "offset": 40,
             "forward": [
                 0,
@@ -152,6 +150,8 @@
             "scale": 0.5,
             "rotation": [],
             "speed": 0.020,
+            "roll_speed": 2,
+            "pitch_speed": 1,
             "offset": 80,
             "forward": [
                 0,
@@ -174,6 +174,8 @@
             "scale": 0.2,
             "rotation": [],
             "speed": 0.2,
+            "roll_speed": 4,
+            "pitch_speed": 2,
             "offset": 40,
             "forward": [
                 0,
