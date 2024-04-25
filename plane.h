@@ -31,7 +31,11 @@ class Plane : public Object {
     vec3 model_forward;
     vec3 model_right;
 
-    vec3 offset;
+    vec3 world_up = vec3(0, 1, 0);
+    vec3 world_forward = vec3(0, 0, -1);
+    vec3 world_right = vec3(1, 0, 0);
+
+    float offset;
     int angle{0};
 
     mat4 tilt_matrix = IdentityMatrix();
@@ -49,6 +53,12 @@ class Plane : public Object {
     void tilt(std::map<char, bool> keys_pressed);
 
     mat4 create_rotation_matrix(vec3 forward, vec3 up, vec3 right);
+
+    vec3 tmp_right;
+    vec3 tmp_up;
+    vec3 tmp_forward;
+
+    mat4 tmp_mat = IdentityMatrix();
 
 };
 
