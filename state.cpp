@@ -26,8 +26,7 @@ void State::upload2shader()
     GLint lightDirUniform = glGetUniformLocation(program, "light_direction");
     glUniform3f(lightDirUniform, 0.0f, 1.0f, -1.0f);
     GLint lightIntensityUniform = glGetUniformLocation(program, "light_intensity");
-    glUniform3f(lightIntensityUniform, 0.8f, 0.8f, 0.8f);
-    
+    glUniform3f(lightIntensityUniform, 0.8f, 0.8f, 0.8f); // Set the light direction
 }
 
 void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector)

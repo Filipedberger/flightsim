@@ -19,9 +19,7 @@ Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
 {
     map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
-    // objects.push_back(new Object("models/teapot.obj", vec3(0,0,0), 1));
-    // objects.push_back(new Plane(context->settings["planes"][0], cameraPosition));
-    plane = new Plane(context->settings["planes"][2], cameraPosition);
+    plane = new Plane(context->settings["planes"][0], vec3(0,100,0));
     glutHideCursor();
     return;
 }
@@ -34,6 +32,25 @@ void Game_State::keyboard(unsigned char key, int x, int y)
     {
         context->menu_state = true;
     }
+
+    if (key == '1' and current_plane != 0) {
+        vec3 tmp_pos = plane->get_lookAtPoint();
+        delete plane;
+        plane = new Plane(context->settings["planes"][0], tmp_pos);
+        current_plane = 0;
+    }
+    if (key == '2' and current_plane != 1) {
+        vec3 tmp_pos = plane->get_lookAtPoint();
+        delete plane;
+        plane = new Plane(context->settings["planes"][1], tmp_pos);
+        current_plane = 1;
+    }
+    if (key == '3' and current_plane != 2) {
+        vec3 tmp_pos = plane->get_lookAtPoint();
+        delete plane;
+        plane = new Plane(context->settings["planes"][2], tmp_pos);
+        current_plane = 2;
+    }
 }
 
 void Game_State::mouse(int x, int y)
@@ -43,6 +60,7 @@ void Game_State::mouse(int x, int y)
     {
         return;
     }
+
 
     // Warp the cursor back to the center of the window
     glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
@@ -78,15 +96,12 @@ void Game_State::move_camera(int time_elapsed)
     if (!keys_toggle['m'])
     {
         world2view = plane->get_lookAtMatrix();
-        cameraPosition = plane->get_pos();
     }
     else
     {
-        cameraPosition = plane->get_pos();
         lookAtPoint = mouse_direction;
         upVector = plane->get_upVector();
         world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
-        cameraPosition = plane->get_pos();
     }
 }
 
@@ -94,13 +109,13 @@ void Game_State::update(int time_elapsed)
 {
     // Update camera etc. here, then update objects.
 
-    map->update(cameraPosition, world2view);
-    skydome->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
-    plane->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+    plane->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
+    map->update(plane->get_pos(), world2view);
+    skydome->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
 
     for (Object *object : objects)
     {
-        object->update(time_elapsed, cameraPosition, lookAtPoint, keys_pressed);
+        object->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
     }
     move_camera(time_elapsed);
 }

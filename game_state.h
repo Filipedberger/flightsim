@@ -32,6 +32,8 @@ private:
     TerrainMap *map;
 
     void move_camera(int time_elapsed);
+
+    int current_plane = 0;
 };
 
 #endif
