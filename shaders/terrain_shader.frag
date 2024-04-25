@@ -16,18 +16,15 @@ void main(void)
     vec3 blue = vec3(0.0, 0.0, 1.0);
     float intensity = max(dot(normalize(world_normal), lightInit), 0.0);
 
-    if (surfPos.y > 30) {
+    if (surfPos.y >= 30) {
         outColor = vec4(0.9,0.9,0.9, 1.0);
     }
-    else if (surfPos.y < 0 && surfPos.y > -70) {
-        outColor = vec4(0.0, 0.1, 0.0, 1.0);
-    }
-    else if(surfPos.y < -70)
-    {
-        outColor = vec4(0.0, 0.0, 0.5, 1.0);
-    }
-    else {
+    else if (surfPos.y >= 0) {
         outColor = vec4(0.3, 0.3, 0.3, 1.0);
+    }
+    else
+    {
+        outColor = vec4(0.0, 0.3, 0.0, 1.0);
     }
     outColor = outColor*intensity + vec4(ambientLight, 1.0);
 }
