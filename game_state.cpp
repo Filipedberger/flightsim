@@ -17,7 +17,7 @@
 
 Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
 {
-    map = new TerrainMap(cameraPosition, frustum_obj);
+    map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
     plane = new Plane(context->settings["planes"][0], vec3(0,100,0));
     glutHideCursor();
