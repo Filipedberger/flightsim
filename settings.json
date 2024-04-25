@@ -91,12 +91,12 @@
         "top": 0.5,
         "bottom": -0.5
     },
-    "skydome": {
-        "filename": "models/skybox-full.obj",
+    "skydome" : {
+        "filename" : "models/skybox.obj",
         "scale": 100.0,
         "shader_vert": "shaders/skydome.vert",
         "shader_frag": "shaders/skydome.frag",
-        "texture": "textures/new_skybox.tga"
+        "texture": "textures/skyboxes/Daylight-Box-mod2.tga"
     },
     "game_state": {
         "shader_vert": "shaders/game_state.vert",
@@ -172,7 +172,7 @@
         {
             "name": "Jas Gripen",
             "path": "models/gripen.obj",
-            "scale": 0.8,
+            "scale": 0.1,
             "rotation": [
                 {
                     "axis": [
@@ -183,13 +183,9 @@
                     "angle": -90
                 },
                 {
-                    "axis": [
-                        0,
-                        0,
-                        1
-                    ],
-                    "angle": -90
-                }
+                    "axis" : [0,0,1],
+                    "angle": -0
+                    }
             ],
             "direction_axis": [
                 0,

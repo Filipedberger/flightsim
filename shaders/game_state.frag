@@ -6,8 +6,9 @@ in vec4 view_position;
 in vec4 world_position;
 
 
+// Init in state.cpp  State::upload2shader() //
 uniform vec3 light_intensity;
-uniform vec3 light_direction; // = vec3(0.0, 10.0, -.0); // Direction from which light is coming
+uniform vec3 light_direction;
 
 void main(void)
 {	

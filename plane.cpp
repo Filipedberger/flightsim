@@ -134,9 +134,8 @@ void Plane::calculate_radius()
     radius = sqrt(radius) * scale_factor; // OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED
 }
 
-vec3 Plane::get_pos()
-{
-    return position - model_forward * 10 + model_up * 5;
+vec3 Plane::get_pos() {
+    return position - model_forward * 20 + model_up * 5;
 }
 
 vec3 Plane::get_lookAtPoint()
