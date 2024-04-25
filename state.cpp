@@ -23,10 +23,11 @@ void State::upload2shader()
 {
     glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
-    GLint lightDirUniform = glGetUniformLocation(program, "light_direction");
+    GLint lightDirUniform = glGetUniformLocation(program, "light_pos");
     glUniform3f(lightDirUniform, 0.0f, 1.0f, -1.0f);
     GLint lightIntensityUniform = glGetUniformLocation(program, "light_intensity");
-    glUniform3f(lightIntensityUniform, 0.8f, 0.8f, 0.8f); // Set the light direction
+    glUniform3f(lightIntensityUniform, 1.0f, 1.0f, 1.0f); // Set the light direction
+    glUniform3f(glGetUniformLocation(program, "camera_pos"), cameraPosition.x, cameraPosition.y, cameraPosition.z);
 }
 
 void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector)

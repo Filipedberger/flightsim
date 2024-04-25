@@ -41,6 +41,8 @@ class Object {
     virtual mat4 get_lookAtMatrix() {return IdentityMatrix();}
     virtual vec3 get_upVector() {return vec3(0,1,0);}
 
+    virtual std::map<std::pair<int, int>, int> get_points_on_radius() {return std::map<std::pair<int, int>, int>();}
+
 
     protected:
     GLuint object_program;

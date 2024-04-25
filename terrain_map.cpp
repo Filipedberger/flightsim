@@ -134,10 +134,10 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 
 void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection, vec3 cameraPosition)
 {
-    glUseProgram(terrain_program);
+    //glUseProgram(terrain_program);
 
-    glUniformMatrix4fv(glGetUniformLocation(terrain_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
-    glUniformMatrix4fv(glGetUniformLocation(terrain_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    //glUniformMatrix4fv(glGetUniformLocation(terrain_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
+    //glUniformMatrix4fv(glGetUniformLocation(terrain_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
 
     // Render all chunks
     for (const auto &pair : chunks)
@@ -153,19 +153,18 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
 
 
         // Pass the chunk position to the shader
-        glUniform3f(glGetUniformLocation(terrain_program, "chunkPosition"), chunkX, 0, chunkZ);
-        glUniform1f(glGetUniformLocation(terrain_program, "snow"), snow);
-        glUniform1f(glGetUniformLocation(terrain_program, "rock"), rock);
-        glUniform1f(glGetUniformLocation(terrain_program, "grass"), grass);
-        glUniform1f(glGetUniformLocation(terrain_program, "sand"), sand);
+        glUniform3f(glGetUniformLocation(program, "chunkPosition"), chunkX, 0, chunkZ);
+        glUniform1f(glGetUniformLocation(program, "snow"), snow);
+        glUniform1f(glGetUniformLocation(program, "rock"), rock);
+        glUniform1f(glGetUniformLocation(program, "grass"), grass);
+        glUniform1f(glGetUniformLocation(program, "sand"), sand);
 
-        glUniform1f(glGetUniformLocation(terrain_program, "snow_inter"), snow_inter);
-        glUniform1f(glGetUniformLocation(terrain_program, "rock_inter"), rock_inter);
-        glUniform1f(glGetUniformLocation(terrain_program, "grass_inter"), grass_inter);
-        glUniform1f(glGetUniformLocation(terrain_program, "water_to_sand"), water_to_sand);
-        glUniform3f(glGetUniformLocation(terrain_program, "cameraPos"), cameraPosition.x, cameraPosition.y, cameraPosition.z);
-        glUniform1f(glGetUniformLocation(terrain_program, "far"), frustum_obj.far);
-        glUniform1f(glGetUniformLocation(terrain_program, "width"), terrainWidth);
+        glUniform1f(glGetUniformLocation(program, "snow_inter"), snow_inter);
+        glUniform1f(glGetUniformLocation(program, "rock_inter"), rock_inter);
+        glUniform1f(glGetUniformLocation(program, "grass_inter"), grass_inter);
+        glUniform1f(glGetUniformLocation(program, "water_to_sand"), water_to_sand);
+        glUniform1f(glGetUniformLocation(program, "far"), frustum_obj.far);
+        glUniform1f(glGetUniformLocation(program, "width"), terrainWidth);
 
         
 
@@ -177,9 +176,9 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
 
 
         // Draw the chunk
-        DrawModel(pair.second, terrain_program, "in_Position", "in_Normal", "in_TexCoord");
+        DrawModel(pair.second, program, "in_Position", "in_Normal", "in_TexCoord");
     }
-    glUseProgram(program);
+    //glUseProgram(program);
 }
 
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
@@ -285,4 +284,8 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
     std::cout << "Load data to model: " << std::chrono::duration_cast<std::chrono::milliseconds>(t7 - t6).count() << " ms" << std::endl;*/
 
     return model;
+}
+
+bool TerrainMap::collision(std::map<std::pair<int, int>, int> points) {
+    
 }

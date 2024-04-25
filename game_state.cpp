@@ -84,8 +84,8 @@ void Game_State::mouse(int x, int y)
     phi = std::max(std::min(phi, M_PI / 2.0f - epsilon), epsilon - M_PI / 2.0f);
 
     // Calculate the direction vector
-    // mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
-    mouse_direction = vec3(sin(theta), 0, cos(theta));
+    mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
+    //mouse_direction = vec3(sin(theta), 0, cos(theta));
 }
 
 void Game_State::move_camera(int time_elapsed)
@@ -99,8 +99,10 @@ void Game_State::move_camera(int time_elapsed)
     }
     else
     {
-        lookAtPoint = mouse_direction;
-        upVector = plane->get_upVector();
+        cameraPosition = plane->get_pos();
+        lookAtPoint = mouse_direction + cameraPosition;
+        //upVector = plane->get_upVector();
+        upVector = vec3(0, 1, 0);
         world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
     }
 }
@@ -118,6 +120,8 @@ void Game_State::update(int time_elapsed)
         object->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
     }
     move_camera(time_elapsed);
+
+    // Check for collisions
 }
 
 void Game_State::display()
@@ -127,8 +131,14 @@ void Game_State::display()
     glUseProgram(program);
     upload2shader();
 
+    cameraPosition = plane->get_pos();
+
     skydome->display(program, world2view, projection);
+    
+    glUniform1i(glGetUniformLocation(program, "map"), 1);
     map->display(program, world2view, projection, plane->get_pos());
+
+    glUniform1i(glGetUniformLocation(program, "map"), 0);
     plane->display(program, world2view, projection);
 
     for (Object *object : objects)
