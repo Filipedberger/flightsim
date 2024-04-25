@@ -28,7 +28,6 @@
             "rotation": [
                 {}
             ],
-
             "speed": 0.020
         },
         {
@@ -87,8 +86,8 @@
         "top": 0.5,
         "bottom": -0.5
     },
-    "skydome" : {
-        "filename" : "models/skybox.obj",
+    "skydome": {
+        "filename": "models/skybox.obj",
         "scale": 100.0,
         "shader_vert": "shaders/skydome.vert",
         "shader_frag": "shaders/skydome.frag",
@@ -132,7 +131,8 @@
             "forward": [
                 0,
                 0,
-                -1],
+                -1
+            ],
             "up": [
                 0,
                 1,
@@ -156,7 +156,8 @@
             "forward": [
                 0,
                 0,
-                -1],
+                -1
+            ],
             "up": [
                 0,
                 1,
@@ -180,7 +181,8 @@
             "forward": [
                 0,
                 0,
-                -1],
+                -1
+            ],
             "up": [
                 0,
                 1,
@@ -197,6 +199,14 @@
         "shader_vert": "shaders/terrain_shader.vert",
         "shader_frag": "shaders/terrain_shader.frag",
         "frequency": 0.0025,
-        "amplitude": 150.0
+        "amplitude": 200.0,
+        "sand_level": 0.4,
+        "grass_level": 0.45,
+        "rock_level": 0.70,
+        "snow_level": 0.75,
+        "snow_inter": 0.25,
+        "rock_inter": 0.20,
+        "grass_inter": 0.25,
+        "water_to_sand": 0.05
     }
 }

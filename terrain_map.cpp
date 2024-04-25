@@ -24,6 +24,32 @@ TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum 
 
     frequency = settings["frequency"].asFloat();
     amplitude = settings["amplitude"].asFloat();
+
+    snow = -amplitude + settings["snow_level"].asFloat() * amplitude * 2;
+    rock = -amplitude + settings["rock_level"].asFloat() * amplitude * 2;
+    grass = -amplitude + settings["grass_level"].asFloat() * amplitude * 2;
+    sand = -amplitude + settings["sand_level"].asFloat() * amplitude * 2;
+    water = sand;
+
+    rock_size = (settings["snow_level"].asFloat() - settings["rock_level"].asFloat()) * amplitude * 2;
+    grass_size = (settings["rock_level"].asFloat() - settings["grass_level"].asFloat()) * amplitude * 2;
+    sand_size = (settings["grass_level"].asFloat() - settings["sand_level"].asFloat()) * amplitude * 2;
+
+    snow_inter = settings["snow_inter"].asFloat() * rock_size;
+    rock_inter = settings["rock_inter"].asFloat() * grass_size;
+    grass_inter = settings["grass_inter"].asFloat() * sand_size;
+    water_to_sand = settings["water_to_sand"].asFloat() * sand_size;
+
+    std::cout << "Snow Y " << snow << std::endl;
+    std::cout << "Rock Y " << rock << std::endl;
+    std::cout << "Grass Y " << grass << std::endl;
+    std::cout << "Sand Y " << sand << std::endl;
+
+    std::cout << "Snow: " << rock_size << " " << snow_inter << std::endl;
+    std::cout << "Rock: " << grass_size << " " << rock_inter << std::endl;
+    std::cout << "Grass: " << sand_size << " " << grass_inter << std::endl;
+    std::cout << "Sand: " << water_to_sand << std::endl;
+
     // TESTING
     noise_test = new SimplexNoise(1.0, 1.0);
 }
@@ -72,8 +98,8 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 
     if (count > 0)
     {
-        std::cout << "Chunks generated: " << count << std::endl;
-        std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
+        // std::cout << "Chunks generated: " << count << std::endl;
+        // std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
     }
 
     // std::cout << chunks.size() << std::endl;
@@ -127,6 +153,15 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
 
         // Pass the chunk position to the shader
         glUniform3f(glGetUniformLocation(terrain_program, "chunkPosition"), chunkX, 0, chunkZ);
+        glUniform1f(glGetUniformLocation(terrain_program, "snow"), snow);
+        glUniform1f(glGetUniformLocation(terrain_program, "rock"), rock);
+        glUniform1f(glGetUniformLocation(terrain_program, "grass"), grass);
+        glUniform1f(glGetUniformLocation(terrain_program, "sand"), sand);
+
+        glUniform1f(glGetUniformLocation(terrain_program, "snow_inter"), snow_inter);
+        glUniform1f(glGetUniformLocation(terrain_program, "rock_inter"), rock_inter);
+        glUniform1f(glGetUniformLocation(terrain_program, "grass_inter"), grass_inter);
+        glUniform1f(glGetUniformLocation(terrain_program, "water_to_sand"), water_to_sand);
 
         // Draw the chunk
         DrawModel(pair.second, terrain_program, "in_Position", "in_Normal", "in_TexCoord");
@@ -146,6 +181,10 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 
             // float perlin_noise = SimplexNoise::noise((x + offsetX) * frequency, (z + offsetZ) * frequency, 4) * amplitude;
             float perlin_noise = noise_test->fractal(4, (x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
+            if (perlin_noise < water)
+            {
+                perlin_noise = water;
+            }
 
             // float perlin_noise = SimplexNoise::noise(x + offsetX, z + offsetZ, 4) * amplitude;
             //  Set the vertex position, normal, and texture coordinate

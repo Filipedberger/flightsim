@@ -52,6 +52,21 @@ private:
     vec2 *texCoordArray;
     GLuint *indexArray;
 
+    float snow;
+    float rock;
+    float grass;
+    float sand;
+    float water;
+
+    float snow_inter;
+    float rock_inter;
+    float grass_inter;
+    float water_to_sand;
+
+    float rock_size;
+    float grass_size;
+    float sand_size;
+
     // TESTING
     SimplexNoise *noise_test;
 };
