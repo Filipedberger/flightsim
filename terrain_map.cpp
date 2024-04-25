@@ -103,7 +103,7 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
     //std::cout << "Remove chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
 }
 
-void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection)
+void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection, vec3 cameraPosition)
 {
     glUseProgram(terrain_program);
 
@@ -121,8 +121,39 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
                 continue;
             }
 
+
         // Pass the chunk position to the shader
         glUniform3f(glGetUniformLocation(terrain_program, "chunkPosition"), chunkX, 0, chunkZ);
+        glUniform3f(glGetUniformLocation(terrain_program, "cameraPos"), cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        glUniform1f(glGetUniformLocation(terrain_program, "far"), frustum_obj.far);
+        glUniform1f(glGetUniformLocation(terrain_program, "width"), terrainWidth);
+
+        /*float d = sqrt((cameraPosition.x - chunkX) * (cameraPosition.x - chunkX) + (cameraPosition.z - chunkZ) * (cameraPosition.z - chunkZ));
+
+        float t;
+
+        std::cout << "Frustum far: " << frustum_obj.far << std::endl;
+
+        int c = frustum_obj.far - terrainHeight * 4;
+
+        if (d > frustum_obj.far) {
+            t = 0;
+        } 
+        else if (d < c) {
+            t = 1;
+        } 
+        else {
+            t = (frustum_obj.far - d) / (frustum_obj.far - c);
+        }
+
+        std::cout << t << std::endl;*/
+
+
+        // Pass the chunk position to the shader
+        
+
+
+
 
         // Draw the chunk
         DrawModel(pair.second, terrain_program, "in_Position", "in_Normal", "in_TexCoord");

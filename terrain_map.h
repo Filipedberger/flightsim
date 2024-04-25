@@ -21,7 +21,7 @@ public:
     TerrainMap(vec3 cameraPosition, const Frustum &f);
     ~TerrainMap();
     void update(vec3 cameraPosition, const mat4 &world2view);
-    void display(const GLuint &program, const mat4 &world2view, const mat4 &projection);
+    void display(const GLuint &program, const mat4 &world2view, const mat4 &projection, vec3 cameraPosition);
 
 private:
     const siv::PerlinNoise::seed_type seed = 123456u;

@@ -80,6 +80,9 @@ void init(void)
 	glDisable(GL_CULL_FACE);
 	dumpInfo();
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	srand(time(NULL));
 
 	// Read settings from json file

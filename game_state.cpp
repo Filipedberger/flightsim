@@ -128,7 +128,7 @@ void Game_State::display()
     upload2shader();
 
     skydome->display(program, world2view, projection);
-    map->display(program, world2view, projection);
+    map->display(program, world2view, projection, plane->get_pos());
     plane->display(program, world2view, projection);
 
     for (Object *object : objects)
