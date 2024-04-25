@@ -60,19 +60,15 @@ float Frustum::near_dist(const vec3& p) {
 bool Frustum::side_culling(const vec3& p, float r, const mat4& world2view) {
     vec3 p_view = world2view * vec4(p, 1.0);
     if (left_dist(p_view) - r > 0) {
-        std::cout << "LEFT" << std::endl;
         return true;
     }
     if (right_dist(p_view) - r > 0) {
-        std::cout << "RIGHT" << std::endl;
         return true;
     }
     if (far_dist(p_view) - r > 0) {
-        std::cout << "FAR" << std::endl;
         return true;
     }
     if (near_dist(p_view) - r > 0) {
-        std::cout << "NEAR"<< std::endl;
         return true;
     }
 
