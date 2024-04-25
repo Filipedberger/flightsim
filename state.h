@@ -4,6 +4,7 @@
 #include "frustum.h"
 #include "object.h"
 #include "context.h"
+#include "ground.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -41,8 +42,8 @@ class State {
 
     // Objects:
     std::vector<Object*> objects;
-    Object* ground;
-    Object* skydome;
+    Object* ground = nullptr;
+    Object* skydome = nullptr;
 
     Context* context;
     Json::Value settings;

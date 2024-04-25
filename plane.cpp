@@ -13,7 +13,7 @@
 Plane::Plane(Json::Value settings, vec3 pos) {
 
     std::string filename = settings["path"].asString();
-    offset = vec3(settings["offset"][0].asFloat(), settings["offset"][1].asFloat(), settings["offset"][2].asFloat());
+    offset = settings["offset"].asFloat();
     float sc = settings["scale"].asFloat();
     position = pos + offset;
 
@@ -32,42 +32,26 @@ Plane::Plane(Json::Value settings, vec3 pos) {
         angle = angle * M_PI / 180;
         axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
         rotate(angle, axis);
-        standard_rotation = standard_rotation * ArbRotate(axis, angle);
     }
-    standard_inverse = transpose(standard_rotation);
-    Json::Value dir_axis = settings["direction_axis"];
-    //direction_axis = vec3(dir_axis[0].asFloat(), dir_axis[1].asFloat(), dir_axis[2].asFloat());
-    //forward_direction = standard_rotation * vec4(0,1,0,0);
-    //model_forward = vec3(0,1,0);
-    //std::cout << "FORWARD DIRECTION: " << vec2str(forward_direction) << std::endl;
-    //up_direction = standard_rotation * vec4(0,0,1,0);
-    //model_up = vec3(0,0,1);
-    //model_right = vec3(1,0,0);
-    //std::cout << "UP DIRECTION: " << vec2str(up_direction) << std::endl;
     calculate_radius();
 
     speed = settings["speed"].asFloat();
-    std::cout << "MINI PLANE CREATED" << std::endl;
 
     // Create model vetors
-    model_right = vec3(rotationMatrix.m[0], rotationMatrix.m[4], rotationMatrix.m[8]);
-    model_forward = vec3(rotationMatrix.m[1], rotationMatrix.m[5], rotationMatrix.m[9]);
-    model_up = vec3(rotationMatrix.m[2], rotationMatrix.m[6], rotationMatrix.m[10]);
+    model_right = vec3(settings["right"][0].asFloat(), settings["right"][1].asFloat(), settings["right"][2].asFloat());
+    model_up = vec3(settings["up"][0].asFloat(), settings["up"][1].asFloat(), settings["up"][2].asFloat());
+    model_forward = vec3(settings["forward"][0].asFloat(), settings["forward"][1].asFloat(), settings["forward"][2].asFloat());
+
 }
 
-
 void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
-    position += model_forward * speed * time_elapsed;
+    position += rotationMatrix * model_forward * speed * time_elapsed;
     move(position);
     tilt(keys_pressed);
     return;
 }
 
 void Plane::tilt(std::map<char, bool> keys_pressed) {
-    if (keys_pressed['r']) {
-        reset();
-        return;}
-
     if (!keys_pressed['a'] && !keys_pressed['d'] && !keys_pressed['w'] && !keys_pressed['s']) {
         return;
     }
@@ -78,38 +62,26 @@ void Plane::tilt(std::map<char, bool> keys_pressed) {
     if (keys_pressed['a'] || keys_pressed['d']) {
         
         if (keys_pressed['d']) {
-            roll = 2;
+            roll = roll_speed;
         }
         
         if (keys_pressed['a']) {
-            roll = -2;
+            roll = -roll_speed;
         }
-        tilt_matrix = ArbRotate(model_forward, rad(roll));
-        model_right = tilt_matrix * model_right;
-        model_up = tilt_matrix * model_up;
+        rotationMatrix = rotationMatrix * ArbRotate(model_forward, rad(roll));
     }
     if (keys_pressed['w'] || keys_pressed['s']) {
         if (keys_pressed['s']) {
-            pitch = 1;
+            pitch = pitch_speed;
         }
 
         else if (keys_pressed['w']) {
-            pitch = -1;
+            pitch = -pitch_speed;
         }
-        pitch_matrix = ArbRotate(model_right, rad(pitch));
-        model_forward = pitch_matrix * model_forward;
-        model_up = pitch_matrix * model_up;
+        rotationMatrix = rotationMatrix * ArbRotate(model_right, rad(pitch));
     }
-    
-    rotationMatrix =  create_rotation_matrix(model_forward, model_up, model_right);
 }
 
-mat4 Plane::create_rotation_matrix(vec3 forward, vec3 up, vec3 right) {
-    return mat4(right.x, forward.x, up.x, 0,
-                right.y, forward.y, up.y, 0,
-                right.z, forward.z, up.z, 0,
-                0, 0, 0, 1);
-}
 
 void Plane::calculate_radius() {
     center = vec3(0.0f, 0.0f, 0.0f);
@@ -125,12 +97,12 @@ void Plane::calculate_radius() {
         radius = fmax(radius, dist);
     }
 
-    radius = sqrt(radius) * scale_factor; //OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED
+    radius = sqrt(radius) * scale_factor; //OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED, NOT IMPLEMENTED YET
     
 }
 
 vec3 Plane::get_pos() {
-    return position - model_forward * 20 + model_up * 5;
+    return position - rotationMatrix * model_forward * offset;
 }
 
 
@@ -143,18 +115,18 @@ vec3 Plane::get_upVector() {
 }
 
 mat4 Plane::get_lookAtMatrix() {
-    vec3 cameraPosition = position - model_forward * 10 + model_up * 5;
-    return lookAtv(cameraPosition, position, model_up);
+    return lookAtv(get_pos(), position, rotationMatrix * model_up);
 }
 
 void Plane::reset() {
-    rotationMatrix = standard_rotation;
+    rotationMatrix = IdentityMatrix();
     move(vec3(0,30,20));
     
     return;
 }
 
 Plane::~Plane() {
+    //Model deleted in object destructor
     //delete model;
 }
 

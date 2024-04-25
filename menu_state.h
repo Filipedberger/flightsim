@@ -3,19 +3,20 @@
 #define MENU_STATE_H
 
 #include "state.h"
+#include "terrain_map.h"
 #include "object.h"
-//#include "ground.h" //might not be needed here
-//#include "skydome.h"
+// #include "ground.h" //might not be needed here
+// #include "skydome.h"
 
 #include "LittleOBJLoader.h"
 #include "VectorUtils4.h"
 
 #include <vector>
 
-
-class Menu_State : public State {
-    public:
-    Menu_State(Context* c);
+class Menu_State : public State
+{
+public:
+    Menu_State(Context *c);
     void keyboard(unsigned char key, int x, int y) override;
     void keyboard_up(unsigned char key, int x, int y) override;
     void mouse(int x, int y) override;
@@ -23,9 +24,8 @@ class Menu_State : public State {
     void display() override;
     ~Menu_State() override;
 
-    private:
-    std::vector<Model*> planes;
-
+private:
+    std::vector<Model *> planes;
 };
 
 #endif
