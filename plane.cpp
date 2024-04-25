@@ -32,10 +32,7 @@ Plane::Plane(Json::Value settings, vec3 pos) {
         angle = angle * M_PI / 180;
         axis = vec3(rotation[i]["axis"][0].asFloat(), rotation[i]["axis"][1].asFloat(), rotation[i]["axis"][2].asFloat());
         rotate(angle, axis);
-        standard_rotation = standard_rotation * ArbRotate(axis, angle);
-        std::cout << mat2str(standard_rotation) << std::endl;
     }
-    standard_inverse = transpose(standard_rotation);
     calculate_radius();
 
     speed = settings["speed"].asFloat();
@@ -65,21 +62,21 @@ void Plane::tilt(std::map<char, bool> keys_pressed) {
     if (keys_pressed['a'] || keys_pressed['d']) {
         
         if (keys_pressed['d']) {
-            roll = 2;
+            roll = roll_speed;
         }
         
         if (keys_pressed['a']) {
-            roll = -2;
+            roll = -roll_speed;
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_forward, rad(roll));
     }
     if (keys_pressed['w'] || keys_pressed['s']) {
         if (keys_pressed['s']) {
-            pitch = 1;
+            pitch = pitch_speed;
         }
 
         else if (keys_pressed['w']) {
-            pitch = -1;
+            pitch = -pitch_speed;
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_right, rad(pitch));
     }
@@ -118,15 +115,11 @@ vec3 Plane::get_upVector() {
 }
 
 mat4 Plane::get_lookAtMatrix() {
-    return lookAtv(get_pos(), position, model_up);
+    return lookAtv(get_pos(), position, rotationMatrix * model_up);
 }
 
 void Plane::reset() {
-    rotationMatrix = standard_rotation;
-    rotationMatrix = standard_rotation;
-    move(vec3(0,30,20));
-    
-    rotationMatrix = standard_rotation;    
+    rotationMatrix = IdentityMatrix();
     move(vec3(0,30,20));
     
     return;
