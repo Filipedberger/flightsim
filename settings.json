@@ -125,6 +125,7 @@
             "scale": 0.002,
             "rotation": [],
             "speed": 0.1,
+            "acceleration": 0.01,
             "roll_speed": 2,
             "pitch_speed": 1,
             "offset": 40,
@@ -150,6 +151,7 @@
             "scale": 0.5,
             "rotation": [],
             "speed": 0.020,
+            "acceleration": 0.01,
             "roll_speed": 2,
             "pitch_speed": 1,
             "offset": 80,
@@ -177,6 +179,7 @@
             "speed": 0.2,
             "roll_speed": 4,
             "pitch_speed": 2,
+            "acceleration": 0.01,
             "offset": 40,
             "forward": [
                 0,

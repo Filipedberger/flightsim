@@ -56,13 +56,43 @@ void State::keyboard(unsigned char key, int x, int y)
     case 27:
         exit(0);
         break;
+    
+    case GLUT_KEY_UP:
+        keys_pressed['\1'] = true;
+        break;
+    case GLUT_KEY_DOWN:
+        keys_pressed['\2'] = true;
+        break;
+    case GLUT_KEY_LEFT:
+        keys_pressed['\3'] = true;
+        break;
+    case GLUT_KEY_RIGHT:
+        keys_pressed['\4'] = true;
+        break;
     }
+    
 }
 
 void State::keyboard_up(unsigned char key, int x, int y)
 {
     keys_pressed[key] = false;
     keys_toggle[key] = !keys_toggle[key];
+
+    switch (key)
+    {
+    case GLUT_KEY_UP:
+        keys_pressed['\1'] = false;
+        break;
+    case GLUT_KEY_DOWN:
+        keys_pressed['\2'] = false;
+        break;
+    case GLUT_KEY_LEFT:
+        keys_pressed['\3'] = false;
+        break;
+    case GLUT_KEY_RIGHT:
+        keys_pressed['\4'] = false;
+        break;
+    }
 }
 
 State::~State()

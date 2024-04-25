@@ -19,6 +19,7 @@ Plane::Plane(Json::Value settings, vec3 pos)
 
     pitch_speed = settings["pitch_speed"].asInt();
     roll_speed = settings["roll_speed"].asInt();
+    acceleration = settings["acceleration"].asFloat();
 
     create_model(filename, position, sc);
 
@@ -56,11 +57,6 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
 
 void Plane::tilt(std::map<char, bool> keys_pressed)
 {
-    if (!keys_pressed['a'] && !keys_pressed['d'] && !keys_pressed['w'] && !keys_pressed['s'])
-    {
-        return;
-    }
-
     pitch = 0;
     roll = 0;
 
@@ -91,6 +87,14 @@ void Plane::tilt(std::map<char, bool> keys_pressed)
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_right, rad(pitch));
     }
+
+    if (keys_pressed['\1']) {
+        speed += acceleration;
+    }
+    if (keys_pressed['\2']) {
+        speed -= acceleration;
+    }
+
 }
 
 void Plane::calculate_radius()
