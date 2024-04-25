@@ -19,6 +19,7 @@ Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
 {
     map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
+    hud = new Hud(context->settings["hud"], cameraPosition);
     plane = new Plane(context->settings["planes"][0], vec3(0,100,0));
     glutHideCursor();
     return;
@@ -112,6 +113,8 @@ void Game_State::update(int time_elapsed)
     plane->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
     map->update(plane->get_pos(), world2view);
     skydome->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
+    hud->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
+    
 
     for (Object *object : objects)
     {
@@ -130,6 +133,7 @@ void Game_State::display()
     skydome->display(program, world2view, projection);
     map->display(program, world2view, projection);
     plane->display(program, world2view, projection);
+    hud->display(program, world2view, projection);
 
     for (Object *object : objects)
     {

@@ -44,6 +44,7 @@ class State {
     std::vector<Object*> objects;
     Object* ground = nullptr;
     Object* skydome = nullptr;
+    Object* hud = nullptr;
 
     Context* context;
     Json::Value settings;

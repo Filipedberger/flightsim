@@ -73,5 +73,6 @@ State::~State()
     }
     delete ground;
     delete skydome;
+    delete hud;
     glDeleteProgram(program);
 }
