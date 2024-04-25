@@ -23,26 +23,17 @@ class Plane : public Object {
     vec3 get_upVector() override;
 
     private:
-    vec3 direction;
     float speed; // Pixels per millisecond
-    mat4 standard_rotation = IdentityMatrix();
-    mat4 standard_inverse = IdentityMatrix();
     vec3 model_up;
     vec3 model_forward;
     vec3 model_right;
 
-    vec3 offset;
-    int angle{0};
-
-    mat4 tilt_matrix = IdentityMatrix();
-    mat4 turn_matrix = IdentityMatrix();
-    mat4 pitch_matrix = IdentityMatrix();
-    float tilt_angle = 0;
-    float turn_angle = 0;
-    float pitch_angle = 0;
+    float offset;
 
     float roll = 0;
+    int roll_speed = 2;
     float pitch = 0;
+    int pitch_speed = 1;
 
     void calculate_radius();
 

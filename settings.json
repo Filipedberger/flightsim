@@ -28,11 +28,7 @@
             "rotation": [
                 {}
             ],
-            "direction_axis": [
-                0,
-                1,
-                0
-            ],
+
             "speed": 0.020
         },
         {
@@ -91,12 +87,12 @@
         "top": 0.5,
         "bottom": -0.5
     },
-    "skydome": {
-        "filename": "models/skybox-full.obj",
+    "skydome" : {
+        "filename" : "models/skybox.obj",
         "scale": 100.0,
         "shader_vert": "shaders/skydome.vert",
         "shader_frag": "shaders/skydome.frag",
-        "texture": "textures/new_skybox.tga"
+        "texture": "textures/skyboxes/Daylight-Box-mod2.tga"
     },
     "game_state": {
         "shader_vert": "shaders/game_state.vert",
@@ -126,79 +122,72 @@
     "planes": [
         {
             "name": "Private Jet",
-            "path": "models/airplane.obj",
-            "scale": 0.003,
-            "rotation": [
-                {
-                    "axis": [
-                        1,
-                        0,
-                        0
-                    ],
-                    "angle": -90
-                }
-            ],
-            "direction_axis": [
-                0,
-                0,
-                1
-            ],
+            "path": "models/airplane_rotated.obj",
+            "scale": 0.002,
+            "rotation": [],
             "speed": 0.1,
-            "offset": [
+            "roll_speed": 2,
+            "pitch_speed": 1,
+            "offset": 40,
+            "forward": [
                 0,
-                5,
-                10
-            ]
-        },
-        {
-            "name": "Airbus A380",
-            "path": "models/a380.obj",
-            "scale": 1,
-            "rotation": [
-                {}
-            ],
-            "direction_axis": [
+                0,
+                -1],
+            "up": [
                 0,
                 1,
                 0
             ],
-            "speed": 0.020,
-            "offset": [
+            "right": [
+                1,
                 0,
+                0
+            ]
+        },
+        {
+            "name": "Airbus A380",
+            "path": "models/a380_rotated.obj",
+            "scale": 0.5,
+            "rotation": [],
+            "speed": 0.020,
+            "roll_speed": 2,
+            "pitch_speed": 1,
+            "offset": 80,
+            "forward": [
+                0,
+                0,
+                -1],
+            "up": [
+                0,
+                1,
+                0
+            ],
+            "right": [
+                1,
                 0,
                 0
             ]
         },
         {
             "name": "Jas Gripen",
-            "path": "models/gripen.obj",
-            "scale": 0.8,
-            "rotation": [
-                {
-                    "axis": [
-                        1,
-                        0,
-                        0
-                    ],
-                    "angle": -90
-                },
-                {
-                    "axis": [
-                        0,
-                        0,
-                        1
-                    ],
-                    "angle": -90
-                }
+            "path": "models/gripen_rotated.obj",
+            "scale": 0.2,
+            "rotation": [],
+            "speed": 0.2,
+            "roll_speed": 4,
+            "pitch_speed": 2,
+            "offset": 40,
+            "forward": [
+                0,
+                0,
+                -1],
+            "up": [
+                0,
+                1,
+                0
             ],
-            "direction_axis": [
-                0,
-                0,
-                1
-            ],
-            "speed": 0.040,
-            "offset": [
-                0,
+            "right": [
+                1,
                 0,
                 0
             ]

@@ -8,7 +8,7 @@ out vec4 out_Color;
 
 uniform sampler2D texUnit;
 
-vec3 ambient = vec3(0.7, 0.7, 0.7); // Ambient light color
+vec3 ambient = vec3(0.9, 0.9, 0.9); // Ambient light color
 
 void main(void)
 {	
