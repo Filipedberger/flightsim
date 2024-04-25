@@ -3,28 +3,29 @@
 #include <chrono>
 #include <omp.h>
 #include "frustum.h"
+#include <jsoncpp/json/json.h>
 
-TerrainMap::TerrainMap(vec3 cameraPosition, const Frustum &f)
+TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum &f)
 {
     cameraChunkX = cameraPosition.x / terrainWidth - 2;
     cameraChunkZ = cameraPosition.z / terrainHeight - 2;
 
     frustum_obj = f;
 
-
     // Calculate the number of vertices and triangles
     vertexCount = terrainWidth * terrainHeight;
     triangleCount = (terrainWidth - 1) * (terrainHeight - 1) * 2;
-    
+
     // Allocate memory for the vertex, normal, texture coordinate, and index arrays
     vertexArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
     normalArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
     texCoordArray = (vec2 *)malloc(sizeof(GLfloat) * 2 * vertexCount);
     indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
 
-    //TESTING
-    noise_test = new SimplexNoise(1.0,1.0);
-
+    frequency = settings["frequency"].asFloat();
+    amplitude = settings["amplitude"].asFloat();
+    // TESTING
+    noise_test = new SimplexNoise(1.0, 1.0);
 }
 
 TerrainMap::~TerrainMap()
@@ -49,16 +50,17 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
     for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
     {
         float chunkX = ((x * (terrainWidth - 2)) - cameraPosition.x) * ((x * (terrainWidth - 2)) - cameraPosition.x);
-        
+
         for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
         {
-            float chunkZ = (z * (terrainHeight - 2) - cameraPosition.z) * (z * (terrainHeight - 2)- cameraPosition.z);
-            if (chunkX + chunkZ > rad_sq){
+            float chunkZ = (z * (terrainHeight - 2) - cameraPosition.z) * (z * (terrainHeight - 2) - cameraPosition.z);
+            if (chunkX + chunkZ > rad_sq)
+            {
                 continue;
             }
-            //if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), 500, world2view)){
-            //    continue;
-            //}
+            // if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), 500, world2view)){
+            //     continue;
+            // }
             if (chunks.find({x, z}) == chunks.end())
             {
                 count++;
@@ -68,7 +70,8 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
     }
     auto t2 = std::chrono::high_resolution_clock::now();
 
-    if (count > 0) {
+    if (count > 0)
+    {
         std::cout << "Chunks generated: " << count << std::endl;
         std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
     }
@@ -99,8 +102,8 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
     }
 
     auto t3 = std::chrono::high_resolution_clock::now();
-    //std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
-    //std::cout << "Remove chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
+    // std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
+    // std::cout << "Remove chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
 }
 
 void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection)
@@ -117,9 +120,10 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
 
-        if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), terrainWidth*2, world2view)){
-                continue;
-            }
+        if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), terrainWidth * 2, world2view))
+        {
+            continue;
+        }
 
         // Pass the chunk position to the shader
         glUniform3f(glGetUniformLocation(terrain_program, "chunkPosition"), chunkX, 0, chunkZ);
@@ -133,9 +137,6 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
     auto t1 = std::chrono::high_resolution_clock::now();
-
-    float amplitude = 150.0f;
-    float frequency = 1.0f / 400.0f;
 // Generate the vertices, normals, and texture coordinates using Perlin noise
 #pragma omp parallel for collapse(2)
     for (int x = 0; x < terrainWidth; x++)
@@ -143,9 +144,8 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
         {
             // Calculate the Perlin noise value for the current vertex
 
-            //float perlin_noise = SimplexNoise::noise((x + offsetX) * frequency, (z + offsetZ) * frequency, 4) * amplitude;
-            float perlin_noise = noise_test -> fractal(4, (x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
-
+            // float perlin_noise = SimplexNoise::noise((x + offsetX) * frequency, (z + offsetZ) * frequency, 4) * amplitude;
+            float perlin_noise = noise_test->fractal(4, (x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
 
             // float perlin_noise = SimplexNoise::noise(x + offsetX, z + offsetZ, 4) * amplitude;
             //  Set the vertex position, normal, and texture coordinate
@@ -231,7 +231,6 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
     std::cout << "Copy normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count() << " ms" << std::endl;
     std::cout << "Generate indices: " << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count() << " ms" << std::endl;
     std::cout << "Load data to model: " << std::chrono::duration_cast<std::chrono::milliseconds>(t7 - t6).count() << " ms" << std::endl;*/
-
 
     return model;
 }

@@ -203,5 +203,11 @@
                 0
             ]
         }
-    ]
+    ],
+    "terrain": {
+        "shader_vert": "shaders/terrain_shader.vert",
+        "shader_frag": "shaders/terrain_shader.frag",
+        "frequency": 0.0025,
+        "amplitude": 150.0
+    }
 }

@@ -5,6 +5,7 @@
 #include "VectorUtils4.h"
 #include <string>
 #include <map>
+#include <jsoncpp/json/json.h>
 #include "PerlinNoise.hpp"
 #include "SimplexNoise.h"
 
@@ -18,7 +19,7 @@
 class TerrainMap
 {
 public:
-    TerrainMap(vec3 cameraPosition, const Frustum &f);
+    TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum &f);
     ~TerrainMap();
     void update(vec3 cameraPosition, const mat4 &world2view);
     void display(const GLuint &program, const mat4 &world2view, const mat4 &projection);
@@ -33,7 +34,7 @@ private:
     vec3 cameraPos;
     int cameraChunkX;
     int cameraChunkZ;
-    int CHUNKS = 8;
+    int CHUNKS = 16;
     const int MAX_CHUNK_DISTANCE = 3 * CHUNKS;
     GLuint terrain_program = loadShaders("shaders/terrain_shader.vert", "shaders/terrain_shader.frag");
     Frustum frustum_obj;
@@ -42,17 +43,17 @@ private:
     int vertexCount;
     int triangleCount;
 
+    float amplitude;
+    float frequency;
+
     // Allocate memory for the vertex, normal, texture coordinate, and index arrays
     vec3 *vertexArray;
     vec3 *normalArray;
     vec2 *texCoordArray;
     GLuint *indexArray;
 
-
-
-    //TESTING
-    SimplexNoise* noise_test;
-    
+    // TESTING
+    SimplexNoise *noise_test;
 };
 
 #endif
