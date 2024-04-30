@@ -48,8 +48,8 @@ class Plane : public Object {
     void update_light(int time_elapsed);
     vec3 light_pos[2];
     vec3 light_offset;
-    vec3 light_color = vec3(1, 0, 0);
-    int light_radius = 15;
+    vec3 light_color;
+    int light_radius;
     float light_intensity;
     unsigned int total_time = 0;
 

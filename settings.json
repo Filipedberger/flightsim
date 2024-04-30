@@ -179,7 +179,17 @@
                 1,
                 0,
                 0
-            ]
+            ],
+            "light_offset": [
+                14,
+                15,
+                1],
+            "light_color": [
+                1,
+                0,
+                0
+            ],
+            "light_radius": 4
         },
         {
             "name": "Jas Gripen",

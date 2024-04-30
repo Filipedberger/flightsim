@@ -45,6 +45,11 @@ Plane::Plane(Json::Value settings, vec3 pos)
     model_right = vec3(settings["right"][0].asFloat(), settings["right"][1].asFloat(), settings["right"][2].asFloat());
     model_up = vec3(settings["up"][0].asFloat(), settings["up"][1].asFloat(), settings["up"][2].asFloat());
     model_forward = vec3(settings["forward"][0].asFloat(), settings["forward"][1].asFloat(), settings["forward"][2].asFloat());
+
+    // Set up light
+    light_offset = vec3(settings["light_offset"][0].asFloat(), settings["light_offset"][1].asFloat(), settings["light_offset"][2].asFloat());
+    light_color = vec3(settings["light_color"][0].asFloat(), settings["light_color"][1].asFloat(), settings["light_color"][2].asFloat());
+    light_radius = settings["light_radius"].asInt();
 }
 
 void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed)
@@ -133,7 +138,7 @@ void Plane::calculate_radius()
 
 vec3 Plane::get_pos()
 {
-    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 20;
+    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 50;
 }
 
 vec3 Plane::get_lookAtPoint()
@@ -170,15 +175,17 @@ std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
 
 void Plane::update_light(int time_elapsed)
 {
-    light_pos[0] = position + rotationMatrix * (model_forward * 11 + model_right * 15 + model_up * 1);
-    light_pos[1] = position + rotationMatrix * (model_forward * 11 - model_right * 15 + model_up * 1);
+    light_pos[0] = position + rotationMatrix * (model_forward * light_offset.x + model_right * light_offset.y + model_up * light_offset.z);
+    light_pos[1] = position + rotationMatrix * (model_forward * light_offset.x - model_right * light_offset.y + model_up * light_offset.z);
 
     total_time += time_elapsed;
 
     // Calculate the new light intensity
     float pulseSpeed = 0.001f;  // Adjust this to change the speed of the pulse
     float maxIntensity = 1.0f;  // Adjust this to change the maximum intensity
-    light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
+
+    //light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
+    light_intensity = 1.0f;
 
 }
 
