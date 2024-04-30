@@ -61,7 +61,7 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
     return;
 }
 
-void Plane::display(const GLuint& program, const mat4& world2view, const mat4& projection)
+void Plane::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int)
 {
     glUniform3fv(glGetUniformLocation(program, "plane_light_pos"), 2, &light_pos[0].x);
 

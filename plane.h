@@ -10,7 +10,7 @@ class Plane : public Object {
     Plane();
     Plane(Json::Value settings, vec3 pos = vec3(0,0,0));
 
-    void display(const GLuint& program, const mat4& world2view, const mat4& projection) override;
+    void display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int) override;
 
     void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) override;
 

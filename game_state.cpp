@@ -167,7 +167,7 @@ void Game_State::display()
 
     cameraPosition = plane->get_pos();
 
-    skydome->display(program, world2view, projection);
+    skydome->display(program, world2view, projection, light_intensity);
     
     glUniform1i(glGetUniformLocation(program, "map"), 1);
     map->display(program, world2view, projection, plane->get_pos());

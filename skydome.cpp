@@ -2,6 +2,7 @@
 #include "frustum.h"
 #include "GL_utilities.h"
 #include "LoadTGA.h"
+#include "helper.h"
 
 #include "math.h"
 #include "cmath"
@@ -41,10 +42,11 @@ void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, st
     return;
 }
 
-void Skydome::display(const GLuint& program, const mat4& world2view, const mat4& projection) {
+void Skydome::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int) {
     glUseProgram(object_program);
 
     //glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    glUniform3f(glGetUniformLocation(object_program, "light_intensity"), light_int.x, light_int.y, light_int.z);
     
 	glUniformMatrix4fv(glGetUniformLocation(object_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(object_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);

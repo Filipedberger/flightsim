@@ -15,7 +15,7 @@ class Object {
 
     // Standard functions:
     virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed);
-    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection);
+    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int = vec3(1,1,1));
     virtual void create_model(const std::string& filename, vec3 pos, float sc);
 
     // Transformation functions:
