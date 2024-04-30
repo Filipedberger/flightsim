@@ -52,7 +52,21 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
     position += rotationMatrix * model_forward * speed * time_elapsed;
     move(position);
     tilt(keys_pressed);
+    update_light(time_elapsed);
     return;
+}
+
+void Plane::display(const GLuint& program, const mat4& world2view, const mat4& projection)
+{
+    glUniform3fv(glGetUniformLocation(program, "plane_light_pos"), 2, &light_pos[0].x);
+
+    vec3 temp_light = light_color * light_intensity;
+    glUniform3fv(glGetUniformLocation(program, "plane_light_intensity"), 1, &temp_light.x);
+
+    glUniform1i(glGetUniformLocation(program, "plane_light_radius"), light_radius);
+
+    Object::display(program, world2view, projection);
+
 }
 
 void Plane::tilt(std::map<char, bool> keys_pressed)
@@ -152,6 +166,20 @@ std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
         points[key] = rotated_point.y;
     }
     return points;
+}
+
+void Plane::update_light(int time_elapsed)
+{
+    light_pos[0] = position + rotationMatrix * (model_forward * 11 + model_right * 15 + model_up * 1);
+    light_pos[1] = position + rotationMatrix * (model_forward * 11 - model_right * 15 + model_up * 1);
+
+    total_time += time_elapsed;
+
+    // Calculate the new light intensity
+    float pulseSpeed = 0.001f;  // Adjust this to change the speed of the pulse
+    float maxIntensity = 1.0f;  // Adjust this to change the maximum intensity
+    light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
+
 }
 
 void Plane::reset()

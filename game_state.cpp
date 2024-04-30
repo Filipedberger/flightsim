@@ -28,29 +28,63 @@ void Game_State::keyboard(unsigned char key, int x, int y)
 {
     State::keyboard(key, x, y);
 
-    if (key == 'p')
+    switch (key)
     {
-        context->menu_state = true;
+        case 'p':
+        {
+            context->menu_state = true;
+            break;
+        }
+
+        case '1':
+        {
+            if (current_plane == 0)
+                break;
+            vec3 tmp_pos = plane->get_lookAtPoint();
+            delete plane;
+            plane = new Plane(context->settings["planes"][0], tmp_pos);
+            current_plane = 0;
+            break;
+        }
+
+        case '2':
+        {
+            if (current_plane == 1)
+                break;
+            vec3 tmp_pos = plane->get_lookAtPoint();
+            delete plane;
+            plane = new Plane(context->settings["planes"][1], tmp_pos);
+            current_plane = 1;
+            break;
+        }
+
+        case '3':
+        {
+            if (current_plane == 2)
+                break;
+            vec3 tmp_pos = plane->get_lookAtPoint();
+            delete plane;
+            plane = new Plane(context->settings["planes"][2], tmp_pos);
+            current_plane = 2;
+            break;
+        }
+
+        case 'k':
+        {
+            light_intensity -= 0.1;
+            if (light_intensity < 0.1)
+                light_intensity = 0.1;
+            break;
+        }
+        case 'l':
+        {
+            light_intensity += 0.1;
+            if (light_intensity > 1.0)
+                light_intensity = 1.0;
+            break;
+        }
     }
 
-    if (key == '1' and current_plane != 0) {
-        vec3 tmp_pos = plane->get_lookAtPoint();
-        delete plane;
-        plane = new Plane(context->settings["planes"][0], tmp_pos);
-        current_plane = 0;
-    }
-    if (key == '2' and current_plane != 1) {
-        vec3 tmp_pos = plane->get_lookAtPoint();
-        delete plane;
-        plane = new Plane(context->settings["planes"][1], tmp_pos);
-        current_plane = 1;
-    }
-    if (key == '3' and current_plane != 2) {
-        vec3 tmp_pos = plane->get_lookAtPoint();
-        delete plane;
-        plane = new Plane(context->settings["planes"][2], tmp_pos);
-        current_plane = 2;
-    }
 }
 
 void Game_State::mouse(int x, int y)

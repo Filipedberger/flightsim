@@ -10,6 +10,8 @@ class Plane : public Object {
     Plane();
     Plane(Json::Value settings, vec3 pos = vec3(0,0,0));
 
+    void display(const GLuint& program, const mat4& world2view, const mat4& projection) override;
+
     void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) override;
 
     void reset() override;
@@ -42,6 +44,15 @@ class Plane : public Object {
     void tilt(std::map<char, bool> keys_pressed);
 
     mat4 create_rotation_matrix(vec3 forward, vec3 up, vec3 right);
+
+    void update_light(int time_elapsed);
+    vec3 light_pos[2];
+    vec3 light_offset;
+    vec3 light_color = vec3(1, 0, 0);
+    int light_radius = 15;
+    float light_intensity;
+    unsigned int total_time = 0;
+
 
 };
 

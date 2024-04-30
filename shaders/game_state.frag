@@ -29,6 +29,9 @@ uniform float water_to_sand;
 uniform float far;
 uniform float width;
 
+uniform vec3 plane_light_pos[2];
+uniform vec3 plane_light_intensity;
+uniform int plane_light_radius;
 
 void main(void)
 {	
@@ -43,20 +46,55 @@ void main(void)
 
 	// Diffuse light
 	float diffuse = max(dot(normal_view, light_direction), 0.0);
-	vec3 diffuseLight = diffuse * light_intensity;
 
 	// Specular light
 	vec3 viewDirection = normalize(world2view_3 * (camera_pos - vec3(world_position)));
 	vec3 reflectDirection = reflect(-light_direction, normal_view);
 	float specular = pow(max(dot(viewDirection, reflectDirection), 0.0), specularExponent);
-	vec3 specularLight = specular * light_intensity;
 
 
 	if (map == 0) {
-		vec3 color = vec3(0.53, 0.81, 0.94); // Baby blue
-		//vec3 color = vec3(1.0, 1.0, 1.0); // White
+		float d1 = length(vec3(world_position) - plane_light_pos[0]);
+		float d2 = length(vec3(world_position) - plane_light_pos[1]);
+
+		vec3 temp_intensity = plane_light_intensity;
+
+		if (light_intensity.x > 0.5) {
+			temp_intensity = vec3(0.0, 0.0, 0.0);
+		}
+
+
+		
+		float light_intensity1 = 1.0;
+		float light_intensity2 = 1.0;
+
+
+		if (d1 > plane_light_radius) {
+			light_intensity1 = 0.0;
+		}
+		else {
+			light_intensity1 = 1.0 - d1 / plane_light_radius;
+		}
+
+		if (d2 > plane_light_radius) {
+			light_intensity2 = 0.0;
+		}
+		else {
+			light_intensity2 = 1.0 - d2 / plane_light_radius;
+		}
+
+		vec3 positional_light2 = normalize(world2view_3 * (plane_light_pos[0] - vec3(world_position)));
+		float diffuse2 = max(dot(normal_view, positional_light2), 0.0);
+		
+		vec3 positional_light3 = normalize(world2view_3 * (plane_light_pos[1] - vec3(world_position)));
+		float diffuse3 = max(dot(normal_view, positional_light3), 0.0);
+
+		//vec3 color = vec3(0.53, 0.81, 0.94); // Baby blue
+		vec3 color = vec3(1.0, 1.0, 1.0); // White
 		//vec4 color = vec4(0, 0, 0, 0);
-		out_Color =  vec4(color * (0.4 + diffuseLight * 0.4 + specularLight * 0.4), 1);
+
+		vec3 tmp_color = color * (light_intensity * (0.4 + diffuse * 0.4 + specular * 0.4) + temp_intensity * (diffuse2 * light_intensity1 + diffuse3 * light_intensity2));
+		out_Color =  vec4(tmp_color, 1);
 
 	}
 	else if (map == 1) {
@@ -118,7 +156,7 @@ void main(void)
 			alpha = (far - d) / (far - c);
 		}
 
-		out_Color = vec4(color * (0.6 + diffuseLight * 0.4 + specularLight * spec), alpha);
+		out_Color = vec4(color * light_intensity * (0.6 + diffuse * 0.4 + specular * spec), alpha) ;
 	}
 	
 

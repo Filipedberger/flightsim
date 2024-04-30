@@ -52,6 +52,9 @@ class State {
     std::map<char, bool> keys_pressed;
     std::map<char, bool> keys_toggle;
 
+    // Light:
+    float light_intensity = 1.0;
+
 
     virtual void upload2shader();
     void create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector);
