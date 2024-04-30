@@ -33,9 +33,8 @@ uniform float width;
 void main(void)
 {	
 
-	float specularExponent = 25;
+	float specularExponent = 50;
 
-	vec4 color = vec4(0, 0, 0, 0);
 	mat3 world2view_3 = mat3(viewMatrix);
 	vec3 normal_view = normalize(world2view_3 * normal_world);
 
@@ -54,79 +53,75 @@ void main(void)
 
 
 	if (map == 0) {
-		
-		vec3 temp_color = vec3(0.53, 0.81, 0.94); // Baby blue
-		//vec3 temp_color = vec3(1.0, 1.0, 1.0); // White
+		vec3 color = vec3(0.53, 0.81, 0.94); // Baby blue
+		//vec3 color = vec3(1.0, 1.0, 1.0); // White
+		//vec4 color = vec4(0, 0, 0, 0);
+		out_Color =  vec4(color * (0.4 + diffuseLight * 0.4 + specularLight * 0.4), 1);
 
-
-		color =  vec4(temp_color * 0.4 + diffuseLight * 0.4 + specularLight * 0.4, 1);
-
-		out_Color = color;
-		return;
 	}
+	else if (map == 1) {
 
-	vec3 temp_color;
-    vec3 green = vec3(0.0, 0.3, 0.0);
-    vec3 grey = vec3(0.3, 0.3, 0.3);
-    vec3 white = vec3(0.9,0.9,0.9);
-    vec3 beige = vec3(1.0, 0.96, 0.876);
-    vec3 blue = vec3(0.0, 0.0, 0.5);
+		vec3 color;
+		vec3 green = vec3(0.0, 0.3, 0.0);
+		vec3 grey = vec3(0.3, 0.3, 0.3);
+		vec3 white = vec3(0.9,0.9,0.9);
+		vec3 beige = vec3(1.0, 0.96, 0.876);
+		vec3 blue = vec3(0.0, 0.0, 0.5);
 
-	float spec = 0.0; //TEST
+		float spec = 0.0; //TEST
 
-    if (world_position.y > snow) {
-        temp_color = white;
-		spec = 0.5;
-    }
-    else if(world_position.y > snow - snow_inter){
-        float t = (world_position.y - (snow - snow_inter))/snow_inter;
-        temp_color = t*white + (1 - t)*grey;
-    }
-    else if(world_position.y > rock){
-        temp_color = grey;
-    }
-    else if (world_position.y > rock - rock_inter) {
-        float t = (world_position.y - (rock - rock_inter))/rock_inter;
-        temp_color = t*grey + (1 - t)*green;
-    }
-    else if (world_position.y > grass)
-    {
-        temp_color = green;
-    }
-    else if(world_position.y > grass - grass_inter){
-        float t = (world_position.y - (grass-grass_inter))/grass_inter;
-        temp_color = t*green + (1 - t)*beige;
-    }
-    else if(world_position.y > sand + water_to_sand)
-    {
-        temp_color = beige;
-    }
-    else{
-        temp_color = blue;
-    }
+		if (world_position.y > snow) {
+			color = white;
+			spec = 0.5;
+		}
+		else if(world_position.y > snow - snow_inter){
+			float t = (world_position.y - (snow - snow_inter))/snow_inter;
+			color = t*white + (1 - t)*grey;
+		}
+		else if(world_position.y > rock){
+			color = grey;
+		}
+		else if (world_position.y > rock - rock_inter) {
+			float t = (world_position.y - (rock - rock_inter))/rock_inter;
+			color = t*grey + (1 - t)*green;
+		}
+		else if (world_position.y > grass)
+		{
+			color = green;
+		}
+		else if(world_position.y > grass - grass_inter){
+			float t = (world_position.y - (grass-grass_inter))/grass_inter;
+			color = t*green + (1 - t)*beige;
+		}
+		else if(world_position.y > sand + water_to_sand)
+		{
+			color = beige;
+		}
+		else{
+			color = blue;
+			spec = 1.0;
+		}
 
-    float d = sqrt((camera_pos.x - world_position.x) * (camera_pos.x - world_position.x) + (camera_pos.z - world_position.z) * (camera_pos.z - world_position.z));
+		float d = sqrt((camera_pos.x - world_position.x) * (camera_pos.x - world_position.x) + (camera_pos.z - world_position.z) * (camera_pos.z - world_position.z));
 
-    float alpha;
+		float alpha;
 
-    float c = far - width * 4;
+		float c = far - width * 4;
 
-    if (d > far) {
-        alpha = 0;
-    } 
-    else if (d < c) {
-        alpha = 1;
-    } 
-    else {
-        alpha = (far - d) / (far - c);
-    }
+		if (d > far) {
+			alpha = 0;
+		} 
+		else if (d < c) {
+			alpha = 1;
+		} 
+		else {
+			alpha = (far - d) / (far - c);
+		}
 
-	//vec3 ambientLight = vec3(0.1, 0.1, 0.1); // Ambient light color
+		out_Color = vec4(color * (0.6 + diffuseLight * 0.4 + specularLight * spec), alpha);
+	}
+	
 
-	//float intensity = max(dot(normalize(normal_world), light_pos), 0.0);
-
-	//out_Color = vec4(temp_color*intensity + ambientLight, alpha);
-
-	out_Color = vec4(temp_color * 0.7 + diffuseLight * 0.3 + specularLight * spec, alpha);
+	
 
 }
