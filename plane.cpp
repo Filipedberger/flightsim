@@ -138,7 +138,7 @@ void Plane::calculate_radius()
 
 vec3 Plane::get_pos()
 {
-    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 50;
+    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 20;
 }
 
 vec3 Plane::get_lookAtPoint()
@@ -184,9 +184,7 @@ void Plane::update_light(int time_elapsed)
     float pulseSpeed = 0.001f;  // Adjust this to change the speed of the pulse
     float maxIntensity = 1.0f;  // Adjust this to change the maximum intensity
 
-    //light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
-    light_intensity = 1.0f;
-
+    light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
 }
 
 void Plane::reset()
