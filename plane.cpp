@@ -138,7 +138,7 @@ void Plane::calculate_radius()
 
 vec3 Plane::get_pos()
 {
-    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 20;
+    return position - rotationMatrix * model_forward * 0 + rotationMatrix * model_up *50;
 }
 
 vec3 Plane::get_lookAtPoint()
@@ -159,14 +159,19 @@ mat4 Plane::get_lookAtMatrix()
 std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
 {
     std::map<std::pair<int, int>, int> points;
-    int num_segments = 16;
+    int num_segments = 1;
 
     for (int i = 0; i < num_segments; i++)
     {
         float theta = 2.0f * M_PI * float(i) / float(num_segments);
         vec3 point = vec3(cosf(theta), 0,sinf(theta)) * radius;
 
-        vec3 rotated_point = rotationMatrix * point + get_pos();
+        vec3 rotated_point = translationMatrix * rotationMatrix * scaleMatrix * point;
+
+        //std::cout << vec2str(rotated_point) << std::endl;
+        //std::cout << "vecii(" << round(rotated_point.x) << ", " << round(rotated_point.y) << ", " << round(rotated_point.z) << ")" << std::endl;
+        //std::cout << vec2str(translationMatrix * rotationMatrix *  vec4(point, 1)) << std::endl;
+
         std::pair<int, int> key = std::make_pair(round(rotated_point.x), round(rotated_point.z));
         points[key] = rotated_point.y;
     }

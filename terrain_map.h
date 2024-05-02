@@ -69,10 +69,15 @@ private:
     float grass_size;
     float sand_size;
 
-    // TESTING
     SimplexNoise *noise_test;
 
     std::pair<int, int> getChunk(int x, int z);
+
+    //TESTING
+    int tmp_x;
+    int tmp_z;
+    int tmp_x2;
+    int tmp_z2;
 };
 
 #endif

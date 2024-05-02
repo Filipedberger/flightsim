@@ -7,8 +7,8 @@
 
 TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum &f)
 {
-    cameraChunkX = cameraPosition.x / terrainWidth - 2;
-    cameraChunkZ = cameraPosition.z / terrainHeight - 2;
+    cameraChunkX = cameraPosition.x / terrainWidth;
+    cameraChunkZ = cameraPosition.z / terrainHeight;
 
     frustum_obj = f;
 
@@ -69,16 +69,16 @@ std::pair<int, int> TerrainMap::getChunk(int x, int z)
     int chunkX;
     int chunkZ;
     if (x < 0) {
-        chunkX = (x - terrainWidth) / (terrainWidth - 2);
+        chunkX = (x - terrainWidth) / (terrainWidth-2);
     }
     else {
-        chunkX = x / (terrainWidth - 2);
+        chunkX = x / (terrainWidth-2);
     }
     if (z < 0) {
-        chunkZ = (z - terrainHeight) / (terrainHeight - 2);
+        chunkZ = (z - terrainHeight) / (terrainHeight-2);
     }
     else {
-        chunkZ = z / (terrainHeight - 2);
+        chunkZ = z / (terrainHeight-2);
     }
     return {chunkX, chunkZ};
 }
@@ -92,35 +92,46 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
 
         std::pair<int, int> chunk = getChunk(x, z);
 
-        //std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
+        std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
         // Check if the chunk exists
         if (chunks.find(chunk) == chunks.end())
         {
             continue;
         }
 
+        x = x - 2 * chunk.first;
+        z = z - 2 * chunk.second;
+
         // Calculate the position of the vertex in the chunk
         if (x < 0) {
             x = -x;
-            x = terrainWidth - x % (terrainWidth - 2);
+            x = terrainWidth - x % (terrainWidth);
         }
         else {
-            x = x % (terrainWidth - 2);
+            x = x % (terrainWidth);
         }
         if (z < 0) {
             z = -z;
-            z = terrainHeight - z % (terrainHeight - 2);
+            z = terrainHeight - z % (terrainHeight);
         }
         else {
-            z = z % (terrainHeight - 2);
+            z = z % (terrainHeight);
         }
 
         Model *chunkModel = chunks[chunk];
 
-        //std::cout << "Y: " << y << " " << vertexArray[x + z * terrainWidth].y << std::endl;
-        //std::cout << "X: " << x << " Z: " << z << std::endl;
+        std::cout << "Y: " << chunkModel -> vertexArray[x + z * terrainWidth].y << std::endl;
+        std::cout << "X: " << x << " Z: " << z << std::endl;
+         
 
-        if (y < vertexArray[x + z * terrainWidth].y)
+        tmp_x = x;
+        tmp_z = z;
+        tmp_x2 = chunk.first;
+        tmp_z2 = chunk.second;
+        
+
+
+        if (y < chunkModel -> vertexArray[x + z * terrainWidth].y)
         {
             return true;
         }
@@ -131,19 +142,19 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
 void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 {
     float rad_sq = (CHUNKS * terrainWidth) * (CHUNKS * terrainWidth);
-    cameraChunkX = cameraPosition.x / terrainWidth - 2;
-    cameraChunkZ = cameraPosition.z / terrainHeight - 2;
+    cameraChunkX = cameraPosition.x / terrainWidth;
+    cameraChunkZ = cameraPosition.z / terrainHeight;
 
     int count = 0;
 
     auto t1 = std::chrono::high_resolution_clock::now();
     for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
     {
-        float chunkX = ((x * (terrainWidth - 2)) - cameraPosition.x) * ((x * (terrainWidth - 2)) - cameraPosition.x);
+        float chunkX = ((x * (terrainWidth)) - cameraPosition.x) * ((x * (terrainWidth)) - cameraPosition.x);
 
         for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
         {
-            float chunkZ = (z * (terrainHeight - 2) - cameraPosition.z) * (z * (terrainHeight - 2) - cameraPosition.z);
+            float chunkZ = (z * (terrainHeight) - cameraPosition.z) * (z * (terrainHeight) - cameraPosition.z);
             if (chunkX + chunkZ > rad_sq)
             {
                 continue;
@@ -229,6 +240,18 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         glUniform1f(glGetUniformLocation(program, "water_to_sand"), water_to_sand);
         glUniform1f(glGetUniformLocation(program, "far"), frustum_obj.far);
         glUniform1f(glGetUniformLocation(program, "width"), terrainWidth);
+
+        glUniform3f(glGetUniformLocation(program, "tmp"), tmp_x, 0, tmp_z);
+        
+
+        if (pair.first.first == tmp_x2 && pair.first.second == tmp_z2)
+        {
+            glUniform1i(glGetUniformLocation(program, "tmp2"), 1);
+        }
+        else
+        {
+            glUniform1i(glGetUniformLocation(program, "tmp2"), 0);
+        }
 
         
 
