@@ -21,6 +21,7 @@ class Plane : public Object {
     vec3 get_lookAtPoint() override;
     mat4 get_lookAtMatrix() override;
     vec3 get_upVector() override;
+    std::map<std::pair<int, int>, int> get_points_on_radius() override;
 
     private:
     float speed; // Pixels per millisecond
@@ -34,7 +35,8 @@ class Plane : public Object {
     int roll_speed = 2;
     float pitch = 0;
     int pitch_speed = 1;
-
+    float acceleration = 0;
+    
     void calculate_radius();
 
     void tilt(std::map<char, bool> keys_pressed);

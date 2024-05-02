@@ -12,17 +12,29 @@ uniform mat4 translationMatrix;
 uniform mat4 rotationMatrix;
 uniform mat4 scaleMatrix;
 
-out vec4 view_position;
 out vec4 world_position;
-out vec3 normal;
+out vec3 normal_world; 
+
+uniform int map;
+
+uniform vec3 chunkPosition;
+
 
 void main(void)
 {
+	if (map == 0) {
 	mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 	gl_Position = in_projectionMatrix * viewMatrix * mdlMatrix * vec4(in_Position, 1.0);
 
+	normal_world = vec3(mdlMatrix * vec4(in_Normal, 0.0));
+
 	mat3 normalMatrix = transpose(inverse(mat3(mdlMatrix)));
-    normal = normalize(normalMatrix * in_Normal);
 
 	world_position = mdlMatrix * vec4(in_Position, 1.0);
+	return;
+	}
+
+    world_position = vec4(in_Position + chunkPosition, 1.0); // Add the chunk position to the vertex position
+    gl_Position = in_projectionMatrix * viewMatrix * world_position; 
+	normal_world = in_Normal;
 }

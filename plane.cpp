@@ -19,7 +19,7 @@ Plane::Plane(Json::Value settings, vec3 pos)
 
     pitch_speed = settings["pitch_speed"].asInt();
     roll_speed = settings["roll_speed"].asInt();
-
+    acceleration = settings["acceleration"].asFloat();
 
     create_model(filename, position, sc);
 
@@ -45,47 +45,57 @@ Plane::Plane(Json::Value settings, vec3 pos)
     model_right = vec3(settings["right"][0].asFloat(), settings["right"][1].asFloat(), settings["right"][2].asFloat());
     model_up = vec3(settings["up"][0].asFloat(), settings["up"][1].asFloat(), settings["up"][2].asFloat());
     model_forward = vec3(settings["forward"][0].asFloat(), settings["forward"][1].asFloat(), settings["forward"][2].asFloat());
-
 }
 
-void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) {
+void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed)
+{
     position += rotationMatrix * model_forward * speed * time_elapsed;
     move(position);
     tilt(keys_pressed);
     return;
 }
 
-void Plane::tilt(std::map<char, bool> keys_pressed) {
-    if (!keys_pressed['a'] && !keys_pressed['d'] && !keys_pressed['w'] && !keys_pressed['s']) {
-        return;
-    }
-
+void Plane::tilt(std::map<char, bool> keys_pressed)
+{
     pitch = 0;
     roll = 0;
 
-    if (keys_pressed['a'] || keys_pressed['d']) {
-        
-        if (keys_pressed['d']) {
+    if (keys_pressed['a'] || keys_pressed['d'])
+    {
+
+        if (keys_pressed['d'])
+        {
             roll = roll_speed;
         }
-        
-        if (keys_pressed['a']) {
+
+        if (keys_pressed['a'])
+        {
             roll = -roll_speed;
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_forward, rad(roll));
     }
-    if (keys_pressed['w'] || keys_pressed['s']) {
-        if (keys_pressed['s']) {
+    if (keys_pressed['w'] || keys_pressed['s'])
+    {
+        if (keys_pressed['s'])
+        {
             pitch = pitch_speed;
         }
 
-        else if (keys_pressed['w']) {
+        else if (keys_pressed['w'])
+        {
             pitch = -pitch_speed;
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_right, rad(pitch));
     }
-}
 
+    if (keys_pressed['\1']) {
+        speed += acceleration;
+    }
+    if (keys_pressed['\2']) {
+        speed -= acceleration;
+    }
+
+}
 
 void Plane::calculate_radius()
 {
@@ -104,12 +114,12 @@ void Plane::calculate_radius()
         radius = fmax(radius, dist);
     }
 
-    radius = sqrt(radius) * scale_factor; //OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED, NOT IMPLEMENTED YET
-    
+    radius = sqrt(radius) * scale_factor; // OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED, NOT IMPLEMENTED YET
 }
 
-vec3 Plane::get_pos() {
-    return position - rotationMatrix * model_forward * offset;
+vec3 Plane::get_pos()
+{
+    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 20;
 }
 
 vec3 Plane::get_lookAtPoint()
@@ -122,18 +132,38 @@ vec3 Plane::get_upVector()
     return model_up;
 }
 
-mat4 Plane::get_lookAtMatrix() {
+mat4 Plane::get_lookAtMatrix()
+{
     return lookAtv(get_pos(), position, rotationMatrix * model_up);
 }
 
-void Plane::reset() {
+std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
+{
+    std::map<std::pair<int, int>, int> points;
+    int num_segments = 16;
+
+    for (int i = 0; i < num_segments; i++)
+    {
+        float theta = 2.0f * M_PI * float(i) / float(num_segments);
+        vec3 point = vec3(cosf(theta), 0,sinf(theta)) * radius;
+
+        vec3 rotated_point = rotationMatrix * point + get_pos();
+        std::pair<int, int> key = std::make_pair(rotated_point.x, rotated_point.z);
+        points[key] = rotated_point.y;
+    }
+    return points;
+}
+
+void Plane::reset()
+{
     rotationMatrix = IdentityMatrix();
-    move(vec3(0,30,20));
-    
+    move(vec3(0, 30, 20));
+
     return;
 }
 
-Plane::~Plane() {
-    //Model deleted in object destructor
-    //delete model;
+Plane::~Plane()
+{
+    // Model deleted in object destructor
+    // delete model;
 }

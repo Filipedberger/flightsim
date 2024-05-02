@@ -23,10 +23,11 @@ void State::upload2shader()
 {
     glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, GL_TRUE, world2view.m);
     glUniformMatrix4fv(glGetUniformLocation(program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
-    GLint lightDirUniform = glGetUniformLocation(program, "light_direction");
+    GLint lightDirUniform = glGetUniformLocation(program, "light_pos");
     glUniform3f(lightDirUniform, 0.0f, 1.0f, -1.0f);
     GLint lightIntensityUniform = glGetUniformLocation(program, "light_intensity");
-    glUniform3f(lightIntensityUniform, 0.8f, 0.8f, 0.8f); // Set the light direction
+    glUniform3f(lightIntensityUniform, 1.0f, 1.0f, 1.0f); // Set the light direction
+    glUniform3f(glGetUniformLocation(program, "camera_pos"), cameraPosition.x, cameraPosition.y, cameraPosition.z);
 }
 
 void State::create_world2view(vec3 cameraPosition, vec3 lookAtPoint, vec3 upVector)
@@ -56,13 +57,43 @@ void State::keyboard(unsigned char key, int x, int y)
     case 27:
         exit(0);
         break;
+    
+    case GLUT_KEY_UP:
+        keys_pressed['\1'] = true;
+        break;
+    case GLUT_KEY_DOWN:
+        keys_pressed['\2'] = true;
+        break;
+    case GLUT_KEY_LEFT:
+        keys_pressed['\3'] = true;
+        break;
+    case GLUT_KEY_RIGHT:
+        keys_pressed['\4'] = true;
+        break;
     }
+    
 }
 
 void State::keyboard_up(unsigned char key, int x, int y)
 {
     keys_pressed[key] = false;
     keys_toggle[key] = !keys_toggle[key];
+
+    switch (key)
+    {
+    case GLUT_KEY_UP:
+        keys_pressed['\1'] = false;
+        break;
+    case GLUT_KEY_DOWN:
+        keys_pressed['\2'] = false;
+        break;
+    case GLUT_KEY_LEFT:
+        keys_pressed['\3'] = false;
+        break;
+    case GLUT_KEY_RIGHT:
+        keys_pressed['\4'] = false;
+        break;
+    }
 }
 
 State::~State()

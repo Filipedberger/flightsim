@@ -22,7 +22,9 @@ public:
     TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum &f);
     ~TerrainMap();
     void update(vec3 cameraPosition, const mat4 &world2view);
-    void display(const GLuint &program, const mat4 &world2view, const mat4 &projection);
+    void display(const GLuint &program, const mat4 &world2view, const mat4 &projection, vec3 cameraPosition);
+
+    bool collision(std::map<std::pair<int, int>, int> points);
 
 private:
     const siv::PerlinNoise::seed_type seed = 123456u;
@@ -34,7 +36,7 @@ private:
     vec3 cameraPos;
     int cameraChunkX;
     int cameraChunkZ;
-    int CHUNKS = 16;
+    int CHUNKS = 6;
     const int MAX_CHUNK_DISTANCE = 3 * CHUNKS;
     GLuint terrain_program = loadShaders("shaders/terrain_shader.vert", "shaders/terrain_shader.frag");
     Frustum frustum_obj;
@@ -51,6 +53,21 @@ private:
     vec3 *normalArray;
     vec2 *texCoordArray;
     GLuint *indexArray;
+
+    float snow;
+    float rock;
+    float grass;
+    float sand;
+    float water;
+
+    float snow_inter;
+    float rock_inter;
+    float grass_inter;
+    float water_to_sand;
+
+    float rock_size;
+    float grass_size;
+    float sand_size;
 
     // TESTING
     SimplexNoise *noise_test;
