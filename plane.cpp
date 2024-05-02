@@ -137,6 +137,11 @@ mat4 Plane::get_lookAtMatrix()
     return lookAtv(get_pos(), position, rotationMatrix * model_up);
 }
 
+float Plane::get_planeSpeed()
+{
+    return speed;
+}
+
 std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
 {
     std::map<std::pair<int, int>, int> points;

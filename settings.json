@@ -211,5 +211,20 @@
         "rock_inter": 0.20,
         "grass_inter": 0.25,
         "water_to_sand": 0.05
+    },
+    "hud": {
+        "filename": "textures/hud.png",
+        "scale": 100.0,
+        "font": "fonts/arial.ttf",
+        "font_size": 24,
+        "font_color": [
+            1,
+            1,
+            1
+        ],
+        "font_pos": [
+            10,
+            10
+        ]
     }
 }

@@ -6,6 +6,7 @@
 #include "helper.h"
 #include "plane.h"
 #include "terrain_map.h"
+#include "hud.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -19,8 +20,8 @@ Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
 {
     map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
-    hud = new Hud(context->settings["hud"], cameraPosition);
     plane = new Plane(context->settings["planes"][0], vec3(0,100,0));
+    hud = new Hud(context->settings["hud"], cameraPosition, plane);
     glutHideCursor();
     return;
 }
@@ -111,7 +112,7 @@ void Game_State::move_camera(int time_elapsed)
 void Game_State::update(int time_elapsed)
 {
     // Update camera etc. here, then update objects.
-
+    
     plane->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
     map->update(plane->get_pos(), world2view);
     skydome->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);

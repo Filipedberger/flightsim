@@ -21,6 +21,7 @@ class Plane : public Object {
     vec3 get_lookAtPoint() override;
     mat4 get_lookAtMatrix() override;
     vec3 get_upVector() override;
+    float get_planeSpeed() override;
     std::map<std::pair<int, int>, int> get_points_on_radius() override;
 
     private:

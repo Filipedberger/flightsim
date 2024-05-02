@@ -9,7 +9,7 @@ ifeq ($(OS),Darwin)
     # Commands for macOS
     os = Mac/
     ext = m
-    flags = -framework OpenGL -framework Cocoa -lm -ljsoncpp -L/usr/local/Cellar/jsoncpp/1.9.5/lib -I/usr/local/Cellar/jsoncpp/1.9.5/include
+    flags = -framework OpenGL -framework GLUT -framework Cocoa -lm -ljsoncpp -L/usr/local/Cellar/jsoncpp/1.9.5/lib -I/usr/local/Cellar/jsoncpp/1.9.5/include
     oflag =  -I/usr/local/Cellar/jsoncpp/1.9.5/include
     compiler = clang++
 else ifeq ($(OS),Linux)
