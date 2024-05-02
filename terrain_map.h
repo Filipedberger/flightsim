@@ -71,6 +71,8 @@ private:
 
     // TESTING
     SimplexNoise *noise_test;
+
+    std::pair<int, int> getChunk(int x, int z);
 };
 
 #endif

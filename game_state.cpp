@@ -156,6 +156,13 @@ void Game_State::update(int time_elapsed)
     move_camera(time_elapsed);
 
     // Check for collisions
+    std::map<std::pair<int, int>, int> points = plane->get_points_on_radius();
+
+    if (map->collision(points))
+    {
+        std::cout << "Collision detected" << std::endl;
+        return;
+    }
 }
 
 void Game_State::display()

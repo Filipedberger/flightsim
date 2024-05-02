@@ -64,6 +64,70 @@ TerrainMap::~TerrainMap()
     chunks.clear();
 }
 
+std::pair<int, int> TerrainMap::getChunk(int x, int z)
+{
+    int chunkX;
+    int chunkZ;
+    if (x < 0) {
+        chunkX = (x - terrainWidth) / (terrainWidth - 2);
+    }
+    else {
+        chunkX = x / (terrainWidth - 2);
+    }
+    if (z < 0) {
+        chunkZ = (z - terrainHeight) / (terrainHeight - 2);
+    }
+    else {
+        chunkZ = z / (terrainHeight - 2);
+    }
+    return {chunkX, chunkZ};
+}
+
+bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
+{
+    for (auto &point : points){
+        int x = point.first.first;
+        int z = point.first.second;
+        int y = point.second;
+
+        std::pair<int, int> chunk = getChunk(x, z);
+
+        //std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
+        // Check if the chunk exists
+        if (chunks.find(chunk) == chunks.end())
+        {
+            continue;
+        }
+
+        // Calculate the position of the vertex in the chunk
+        if (x < 0) {
+            x = -x;
+            x = terrainWidth - x % (terrainWidth - 2);
+        }
+        else {
+            x = x % (terrainWidth - 2);
+        }
+        if (z < 0) {
+            z = -z;
+            z = terrainHeight - z % (terrainHeight - 2);
+        }
+        else {
+            z = z % (terrainHeight - 2);
+        }
+
+        Model *chunkModel = chunks[chunk];
+
+        //std::cout << "Y: " << y << " " << vertexArray[x + z * terrainWidth].y << std::endl;
+        //std::cout << "X: " << x << " Z: " << z << std::endl;
+
+        if (y < vertexArray[x + z * terrainWidth].y)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 {
     float rad_sq = (CHUNKS * terrainWidth) * (CHUNKS * terrainWidth);
@@ -284,8 +348,4 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
     std::cout << "Load data to model: " << std::chrono::duration_cast<std::chrono::milliseconds>(t7 - t6).count() << " ms" << std::endl;*/
 
     return model;
-}
-
-bool TerrainMap::collision(std::map<std::pair<int, int>, int> points) {
-    
 }

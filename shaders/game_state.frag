@@ -33,6 +33,9 @@ uniform vec3 plane_light_pos[2];
 uniform vec3 plane_light_intensity;
 uniform int plane_light_radius;
 
+//REMOVE
+in vec3 x_zero;
+
 void main(void)
 {	
 
@@ -157,6 +160,10 @@ void main(void)
 		}
 
 		out_Color = vec4(color * light_intensity * (0.6 + diffuse * 0.4 + specular * spec), alpha) ;
+
+		if (x_zero.x > 0.5) {
+			out_Color = vec4(1.0, 0.0, 0.0, 1.0);
+		}
 	}
 	
 

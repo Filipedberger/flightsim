@@ -167,7 +167,7 @@ std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
         vec3 point = vec3(cosf(theta), 0,sinf(theta)) * radius;
 
         vec3 rotated_point = rotationMatrix * point + get_pos();
-        std::pair<int, int> key = std::make_pair(rotated_point.x, rotated_point.z);
+        std::pair<int, int> key = std::make_pair(round(rotated_point.x), round(rotated_point.z));
         points[key] = rotated_point.y;
     }
     return points;
