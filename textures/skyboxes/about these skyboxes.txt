@@ -1,0 +1,11 @@
+These skyboxes have been modified to limit the problems with color "bleed"
+that are a common problem with skyboxes unless you use nearest neighbor
+texture access. In all these skyboxes I have, more or less, added extra
+borders, mostly for the upper parts. We don't see the lower part much, if
+at all, so I left them unchanged.
+
+Legal terms for these: All are free for non-commercial use. See the "attributions" file.
+
+The ones named "mod" are modified fairly successfully, IMHO. The ones named "try",
+"http-skybox-texture" and "cloud-landscape" I had problems with, with misfits
+between the parts and borders that were too hard to eliminate altogether.
