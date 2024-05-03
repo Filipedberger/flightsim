@@ -36,6 +36,8 @@ class Plane : public Object {
     float pitch = 0;
     int pitch_speed = 1;
     float acceleration = 0;
+
+    float camera_y_offset = 0;
     
     void calculate_radius();
 
