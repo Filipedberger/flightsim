@@ -36,7 +36,7 @@ private:
     vec3 cameraPos;
     int cameraChunkX;
     int cameraChunkZ;
-    int CHUNKS = 8;
+    int CHUNKS = 6;
     const int MAX_CHUNK_DISTANCE = 3 * CHUNKS;
     GLuint terrain_program = loadShaders("shaders/terrain_shader.vert", "shaders/terrain_shader.frag");
     Frustum frustum_obj;

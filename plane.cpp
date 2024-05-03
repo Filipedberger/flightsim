@@ -98,13 +98,32 @@ void Plane::tilt(std::map<char, bool> keys_pressed)
         if (keys_pressed['s'])
         {
             pitch = pitch_speed;
+            camera_y_offset += 1;
+            if (camera_y_offset > 10)
+            {
+                camera_y_offset = 10;
+            }
         }
 
         else if (keys_pressed['w'])
         {
             pitch = -pitch_speed;
+            camera_y_offset -= 1;
+            if (camera_y_offset < -10)
+            {
+                camera_y_offset = -10;
+            }
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_right, rad(pitch));
+    }
+    else {
+
+        if (camera_y_offset > 0) {
+            camera_y_offset -= 0.5;
+        }
+        else if (camera_y_offset < 0) {
+            camera_y_offset += 0.5;
+        }
     }
 
     if (keys_pressed['\1']) {
@@ -138,7 +157,7 @@ void Plane::calculate_radius()
 
 vec3 Plane::get_pos()
 {
-    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 20;
+    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 0;
 }
 
 vec3 Plane::get_lookAtPoint()
@@ -153,7 +172,7 @@ vec3 Plane::get_upVector()
 
 mat4 Plane::get_lookAtMatrix()
 {
-    return lookAtv(get_pos(), position, rotationMatrix * model_up);
+    return lookAtv(get_pos() +  rotationMatrix * model_up * camera_y_offset, position + rotationMatrix * (model_forward * 5), rotationMatrix * model_up);
 }
 
 std::map<std::pair<int, int>, int> Plane::get_points_on_radius()

@@ -66,7 +66,7 @@ TerrainMap::~TerrainMap()
 
 void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 {
-    float rad_sq = (CHUNKS * terrainWidth) * (CHUNKS * terrainWidth);
+    float rad_sq = (CHUNKS * terrainWidth) * (CHUNKS * terrainWidth)*0.8;
     cameraChunkX = cameraPosition.x / terrainWidth - 2;
     cameraChunkZ = cameraPosition.z / terrainHeight - 2;
 
@@ -200,7 +200,7 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 
             // float perlin_noise = SimplexNoise::noise(x + offsetX, z + offsetZ, 4) * amplitude;
             //  Set the vertex position, normal, and texture coordinate
-            vertexArray[x + z * terrainWidth] = vec3((x) / 1.0, perlin_noise, (z) / 1.0);
+            vertexArray[x + z * terrainWidth] = vec3(x, perlin_noise, z);
             texCoordArray[x + z * terrainWidth] = vec2(x + offsetX, z + offsetZ);
         }
     auto t2 = std::chrono::high_resolution_clock::now();
