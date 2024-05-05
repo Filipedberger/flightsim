@@ -19,7 +19,7 @@ Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
 {
     map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
-    plane = new Plane(context->settings["planes"][0], vec3(0,100,0));
+    plane = new Plane(context->settings["planes"][0], vec3(0,150,0));
     glutHideCursor();
     return;
 }
@@ -161,6 +161,8 @@ void Game_State::update(int time_elapsed)
     if (map->collision(points))
     {
         std::cout << "Collision detected" << std::endl;
+        delete plane;
+        plane = new Plane(context->settings["planes"][current_plane], vec3(0,150,0));
         return;
     }
 }

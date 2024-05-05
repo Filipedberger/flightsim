@@ -178,17 +178,17 @@ mat4 Plane::get_lookAtMatrix()
 std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
 {
     std::map<std::pair<int, int>, int> points;
-    int num_segments = 8;
+    int num_segments = 16;
 
     for (int i = 0; i < num_segments; i++)
     {
         float theta = 2.0f * M_PI * float(i) / float(num_segments);
-        vec3 point = vec3(cosf(theta), 0,sinf(theta)) * radius;
-
-        vec3 rotated_point = translationMatrix * rotationMatrix * scaleMatrix * point;
-        std::pair<int, int> key = std::make_pair(round(rotated_point.x), round(rotated_point.z));
-        points[key] = rotated_point.y;
+        vec3 point1 = vec3(cosf(theta), 0,sinf(theta)) * radius + model_forward * radius;
+        vec3 rotated_point1 = translationMatrix * rotationMatrix * point1;
+        std::pair<int, int> key = std::make_pair(round(rotated_point1.x), round(rotated_point1.z));
+        points[key] = rotated_point1.y;
     }
+
     return points;
 }
 
