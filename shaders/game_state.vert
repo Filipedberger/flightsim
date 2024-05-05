@@ -19,11 +19,6 @@ uniform int map;
 
 uniform vec3 chunkPosition;
 
-out vec3 x_zero;
-
-uniform vec3 tmp;
-uniform int tmp2;
-
 
 void main(void)
 {
@@ -42,36 +37,4 @@ void main(void)
     world_position = vec4(in_Position + chunkPosition, 1.0); // Add the chunk position to the vertex position
     gl_Position = in_projectionMatrix * viewMatrix * world_position; 
 	normal_world = in_Normal;
-
-	if (in_Position.x < 4 || in_Position.z < 4 ) {
-		x_zero = vec3(0.0, 0.0, 0.0);
-	} else {
-		x_zero = vec3(0.0, 0.0, 0.0);
-	}
-
-
-	if (chunkPosition.x == 0.0 && chunkPosition.z == 0.0) {
-		x_zero = vec3(0.6, 1.0, 1.0);
-	}
-
-	if (chunkPosition.x == 254.0 && chunkPosition.z == 0.0) {
-		x_zero = vec3(0.2, 0.8, 0.8);
-	}
-	if (chunkPosition.x == 0.0 && chunkPosition.z == 254.0) {
-		x_zero = vec3(0.2, 0.3, 0.4);
-	}
-
-	if (in_Position.x < 6 && in_Position.x > 3 && in_Position.z < 6 && in_Position.z > 3) {
-		x_zero = vec3(0.6, 0.5, 0.5);
-	}
-
-
-
-	if (in_Position.x < tmp.x + 3.0 && in_Position.x > tmp.x - 3.0 && in_Position.z < tmp.z + 3.0 && in_Position.z > tmp.z - 3.0 && tmp2 > 0) {
-		x_zero = vec3(1.0, 0, 0);
-	}
-
-
-
-
 }
