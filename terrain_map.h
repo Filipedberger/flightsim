@@ -48,12 +48,6 @@ private:
     float amplitude;
     float frequency;
 
-    // Allocate memory for the vertex, normal, texture coordinate, and index arrays
-    vec3 *vertexArray;
-    vec3 *normalArray;
-    vec2 *texCoordArray;
-    GLuint *indexArray;
-
     float snow;
     float rock;
     float grass;

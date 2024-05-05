@@ -16,12 +16,6 @@ TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum 
     vertexCount = terrainWidth * terrainHeight;
     triangleCount = (terrainWidth - 1) * (terrainHeight - 1) * 2;
 
-    // Allocate memory for the vertex, normal, texture coordinate, and index arrays
-    vertexArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
-    normalArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
-    texCoordArray = (vec2 *)malloc(sizeof(GLfloat) * 2 * vertexCount);
-    indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
-
     frequency = settings["frequency"].asFloat();
     amplitude = settings["amplitude"].asFloat();
 
@@ -69,16 +63,16 @@ std::pair<int, int> TerrainMap::getChunk(int x, int z)
     int chunkX;
     int chunkZ;
     if (x < 0) {
-        chunkX = (x - terrainWidth) / (terrainWidth-2);
+        chunkX = (x - terrainWidth) / (terrainWidth);
     }
     else {
-        chunkX = x / (terrainWidth-2);
+        chunkX = x / (terrainWidth);
     }
     if (z < 0) {
-        chunkZ = (z - terrainHeight) / (terrainHeight-2);
+        chunkZ = (z - terrainHeight) / (terrainHeight);
     }
     else {
-        chunkZ = z / (terrainHeight-2);
+        chunkZ = z / (terrainHeight);
     }
     return {chunkX, chunkZ};
 }
@@ -90,17 +84,22 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
         int z = point.first.second;
         int y = point.second;
 
+        //std::cout << "Original: " << x << " " << z << std::endl;  
+
+        int original_x = x;
+        int original_z = z;
+
         std::pair<int, int> chunk = getChunk(x, z);
 
-        std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
+        //std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
         // Check if the chunk exists
         if (chunks.find(chunk) == chunks.end())
         {
             continue;
         }
 
-        x = x - 2 * chunk.first;
-        z = z - 2 * chunk.second;
+        //x = x + 2 * chunk.first;
+        //z = z + 2 * chunk.second;
 
         // Calculate the position of the vertex in the chunk
         if (x < 0) {
@@ -108,20 +107,23 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
             x = terrainWidth - x % (terrainWidth);
         }
         else {
-            x = x % (terrainWidth);
+            x = x - chunk.first * (terrainWidth);
         }
         if (z < 0) {
             z = -z;
             z = terrainHeight - z % (terrainHeight);
         }
         else {
-            z = z % (terrainHeight);
+            z = z - chunk.second * (terrainHeight);
         }
 
         Model *chunkModel = chunks[chunk];
 
-        std::cout << "Y: " << chunkModel -> vertexArray[x + z * terrainWidth].y << std::endl;
-        std::cout << "X: " << x << " Z: " << z << std::endl;
+        //std::cout << "Y: " << chunkModel -> vertexArray[x + z * terrainWidth].y << std::endl;
+        //std::cout << "X: " << x << " Z: " << z << std::endl;
+
+        int chunkX = chunk.first * (terrainWidth) + x;
+        int chunkZ = chunk.second * (terrainHeight) + z;
          
 
         tmp_x = x;
@@ -217,6 +219,11 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
     // Render all chunks
     for (const auto &pair : chunks)
     {
+
+        if (pair.first.first == 0 && pair.first.second == 1)
+        {
+            int p = 0;
+        } 
         // Calculate the chunk position
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
@@ -271,6 +278,19 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
     auto t1 = std::chrono::high_resolution_clock::now();
+
+    // Allocate memory for the vertex, normal, texture coordinate, and index arrays
+    vec3 *vertexArray;
+    vec3 *normalArray;
+    vec2 *texCoordArray;
+    GLuint *indexArray;
+
+    // Allocate memory for the vertex, normal, texture coordinate, and index arrays
+    vertexArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
+    normalArray = (vec3 *)malloc(sizeof(GLfloat) * 3 * vertexCount);
+    texCoordArray = (vec2 *)malloc(sizeof(GLfloat) * 2 * vertexCount);
+    indexArray = (GLuint *)malloc(sizeof(GLuint) * triangleCount * 3);
+
 // Generate the vertices, normals, and texture coordinates using Perlin noise
 #pragma omp parallel for collapse(2)
     for (int x = 0; x < terrainWidth; x++)

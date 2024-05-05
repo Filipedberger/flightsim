@@ -54,6 +54,13 @@ void main(void)
 		x_zero = vec3(0.6, 1.0, 1.0);
 	}
 
+	if (chunkPosition.x == 254.0 && chunkPosition.z == 0.0) {
+		x_zero = vec3(0.2, 0.8, 0.8);
+	}
+	if (chunkPosition.x == 0.0 && chunkPosition.z == 254.0) {
+		x_zero = vec3(0.2, 0.3, 0.4);
+	}
+
 	if (in_Position.x < 6 && in_Position.x > 3 && in_Position.z < 6 && in_Position.z > 3) {
 		x_zero = vec3(0.6, 0.5, 0.5);
 	}
