@@ -139,6 +139,37 @@ void main(void)
 			color = blue;
 			spec = 1.0;
 		}
+		if (world_position.y > snow) {
+			color = white;
+			spec = 0.5;
+		}
+		else if(world_position.y > snow - snow_inter){
+			float t = (world_position.y - (snow - snow_inter))/snow_inter;
+			color = t*white + (1 - t)*grey;
+		}
+		else if(world_position.y > rock){
+			color = grey;
+		}
+		else if (world_position.y > rock - rock_inter) {
+			float t = (world_position.y - (rock - rock_inter))/rock_inter;
+			color = t*grey + (1 - t)*green;
+		}
+		else if (world_position.y > grass)
+		{
+			color = green;
+		}
+		else if(world_position.y > grass - grass_inter){
+			float t = (world_position.y - (grass-grass_inter))/grass_inter;
+			color = t*green + (1 - t)*beige;
+		}
+		else if(world_position.y > sand + water_to_sand)
+		{
+			color = beige;
+		}
+		else{
+			color = blue;
+			spec = 1.0;
+		}
 
 		float d = sqrt((camera_pos.x - world_position.x) * (camera_pos.x - world_position.x) + (camera_pos.z - world_position.z) * (camera_pos.z - world_position.z));
 
@@ -155,9 +186,19 @@ void main(void)
 		else {
 			alpha = (far - d) / (far - c);
 		}
+		if (d > far) {
+			alpha = 0;
+		} 
+		else if (d < c) {
+			alpha = 1;
+		} 
+		else {
+			alpha = (far - d) / (far - c);
+		}
 
 		out_Color = vec4(color * light_intensity * (0.6 + diffuse * 0.4 + specular * spec), alpha) ;
 	}
 	
 
+	
 }
