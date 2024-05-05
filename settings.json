@@ -125,6 +125,7 @@
             "scale": 0.002,
             "rotation": [],
             "speed": 0.1,
+            "acceleration": 0.01,
             "roll_speed": 2,
             "pitch_speed": 1,
             "offset": 40,
@@ -142,7 +143,17 @@
                 1,
                 0,
                 0
-            ]
+            ],
+            "light_offset": [
+                11,
+                15,
+                1],
+            "light_color": [
+                1,
+                0,
+                0
+            ],
+            "light_radius": 15
         },
         {
             "name": "Airbus A380",
@@ -150,6 +161,7 @@
             "scale": 0.5,
             "rotation": [],
             "speed": 0.020,
+            "acceleration": 0.01,
             "roll_speed": 2,
             "pitch_speed": 1,
             "offset": 80,
@@ -167,7 +179,17 @@
                 1,
                 0,
                 0
-            ]
+            ],
+            "light_offset": [
+                15,
+                24,
+                1],
+            "light_color": [
+                1,
+                0,
+                0
+            ],
+            "light_radius": 25
         },
         {
             "name": "Jas Gripen",
@@ -175,8 +197,9 @@
             "scale": 0.2,
             "rotation": [],
             "speed": 0.2,
-            "roll_speed": 4,
+            "roll_speed": 6,
             "pitch_speed": 2,
+            "acceleration": 0.01,
             "offset": 40,
             "forward": [
                 0,
@@ -192,7 +215,17 @@
                 1,
                 0,
                 0
-            ]
+            ],
+            "light_offset": [
+                7,
+                9,
+                1],
+            "light_color": [
+                0,
+                1,
+                0
+            ],
+            "light_radius": 8
         }
     ],
     "terrain": {

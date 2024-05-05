@@ -11,7 +11,7 @@ ifeq ($(OS),Darwin)
     ext = m
     flags = -framework OpenGL -framework Cocoa -lm -ljsoncpp -L/opt/homebrew/Cellar/jsoncpp/1.9.5/lib -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
     oflag =  -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
-    compiler = clang++
+    compiler = /opt/homebrew/opt/llvm/bin/clang++
 else ifeq ($(OS),Linux)
     # Commands for Linux
     os = Linux/
@@ -28,6 +28,9 @@ all : $(file)
 $(file) : $(OBJ_FILES) GL_utilities.o LoadTGA.o MicroGlut.o
 	$(compiler) -std=c++17 $(CCFLAGS) -o $(file).out -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES GL_utilities.o LoadTGA.o MicroGlut.o $(OBJ_FILES) $(flags)
 
+main.o : main.cpp
+    $(compiler) -std=c++17 $(CCFLAGS) -c -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES $< -o $@ $(oflag)
+    
 %.o : %.cpp
 	$(compiler) -std=c++17 $(CCFLAGS) -c -I$(commondir) -I$(commondir)$(os) -DGL_GLEXT_PROTOTYPES $< -o $@ $(oflag)
 

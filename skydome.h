@@ -12,7 +12,7 @@ class Skydome : public Object {
         Skydome(Json::Value& c, const vec3& cameraPosition);
 
         void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed) override;
-        void display(const GLuint& program, const mat4& world2view, const mat4& projection) override;
+        void display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int) override;
         void reset() override;
 
         ~Skydome() override;

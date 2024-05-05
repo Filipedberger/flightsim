@@ -19,6 +19,7 @@ Plane::Plane(Json::Value settings, vec3 pos)
 
     pitch_speed = settings["pitch_speed"].asInt();
     roll_speed = settings["roll_speed"].asInt();
+    acceleration = settings["acceleration"].asFloat();
 
     create_model(filename, position, sc);
 
@@ -44,6 +45,11 @@ Plane::Plane(Json::Value settings, vec3 pos)
     model_right = vec3(settings["right"][0].asFloat(), settings["right"][1].asFloat(), settings["right"][2].asFloat());
     model_up = vec3(settings["up"][0].asFloat(), settings["up"][1].asFloat(), settings["up"][2].asFloat());
     model_forward = vec3(settings["forward"][0].asFloat(), settings["forward"][1].asFloat(), settings["forward"][2].asFloat());
+
+    // Set up light
+    light_offset = vec3(settings["light_offset"][0].asFloat(), settings["light_offset"][1].asFloat(), settings["light_offset"][2].asFloat());
+    light_color = vec3(settings["light_color"][0].asFloat(), settings["light_color"][1].asFloat(), settings["light_color"][2].asFloat());
+    light_radius = settings["light_radius"].asInt();
 }
 
 void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed)
@@ -51,16 +57,25 @@ void Plane::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
     position += rotationMatrix * model_forward * speed * time_elapsed;
     move(position);
     tilt(keys_pressed);
+    update_light(time_elapsed);
     return;
+}
+
+void Plane::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int)
+{
+    glUniform3fv(glGetUniformLocation(program, "plane_light_pos"), 2, &light_pos[0].x);
+
+    vec3 temp_light = light_color * light_intensity;
+    glUniform3fv(glGetUniformLocation(program, "plane_light_intensity"), 1, &temp_light.x);
+
+    glUniform1i(glGetUniformLocation(program, "plane_light_radius"), light_radius);
+
+    Object::display(program, world2view, projection);
+
 }
 
 void Plane::tilt(std::map<char, bool> keys_pressed)
 {
-    if (!keys_pressed['a'] && !keys_pressed['d'] && !keys_pressed['w'] && !keys_pressed['s'])
-    {
-        return;
-    }
-
     pitch = 0;
     roll = 0;
 
@@ -83,14 +98,41 @@ void Plane::tilt(std::map<char, bool> keys_pressed)
         if (keys_pressed['s'])
         {
             pitch = pitch_speed;
+            camera_y_offset += 1;
+            if (camera_y_offset > 10)
+            {
+                camera_y_offset = 10;
+            }
         }
 
         else if (keys_pressed['w'])
         {
             pitch = -pitch_speed;
+            camera_y_offset -= 1;
+            if (camera_y_offset < -10)
+            {
+                camera_y_offset = -10;
+            }
         }
         rotationMatrix = rotationMatrix * ArbRotate(model_right, rad(pitch));
     }
+    else {
+
+        if (camera_y_offset > 0) {
+            camera_y_offset -= 0.5;
+        }
+        else if (camera_y_offset < 0) {
+            camera_y_offset += 0.5;
+        }
+    }
+
+    if (keys_pressed['\1']) {
+        speed += acceleration;
+    }
+    if (keys_pressed['\2']) {
+        speed -= acceleration;
+    }
+
 }
 
 void Plane::calculate_radius()
@@ -115,7 +157,7 @@ void Plane::calculate_radius()
 
 vec3 Plane::get_pos()
 {
-    return position - rotationMatrix * model_forward * offset;
+    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 0;
 }
 
 vec3 Plane::get_lookAtPoint()
@@ -130,7 +172,38 @@ vec3 Plane::get_upVector()
 
 mat4 Plane::get_lookAtMatrix()
 {
-    return lookAtv(get_pos(), position, rotationMatrix * model_up);
+    return lookAtv(get_pos() +  rotationMatrix * model_up * camera_y_offset, position + rotationMatrix * (model_forward * 5), rotationMatrix * model_up);
+}
+
+std::map<std::pair<int, int>, int> Plane::get_points_on_radius()
+{
+    std::map<std::pair<int, int>, int> points;
+    int num_segments = 8;
+
+    for (int i = 0; i < num_segments; i++)
+    {
+        float theta = 2.0f * M_PI * float(i) / float(num_segments);
+        vec3 point = vec3(cosf(theta), 0,sinf(theta)) * radius;
+
+        vec3 rotated_point = translationMatrix * rotationMatrix * scaleMatrix * point;
+        std::pair<int, int> key = std::make_pair(round(rotated_point.x), round(rotated_point.z));
+        points[key] = rotated_point.y;
+    }
+    return points;
+}
+
+void Plane::update_light(int time_elapsed)
+{
+    light_pos[0] = position + rotationMatrix * (model_forward * light_offset.x + model_right * light_offset.y + model_up * light_offset.z);
+    light_pos[1] = position + rotationMatrix * (model_forward * light_offset.x - model_right * light_offset.y + model_up * light_offset.z);
+
+    total_time += time_elapsed;
+
+    // Calculate the new light intensity
+    float pulseSpeed = 0.001f;  // Adjust this to change the speed of the pulse
+    float maxIntensity = 1.0f;  // Adjust this to change the maximum intensity
+
+    light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
 }
 
 void Plane::reset()

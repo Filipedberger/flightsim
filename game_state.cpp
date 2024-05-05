@@ -28,29 +28,63 @@ void Game_State::keyboard(unsigned char key, int x, int y)
 {
     State::keyboard(key, x, y);
 
-    if (key == 'p')
+    switch (key)
     {
-        context->menu_state = true;
+        case 'p':
+        {
+            context->menu_state = true;
+            break;
+        }
+
+        case '1':
+        {
+            if (current_plane == 0)
+                break;
+            vec3 tmp_pos = plane->get_lookAtPoint();
+            delete plane;
+            plane = new Plane(context->settings["planes"][0], tmp_pos);
+            current_plane = 0;
+            break;
+        }
+
+        case '2':
+        {
+            if (current_plane == 1)
+                break;
+            vec3 tmp_pos = plane->get_lookAtPoint();
+            delete plane;
+            plane = new Plane(context->settings["planes"][1], tmp_pos);
+            current_plane = 1;
+            break;
+        }
+
+        case '3':
+        {
+            if (current_plane == 2)
+                break;
+            vec3 tmp_pos = plane->get_lookAtPoint();
+            delete plane;
+            plane = new Plane(context->settings["planes"][2], tmp_pos);
+            current_plane = 2;
+            break;
+        }
+
+        case 'k':
+        {
+            light_intensity -= 0.1;
+            if (light_intensity < 0.1)
+                light_intensity = 0.1;
+            break;
+        }
+        case 'l':
+        {
+            light_intensity += 0.1;
+            if (light_intensity > 1.0)
+                light_intensity = 1.0;
+            break;
+        }
     }
 
-    if (key == '1' and current_plane != 0) {
-        vec3 tmp_pos = plane->get_lookAtPoint();
-        delete plane;
-        plane = new Plane(context->settings["planes"][0], tmp_pos);
-        current_plane = 0;
-    }
-    if (key == '2' and current_plane != 1) {
-        vec3 tmp_pos = plane->get_lookAtPoint();
-        delete plane;
-        plane = new Plane(context->settings["planes"][1], tmp_pos);
-        current_plane = 1;
-    }
-    if (key == '3' and current_plane != 2) {
-        vec3 tmp_pos = plane->get_lookAtPoint();
-        delete plane;
-        plane = new Plane(context->settings["planes"][2], tmp_pos);
-        current_plane = 2;
-    }
 }
 
 void Game_State::mouse(int x, int y)
@@ -84,8 +118,8 @@ void Game_State::mouse(int x, int y)
     phi = std::max(std::min(phi, M_PI / 2.0f - epsilon), epsilon - M_PI / 2.0f);
 
     // Calculate the direction vector
-    // mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
-    mouse_direction = vec3(sin(theta), 0, cos(theta));
+    mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
+    //mouse_direction = vec3(sin(theta), 0, cos(theta));
 }
 
 void Game_State::move_camera(int time_elapsed)
@@ -99,8 +133,10 @@ void Game_State::move_camera(int time_elapsed)
     }
     else
     {
-        lookAtPoint = mouse_direction;
-        upVector = plane->get_upVector();
+        cameraPosition = plane->get_pos();
+        lookAtPoint = mouse_direction + cameraPosition;
+        //upVector = plane->get_upVector();
+        upVector = vec3(0, 1, 0);
         world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
     }
 }
@@ -118,6 +154,15 @@ void Game_State::update(int time_elapsed)
         object->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
     }
     move_camera(time_elapsed);
+
+    // Check for collisions
+    std::map<std::pair<int, int>, int> points = plane->get_points_on_radius();
+
+    if (map->collision(points))
+    {
+        std::cout << "Collision detected" << std::endl;
+        return;
+    }
 }
 
 void Game_State::display()
@@ -127,8 +172,14 @@ void Game_State::display()
     glUseProgram(program);
     upload2shader();
 
-    skydome->display(program, world2view, projection);
+    cameraPosition = plane->get_pos();
+
+    skydome->display(program, world2view, projection, light_intensity);
+    
+    glUniform1i(glGetUniformLocation(program, "map"), 1);
     map->display(program, world2view, projection, plane->get_pos());
+
+    glUniform1i(glGetUniformLocation(program, "map"), 0);
     plane->display(program, world2view, projection);
 
     for (Object *object : objects)

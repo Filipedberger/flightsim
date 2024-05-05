@@ -15,7 +15,7 @@ class Object {
 
     // Standard functions:
     virtual void update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed);
-    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection);
+    virtual void display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int = vec3(1,1,1));
     virtual void create_model(const std::string& filename, vec3 pos, float sc);
 
     // Transformation functions:
@@ -40,6 +40,8 @@ class Object {
     virtual vec3 get_lookAtPoint() {return position;}
     virtual mat4 get_lookAtMatrix() {return IdentityMatrix();}
     virtual vec3 get_upVector() {return vec3(0,1,0);}
+
+    virtual std::map<std::pair<int, int>, int> get_points_on_radius() {return std::map<std::pair<int, int>, int>();}
 
 
     protected:
