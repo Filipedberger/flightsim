@@ -104,14 +104,14 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
         // Calculate the position of the vertex in the chunk
         if (x < 0) {
             x = -x;
-            x = terrainWidth - x % (terrainWidth);
+            x = (terrainWidth-1) - x % (terrainWidth);
         }
         else {
             x = x - chunk.first * (terrainWidth);
         }
         if (z < 0) {
             z = -z;
-            z = terrainHeight - z % (terrainHeight);
+            z = (terrainHeight-1) - z % (terrainHeight);
         }
         else {
             z = z - chunk.second * (terrainHeight);
