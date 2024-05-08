@@ -11,7 +11,7 @@ ifeq ($(OS),Darwin)
     ext = m
     flags = -framework OpenGL -framework Cocoa -lm -ljsoncpp -L/opt/homebrew/Cellar/jsoncpp/1.9.5/lib -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
     oflag =  -I/opt/homebrew/Cellar/jsoncpp/1.9.5/include
-    compiler = clang++
+    compiler = /opt/homebrew/opt/llvm/bin/clang++
 else ifeq ($(OS),Linux)
     # Commands for Linux
     os = Linux/
