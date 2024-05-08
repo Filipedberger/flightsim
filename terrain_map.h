@@ -72,6 +72,9 @@ private:
     int tmp_z;
     int tmp_x2;
     int tmp_z2;
+
+    //DEBUGGING
+    vec3 points_marker[16];
 };
 
 #endif

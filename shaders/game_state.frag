@@ -33,6 +33,8 @@ uniform vec3 plane_light_pos[2];
 uniform vec3 plane_light_intensity;
 uniform int plane_light_radius;
 
+uniform vec3[16] points_marker;
+
 void main(void)
 {	
 
@@ -157,6 +159,12 @@ void main(void)
 		}
 
 		out_Color = vec4(color * light_intensity * (0.6 + diffuse * 0.4 + specular * spec), alpha) ;
+
+		for (int i = 0; i < 16; i++) {
+			if (world_position.x > points_marker[i].x - 1.0 && world_position.x < points_marker[i].x + 1.0 && world_position.z > points_marker[i].z - 1.0 && world_position.z < points_marker[i].z + 1.0) {
+				out_Color = vec4(1.0, 0.0, 0.0, 1.0);
+			}
+		}
 	}
 	
 

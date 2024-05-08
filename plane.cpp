@@ -157,7 +157,7 @@ void Plane::calculate_radius()
 
 vec3 Plane::get_pos()
 {
-    return position - rotationMatrix * model_forward * offset + rotationMatrix * model_up * 0;
+    return position - rotationMatrix * model_forward * 0 + rotationMatrix * model_up * 50;
 }
 
 vec3 Plane::get_lookAtPoint()

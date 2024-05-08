@@ -4,6 +4,7 @@
 #include <omp.h>
 #include "frustum.h"
 #include <jsoncpp/json/json.h>
+#include "helper.h"
 
 TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum &f)
 {
@@ -79,6 +80,13 @@ std::pair<int, int> TerrainMap::getChunk(int x, int z)
 
 bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
 {
+    // Debbugging
+    int i = 0;
+    for (auto &point : points) {
+        points_marker[i] = vec3(point.first.first, point.second, point.first.second);
+        i++;
+    }
+
     for (auto &point : points){
         int x = point.first.first;
         int z = point.first.second;
@@ -259,6 +267,9 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         {
             glUniform1i(glGetUniformLocation(program, "tmp2"), 0);
         }
+
+        // DEBUGGING
+        glUniform3fv(glGetUniformLocation(program, "points_marker"), 16, &points_marker[0].x);
 
         
 
