@@ -12,7 +12,7 @@
 Loops::Loops(Json::Value settings, vec3 cameraPosition)
 {
 
-    std::string filename = settings["path"].asString();
+    std::string filename = settings["filename"].asString();
     float sc = settings["scale"].asFloat();
 
     float distance = settings["distance"].asFloat();

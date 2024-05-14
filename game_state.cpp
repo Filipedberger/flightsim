@@ -6,6 +6,7 @@
 #include "helper.h"
 #include "plane.h"
 #include "terrain_map.h"
+#include "loops.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -20,6 +21,7 @@ Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
     map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
     plane = new Plane(context->settings["planes"][0], vec3(0,150,0));
+    objects.push_back(new Loops(context->settings["loops"], vec3(0, 150, -1000)));
     glutHideCursor();
     return;
 }

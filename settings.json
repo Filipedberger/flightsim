@@ -241,5 +241,13 @@
         "rock_inter": 0.20,
         "grass_inter": 0.25,
         "water_to_sand": 0.05
+    },
+    "loops": {
+        "filename": "models/Torus100.obj",
+        "scale": 10.0 //,
+        //"shader_vert": "shaders/skydome.vert",
+        //"shader_frag": "shaders/skydome.frag",
+        //"texture": "textures/skyboxes/Daylight-Box-mod2.tga"
     }
+
 }
