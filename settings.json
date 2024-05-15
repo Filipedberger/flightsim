@@ -247,7 +247,9 @@
         "scale": 10.0,
         "distance": 500.0,
         "allowedSpace_y_low": 150.0,
-        "allowedSpace_y_high": 550.0
+        "allowedSpace_y_high": 550.0,
+        "waypointer_filename": "models/waypointer.obj",
+        "waypointer_scale": 0.1
         //"shader_vert": "shaders/skydome.vert",
         //"shader_frag": "shaders/skydome.frag",
         //"texture": "textures/skyboxes/Daylight-Box-mod2.tga"

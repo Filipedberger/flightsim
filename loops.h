@@ -26,8 +26,10 @@ class Loops : public Object {
 
     private:
         std::string filename;
+        std::string waypointer_filename;
         //float speed; // Pixels per millisecond
         float sc;
+        float waypointer_sc;
         vec3 loopPos;
         vec3 model_up;
         vec3 model_forward;
@@ -39,6 +41,8 @@ class Loops : public Object {
         float offset_distance = 1;
         bool wasInsideLastFrame = false;
         float radius = 0;
+
+        
 
         //float roll = 0;
         //int roll_speed = 2;

@@ -14,6 +14,8 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
 
     filename = settings["filename"].asString();
     sc = settings["scale"].asFloat();
+    waypointer_filename = settings["waypointer_filename"].asString();
+    waypointer_sc = settings["waypointer_scale"].asFloat();
 
     offset_distance = settings["distance"].asFloat();
     std::cout << "Offset distance: " << offset_distance << "\n";
@@ -36,6 +38,7 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
     // Scale by the desired offset_distance and add to the airplane's position to get the loop's position.
     //loopPos = cameraPosition + direction * offset_distance;
     loopPos = cameraPosition + offset_distance;
+    
 
     if (abs(loopPos.y) < allowedSpace_y_low) {
         std::cout << "New loop position is outside the LOW allowed space\n";
@@ -46,7 +49,17 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
         loopPos.y = allowedSpace_y_high;
     }
 
+    // Calculate the waypoint_direction from the airplane to the loop
+    vec3 waypoint_direction = normalize(loopPos - cameraPosition);
+
+    // Rotate the arrow to point in the calculated waypoint_direction
+    //waypoint_rotation = rotation(vec3(0, 0, 1), waypoint_direction);
+
+    // Position the arrow around the airplane
+    //arrowModel.position = cameraPosition + cameraDirection * 10; // 10 is offset distance from airplane position
+
     create_model(filename, loopPos, sc);
+    //create_model(waypointer_filename, arrowModel.position, waypointer_sc);
 
     std::cout << "LOOP CREATED" << "\n";
 
