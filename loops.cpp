@@ -12,14 +12,86 @@
 Loops::Loops(Json::Value settings, vec3 cameraPosition)
 {
 
-    std::string filename = settings["filename"].asString();
-    float sc = settings["scale"].asFloat();
+    filename = settings["filename"].asString();
+    sc = settings["scale"].asFloat();
 
-    float distance = settings["distance"].asFloat();
+    offset_distance = settings["distance"].asFloat();
+    std::cout << "Offset distance: " << offset_distance << "\n";
+
+    allowedSpace_y_low = settings["allowedSpace_y_low"].asFloat();
+    allowedSpace_y_high = settings["allowedSpace_y_high"].asFloat();
 
 
     // Calc position
     // Generate a random direction.
+    //std::random_device rd;
+    //std::mt19937 gen(rd());
+    //std::uniform_real_distribution<> dis(0, 1);
+    //float azimuth = 2 * M_PI * dis(gen); // Random angle in [0, 2*pi]
+    //float elevation = acos(2 * dis(gen) - 1); // Random angle in [0, pi]
+
+    // Convert spherical coordinates to Cartesian coordinates.
+    //vec3 direction(sin(elevation) * cos(azimuth), sin(elevation) * sin(azimuth), cos(elevation));
+
+    // Scale by the desired offset_distance and add to the airplane's position to get the loop's position.
+    //loopPos = cameraPosition + direction * offset_distance;
+    loopPos = cameraPosition + offset_distance;
+
+    if (abs(loopPos.y) < allowedSpace_y_low) {
+        std::cout << "New loop position is outside the LOW allowed space\n";
+        loopPos.y = allowedSpace_y_low;
+    }
+    if (abs(loopPos.y) > allowedSpace_y_high) {
+        std::cout << "New loop position is outside the HIGH allowed space\n";
+        loopPos.y = allowedSpace_y_high;
+    }
+
+    create_model(filename, loopPos, sc);
+
+    std::cout << "LOOP CREATED" << "\n";
+
+    
+
+    // Create model vetors
+    model_right = vec3(settings["right"][0].asFloat(), settings["right"][1].asFloat(), settings["right"][2].asFloat());
+    model_up = vec3(settings["up"][0].asFloat(), settings["up"][1].asFloat(), settings["up"][2].asFloat());
+    model_forward = vec3(settings["forward"][0].asFloat(), settings["forward"][1].asFloat(), settings["forward"][2].asFloat());
+}
+
+void Loops::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed)
+{
+    float distanceToCenter = length(cameraPosition - loopPos);
+    calculate_radius();
+    //std::cout << "Distance to center: " << distanceToCenter << "Radius: " << radius << "\n";
+    bool isInsideThisFrame = distanceToCenter < radius;
+
+    if (!wasInsideLastFrame && isInsideThisFrame) {
+        std::cout << "Distance to center: " << distanceToCenter << "Radius: " << radius << "\n";
+        std::cout << "Airplane has entered the torus.\n";
+        create_new_loop(cameraPosition);
+    } 
+    /*else if (wasInsideLastFrame && !isInsideThisFrame) {
+        std::cout << "Distance to center: " << distanceToCenter << "Radius: " << radius << "\n";
+        std::cout << "Airplane has exited the torus.\n";
+        //create_new_loop(cameraPosition);
+    }*/
+
+    wasInsideLastFrame = isInsideThisFrame;
+    return;
+}
+
+void Loops::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int)
+{
+    Object::display(program, world2view, projection);
+}
+
+float Loops::length(vec3 v) {
+    return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+void Loops::create_new_loop(vec3 cameraPosition)
+{
+    // Generate a new random position for the loop.
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, 1);
@@ -30,32 +102,33 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
     vec3 direction(sin(elevation) * cos(azimuth), sin(elevation) * sin(azimuth), cos(elevation));
 
     // Scale by the desired distance and add to the airplane's position to get the loop's position.
-    loopPos = cameraPosition + direction * distance;
+    
+    vec3 newLoopPos = cameraPosition + direction * offset_distance;
+    std::cout << "camPos: (" << cameraPosition.x << ", " << cameraPosition.y << ", " << cameraPosition.z << ") "
+          << "dir: (" << direction.x << ", " << direction.y << ", " << direction.z << ") "
+          << "offset: " << offset_distance
+          << "new pos: (" << newLoopPos.x << ", " << newLoopPos.y << ", " << newLoopPos.z << ")\n";
 
+    if (abs(newLoopPos.y) < allowedSpace_y_low) {
+        std::cout << "New loop position is outside the LOW allowed space\n";
+        newLoopPos.y = allowedSpace_y_low;
+    }
+    if (abs(newLoopPos.y) > allowedSpace_y_high) {
+        std::cout << "New loop position is outside the HIGH allowed space\n";
+        newLoopPos.y = allowedSpace_y_high;
+    }
+    // Check if the new position is under or inside the terrain.
+    // Replace getTerrainHeight with the appropriate function in your program.
+    //if (newLoopPos.y <= getTerrainHeight(newLoopPos.x, newLoopPos.z)) {
+    //    // The new position is under or inside the terrain. Try again.
+    //    create_new_loop(cameraPosition);
+    //    return;
+    //}
+
+    // The new position is above the terrain. Create a new loop at this position.
+    loopPos = newLoopPos;
     create_model(filename, loopPos, sc);
-
-    std::cout << "File: " << filename << std::endl;
-
-    calculate_radius();
-
-    // Create model vetors
-    model_right = vec3(settings["right"][0].asFloat(), settings["right"][1].asFloat(), settings["right"][2].asFloat());
-    model_up = vec3(settings["up"][0].asFloat(), settings["up"][1].asFloat(), settings["up"][2].asFloat());
-    model_forward = vec3(settings["forward"][0].asFloat(), settings["forward"][1].asFloat(), settings["forward"][2].asFloat());
-}
-
-void Loops::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed)
-{
-    //position += rotationMatrix * model_forward * speed * time_elapsed;
-    //move(position);
-    //tilt(keys_pressed);
-    //update_light(time_elapsed);
-    return;
-}
-
-void Loops::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int)
-{
-    Object::display(program, world2view, projection);
+    std::cout << "New loop created.\n";
 }
 
 void Loops::calculate_radius()
@@ -67,7 +140,7 @@ void Loops::calculate_radius()
         center = center + model->vertexArray[i];
     }
 
-    center = (center / model->numVertices) * scale_factor;
+    center = (center / model->numVertices) * sc;
     for (int i = 0; i < model->numVertices; i++)
     {
         vec3 dist_vec = model->vertexArray[i] - center;
@@ -75,22 +148,12 @@ void Loops::calculate_radius()
         radius = fmax(radius, dist);
     }
 
-    radius = sqrt(radius) * scale_factor; // OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED, NOT IMPLEMENTED YET
+    radius = sqrt(radius) * sc; // OBS SHOULD CHANGE THIS WHEN SCALING IS CHANGED, NOT IMPLEMENTED YET
 }
 
 vec3 Loops::get_pos()
 {
     return loopPos - rotationMatrix * model_forward * offset_distance + rotationMatrix * model_up * 0;
-}
-
-vec3 Loops::get_lookAtPoint()
-{
-    return loopPos;
-}
-
-vec3 Loops::get_upVector()
-{
-    return model_up;
 }
 
 mat4 Loops::get_lookAtMatrix()

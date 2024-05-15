@@ -244,7 +244,10 @@
     },
     "loops": {
         "filename": "models/Torus100.obj",
-        "scale": 10.0 //,
+        "scale": 10.0,
+        "distance": 500.0,
+        "allowedSpace_y_low": 150.0,
+        "allowedSpace_y_high": 550.0
         //"shader_vert": "shaders/skydome.vert",
         //"shader_frag": "shaders/skydome.frag",
         //"texture": "textures/skyboxes/Daylight-Box-mod2.tga"
