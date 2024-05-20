@@ -6,7 +6,6 @@
 #include "LoadTGA.h"
 
 #include "game_state.h"
-#include "menu_state.h"
 #include "context.h"
 
 #include <iostream>
@@ -43,29 +42,8 @@ void display(void)
 	int time_elapsed = curr_time - prev_time;
 	prev_time = curr_time;
 
-	// if (time_elapsed >= FRAME_DURATION) {
-	//    prev_time = curr_time;
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	state->update(time_elapsed);
-
-	if (context->next_state != nullptr)
-	{
-		delete state;
-		state = context->next_state;
-		context->next_state = nullptr;
-	}
-	if (context->menu_state)
-	{
-		context->next_state = new Menu_State(context);
-		context->menu_state = false;
-	}
-
-	if (context->game_state)
-	{
-		context->next_state = new Game_State(context);
-		context->game_state = false;
-	}
 
 	state->display();
 	glutSwapBuffers();

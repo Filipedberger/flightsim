@@ -6,7 +6,6 @@
 #include <string>
 #include <map>
 #include <jsoncpp/json/json.h>
-#include "PerlinNoise.hpp"
 #include "SimplexNoise.h"
 
 #include "MicroGlut.h"
@@ -27,8 +26,6 @@ public:
     bool collision(std::map<std::pair<int, int>, int> points);
 
 private:
-    const siv::PerlinNoise::seed_type seed = 123456u;
-    const siv::PerlinNoise perlin{seed};
     std::map<std::pair<int, int>, Model *> chunks;
     int terrainWidth = 256;
     int terrainHeight = terrainWidth;
@@ -38,7 +35,6 @@ private:
     int cameraChunkZ;
     int CHUNKS = 6;
     const int MAX_CHUNK_DISTANCE = 3 * CHUNKS;
-    GLuint terrain_program = loadShaders("shaders/terrain_shader.vert", "shaders/terrain_shader.frag");
     Frustum frustum_obj;
 
     // Calculate the number of vertices and triangles
@@ -63,15 +59,9 @@ private:
     float grass_size;
     float sand_size;
 
-    SimplexNoise *noise_test;
+    SimplexNoise *noise;
 
     std::pair<int, int> getChunk(int x, int z);
-
-    //TESTING
-    int tmp_x;
-    int tmp_z;
-    int tmp_x2;
-    int tmp_z2;
 };
 
 #endif

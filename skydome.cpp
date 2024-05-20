@@ -12,7 +12,6 @@
 
 Skydome::Skydome(Json::Value& c, const vec3& cameraPosition)
     : Object(c["filename"].asString(), cameraPosition, c["scale"].asFloat()) {
-    std::cout << "SKYDOME CREATED" << "\n";
 
     object_program = loadShaders(c["shader_vert"].asString().c_str(), c["shader_frag"].asString().c_str());
 
@@ -24,8 +23,6 @@ Skydome::Skydome(Json::Value& c, const vec3& cameraPosition)
 Skydome::Skydome(const std::string& filename, const vec3& cameraPosition, float sc)
     : Object(filename, cameraPosition, sc) // Loads model based on filename, positions and scales
     {
-    //std::cout << "SKYDOME CREATED 2" << "\n";
-
     object_program = loadShaders("shaders/skydome.vert", "shaders/skydome.frag");
     printError("Skybox Shader compile error");
 
@@ -45,7 +42,6 @@ void Skydome::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, st
 void Skydome::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int) {
     glUseProgram(object_program);
 
-    //glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     glUniform3f(glGetUniformLocation(object_program, "light_intensity"), light_int.x, light_int.y, light_int.z);
     
 	glUniformMatrix4fv(glGetUniformLocation(object_program, "viewMatrix"), 1, GL_TRUE, world2view.m);

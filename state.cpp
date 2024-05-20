@@ -102,7 +102,7 @@ State::~State()
     {
         delete object;
     }
-    delete ground;
+    delete map;
     delete skydome;
     glDeleteProgram(program);
 }

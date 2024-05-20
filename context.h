@@ -11,8 +11,6 @@ struct Context
 {
     State*          next_state{};
     Json::Value     settings;
-    bool            menu_state{false};
-    bool            game_state{false};
 };
 
 #endif

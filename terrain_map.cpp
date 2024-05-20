@@ -34,18 +34,8 @@ TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum 
     grass_inter = settings["grass_inter"].asFloat() * sand_size;
     water_to_sand = settings["water_to_sand"].asFloat() * sand_size;
 
-    std::cout << "Snow Y " << snow << std::endl;
-    std::cout << "Rock Y " << rock << std::endl;
-    std::cout << "Grass Y " << grass << std::endl;
-    std::cout << "Sand Y " << sand << std::endl;
 
-    std::cout << "Snow: " << rock_size << " " << snow_inter << std::endl;
-    std::cout << "Rock: " << grass_size << " " << rock_inter << std::endl;
-    std::cout << "Grass: " << sand_size << " " << grass_inter << std::endl;
-    std::cout << "Sand: " << water_to_sand << std::endl;
-
-    // TESTING
-    noise_test = new SimplexNoise(1.0, 1.0);
+    noise = new SimplexNoise(1.0, 1.0);
 }
 
 TerrainMap::~TerrainMap()
@@ -84,22 +74,13 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
         int z = point.first.second;
         int y = point.second;
 
-        //std::cout << "Original: " << x << " " << z << std::endl;  
-
-        int original_x = x;
-        int original_z = z;
-
         std::pair<int, int> chunk = getChunk(x, z);
 
-        //std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
         // Check if the chunk exists
         if (chunks.find(chunk) == chunks.end())
         {
             continue;
         }
-
-        //x = x + 2 * chunk.first;
-        //z = z + 2 * chunk.second;
 
         // Calculate the position of the vertex in the chunk
         if (x < 0) {
@@ -117,21 +98,7 @@ bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
             z = z - chunk.second * (terrainHeight);
         }
 
-        Model *chunkModel = chunks[chunk];
-
-        //std::cout << "Y: " << chunkModel -> vertexArray[x + z * terrainWidth].y << std::endl;
-        //std::cout << "X: " << x << " Z: " << z << std::endl;
-
-        int chunkX = chunk.first * (terrainWidth) + x;
-        int chunkZ = chunk.second * (terrainHeight) + z;
-         
-
-        tmp_x = x;
-        tmp_z = z;
-        tmp_x2 = chunk.first;
-        tmp_z2 = chunk.second;
-        
-
+        Model *chunkModel = chunks[chunk];         
 
         if (y < chunkModel -> vertexArray[x + z * terrainWidth].y)
         {
@@ -147,9 +114,6 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
     cameraChunkX = cameraPosition.x / terrainWidth;
     cameraChunkZ = cameraPosition.z / terrainHeight;
 
-    int count = 0;
-
-    auto t1 = std::chrono::high_resolution_clock::now();
     for (int x = cameraChunkX - CHUNKS; x <= cameraChunkX + CHUNKS; ++x)
     {
         float chunkX = ((x * (terrainWidth)) - cameraPosition.x) * ((x * (terrainWidth)) - cameraPosition.x);
@@ -161,25 +125,14 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
             {
                 continue;
             }
-            // if (frustum_obj.side_culling(vec3(chunkX, 0, chunkZ), 500, world2view)){
-            //     continue;
-            // }
+
             if (chunks.find({x, z}) == chunks.end())
             {
-                count++;
                 chunks[{x, z}] = GeneratePerlinTerrain(x * (terrainWidth - 2), z * (terrainHeight - 2));
             }
         }
     }
-    auto t2 = std::chrono::high_resolution_clock::now();
 
-    if (count > 0)
-    {
-        // std::cout << "Chunks generated: " << count << std::endl;
-        // std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
-    }
-
-    // std::cout << chunks.size() << std::endl;
     //  Iterate over all chunks
     for (auto it = chunks.begin(); it != chunks.end();)
     {
@@ -204,26 +157,26 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
         }
     }
 
-    auto t3 = std::chrono::high_resolution_clock::now();
-    // std::cout << "Generate chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
-    // std::cout << "Remove chunks: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
 }
 
 void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection, vec3 cameraPosition)
 {
-    //glUseProgram(terrain_program);
+    glUniform1f(glGetUniformLocation(program, "snow"), snow);
+    glUniform1f(glGetUniformLocation(program, "rock"), rock);
+    glUniform1f(glGetUniformLocation(program, "grass"), grass);
+    glUniform1f(glGetUniformLocation(program, "sand"), sand);
 
-    //glUniformMatrix4fv(glGetUniformLocation(terrain_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
-    //glUniformMatrix4fv(glGetUniformLocation(terrain_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    glUniform1f(glGetUniformLocation(program, "snow_inter"), snow_inter);
+    glUniform1f(glGetUniformLocation(program, "rock_inter"), rock_inter);
+    glUniform1f(glGetUniformLocation(program, "grass_inter"), grass_inter);
+    glUniform1f(glGetUniformLocation(program, "water_to_sand"), water_to_sand);
+    glUniform1f(glGetUniformLocation(program, "far"), frustum_obj.far);
+    glUniform1f(glGetUniformLocation(program, "width"), terrainWidth);
 
     // Render all chunks
     for (const auto &pair : chunks)
     {
 
-        if (pair.first.first == 0 && pair.first.second == 1)
-        {
-            int p = 0;
-        } 
         // Calculate the chunk position
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
@@ -233,52 +186,17 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
             continue;
         }
 
-
         // Pass the chunk position to the shader
         glUniform3f(glGetUniformLocation(program, "chunkPosition"), chunkX, 0, chunkZ);
-        glUniform1f(glGetUniformLocation(program, "snow"), snow);
-        glUniform1f(glGetUniformLocation(program, "rock"), rock);
-        glUniform1f(glGetUniformLocation(program, "grass"), grass);
-        glUniform1f(glGetUniformLocation(program, "sand"), sand);
-
-        glUniform1f(glGetUniformLocation(program, "snow_inter"), snow_inter);
-        glUniform1f(glGetUniformLocation(program, "rock_inter"), rock_inter);
-        glUniform1f(glGetUniformLocation(program, "grass_inter"), grass_inter);
-        glUniform1f(glGetUniformLocation(program, "water_to_sand"), water_to_sand);
-        glUniform1f(glGetUniformLocation(program, "far"), frustum_obj.far);
-        glUniform1f(glGetUniformLocation(program, "width"), terrainWidth);
-
-        glUniform3f(glGetUniformLocation(program, "tmp"), tmp_x, 0, tmp_z);
-        
-
-        if (pair.first.first == tmp_x2 && pair.first.second == tmp_z2)
-        {
-            glUniform1i(glGetUniformLocation(program, "tmp2"), 1);
-        }
-        else
-        {
-            glUniform1i(glGetUniformLocation(program, "tmp2"), 0);
-        }
-
-        
-
-
-        // Pass the chunk position to the shader
-        
-
-
 
 
         // Draw the chunk
-        DrawModel(pair.second, program, "in_Position", "in_Normal", "in_TexCoord");
+        DrawModel(pair.second, program, "in_Position", "in_Normal", NULL);
     }
-    //glUseProgram(program);
 }
 
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
 {
-    auto t1 = std::chrono::high_resolution_clock::now();
-
     // Allocate memory for the vertex, normal, texture coordinate, and index arrays
     vec3 *vertexArray;
     vec3 *normalArray;
@@ -298,19 +216,16 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
         {
             // Calculate the Perlin noise value for the current vertex
 
-            // float perlin_noise = SimplexNoise::noise((x + offsetX) * frequency, (z + offsetZ) * frequency, 4) * amplitude;
-            float perlin_noise = noise_test->fractal(4, (x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
+            float perlin_noise = noise->fractal(4, (x + offsetX) * frequency, (z + offsetZ) * frequency) * amplitude;
             if (perlin_noise < water)
             {
                 perlin_noise = water;
             }
 
-            // float perlin_noise = SimplexNoise::noise(x + offsetX, z + offsetZ, 4) * amplitude;
             //  Set the vertex position, normal, and texture coordinate
             vertexArray[x + z * terrainWidth] = vec3(x, perlin_noise, z);
             texCoordArray[x + z * terrainWidth] = vec2(x + offsetX, z + offsetZ);
         }
-    auto t2 = std::chrono::high_resolution_clock::now();
 // Calculate the normals for the vertices
 #pragma omp parallel for collapse(2)
     for (int x = 0; x < terrainWidth; x++)
@@ -337,20 +252,17 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
         }
     }
 
-    auto t3 = std::chrono::high_resolution_clock::now();
     // Copy the normals from the neighboring vertices for the edge vertices
     for (int x = 0; x < terrainWidth; x++)
     {
         normalArray[x] = normalArray[x + terrainWidth];                                                            // Top edge
         normalArray[x + (terrainHeight - 1) * terrainWidth] = normalArray[x + (terrainHeight - 2) * terrainWidth]; // Bottom edge
     }
-    auto t4 = std::chrono::high_resolution_clock::now();
     for (int z = 0; z < terrainHeight; z++)
     {
         normalArray[z * terrainWidth] = normalArray[1 + z * terrainWidth];                                       // Left edge
         normalArray[(terrainWidth - 1) + z * terrainWidth] = normalArray[(terrainWidth - 2) + z * terrainWidth]; // Right edge
     }
-    auto t5 = std::chrono::high_resolution_clock::now();
 // Generate the triangle indices
 #pragma omp parallel for collapse(2)
     for (int x = 0; x < terrainWidth - 1; x++)
@@ -370,7 +282,6 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
             indexArray[index + 5] = x + 1 + (z + 1) * terrainWidth;
         }
     }
-    auto t6 = std::chrono::high_resolution_clock::now();
 
     // Load the data into a model and return it
     Model *model = LoadDataToModel(
@@ -381,14 +292,7 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
         indexArray,
         vertexCount,
         triangleCount * 3);
-    auto t7 = std::chrono::high_resolution_clock::now();
 
-    /*std::cout << "Perlin noise: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count() << " ms" << std::endl;
-    std::cout << "Calculate normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t2).count() << " ms" << std::endl;
-    std::cout << "Copy normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count() << " ms" << std::endl;
-    std::cout << "Copy normals: " << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count() << " ms" << std::endl;
-    std::cout << "Generate indices: " << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t5).count() << " ms" << std::endl;
-    std::cout << "Load data to model: " << std::chrono::duration_cast<std::chrono::milliseconds>(t7 - t6).count() << " ms" << std::endl;*/
 
     return model;
 }

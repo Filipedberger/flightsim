@@ -20,7 +20,7 @@ void Object::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std
 
 void Object::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int) {
     upload2shader(program);
-    DrawModel(model, program, "in_Position", "in_Normal", "in_TexCoord");
+    DrawModel(model, program, "in_Position", "in_Normal", NULL);
 }
 
 void Object::translate(vec3 translation) {

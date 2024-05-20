@@ -1,7 +1,6 @@
 #include "game_state.h"
 #include "object.h"
 #include "context.h"
-#include "ground.h"
 #include "skydome.h"
 #include "helper.h"
 #include "plane.h"
@@ -32,12 +31,6 @@ void Game_State::keyboard(unsigned char key, int x, int y)
 
     switch (key)
     {
-        case 'p':
-        {
-            context->menu_state = true;
-            break;
-        }
-
         case '1':
         {
             if (current_plane == 0)
@@ -96,12 +89,10 @@ void Game_State::keyboard(unsigned char key, int x, int y)
 
 void Game_State::mouse(int x, int y)
 {
-
     if (!keys_toggle['m'])
     {
         return;
     }
-
 
     // Warp the cursor back to the center of the window
     glutWarpPointer(glutGet(GLUT_WINDOW_WIDTH) / 2, glutGet(GLUT_WINDOW_HEIGHT) / 2);
@@ -116,7 +107,6 @@ void Game_State::mouse(int x, int y)
     int deltaY = y - glutGet(GLUT_WINDOW_HEIGHT) / 2;
 
     // Update theta and phi based on the mouse movement
-    // The 0.005f factor is a sensitivity adjustment - you can change this value to make the camera more or less sensitive to mouse movement
     theta += deltaX * 0.001f;
     phi -= deltaY * 0.001f;
 
@@ -126,14 +116,10 @@ void Game_State::mouse(int x, int y)
 
     // Calculate the direction vector
     mouse_direction = vec3(cos(phi) * cos(theta), sin(phi), cos(phi) * sin(theta));
-    //mouse_direction = vec3(sin(theta), 0, cos(theta));
 }
 
 void Game_State::move_camera(int time_elapsed)
 {
-    // Update the lookAtPoint based on the camera position and the direction
-
-    // world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
     if (!keys_toggle['m'])
     {
         world2view = plane->get_lookAtMatrix();
@@ -142,7 +128,6 @@ void Game_State::move_camera(int time_elapsed)
     {
         cameraPosition = plane->get_pos();
         lookAtPoint = mouse_direction + cameraPosition;
-        //upVector = plane->get_upVector();
         upVector = vec3(0, 1, 0);
         world2view = lookAtv(cameraPosition, lookAtPoint, upVector);
     }
@@ -199,10 +184,6 @@ void Game_State::display()
         loop->display(program, world2view, projection);
     }
 
-    for (Object *object : objects)
-    {
-        object->display(program, world2view, projection);
-    }
 }
 
 Game_State::~Game_State()
@@ -210,6 +191,6 @@ Game_State::~Game_State()
     // Objects, ground and skydome are deleted in State
     // Program is deleted in State
     delete plane;
-    delete map;
+    delete loop;
     return;
 }

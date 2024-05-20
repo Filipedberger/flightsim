@@ -4,7 +4,7 @@
 #include "frustum.h"
 #include "object.h"
 #include "context.h"
-#include "ground.h"
+#include "terrain_map.h"
 
 #include "MicroGlut.h"
 #include "GL_utilities.h"
@@ -42,7 +42,7 @@ class State {
 
     // Objects:
     std::vector<Object*> objects;
-    Object* ground = nullptr;
+    TerrainMap *map = nullptr;
     Object* skydome = nullptr;
 
     Context* context;

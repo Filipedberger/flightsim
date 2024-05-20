@@ -23,8 +23,6 @@ Plane::Plane(Json::Value settings, vec3 pos)
 
     create_model(filename, position, sc);
 
-    std::cout << "File: " << filename << std::endl;
-
     float angle;
     vec3 axis;
 
@@ -199,11 +197,15 @@ void Plane::update_light(int time_elapsed)
 
     total_time += time_elapsed;
 
-    // Calculate the new light intensity
-    float pulseSpeed = 0.001f;  // Adjust this to change the speed of the pulse
-    float maxIntensity = 1.0f;  // Adjust this to change the maximum intensity
+    total_time = total_time % 2000;
 
-    light_intensity =  maxIntensity  * (1.0f + sin(pulseSpeed * total_time));
+    if (total_time < 260) {
+        light_intensity =  sin(12 * total_time * 0.001f);
+    }
+    else {
+        light_intensity = 0;
+    }
+
 }
 
 void Plane::reset()

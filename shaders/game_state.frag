@@ -63,8 +63,6 @@ void main(void)
 			temp_intensity = vec3(0.0, 0.0, 0.0);
 		}
 
-
-		
 		float light_intensity1 = 1.0;
 		float light_intensity2 = 1.0;
 

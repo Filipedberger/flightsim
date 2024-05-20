@@ -32,8 +32,6 @@ private:
 
     bool loop_on = true;
 
-    TerrainMap *map;
-
     void move_camera(int time_elapsed);
 
     int current_plane = 0;
