@@ -158,6 +158,12 @@ void main(void)
 
 		out_Color = vec4(color * light_intensity * (0.6 + diffuse * 0.4 + specular * spec), alpha) ;
 	}
+
+	// LOOPS
+	else if (map == 2) {
+		vec3 color = vec3(1.0, 1.0, 1.0); // White
+		out_Color = vec4(color * (0.6 + diffuse * 0.4 + specular), 1);
+	}
 	
 
 	

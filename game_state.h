@@ -28,6 +28,9 @@ private:
     vec3 mouse_direction = vec3(0, 0, -1);
 
     Object *plane;
+    Object *loop;
+
+    bool loop_on = true;
 
     TerrainMap *map;
 

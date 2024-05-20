@@ -50,7 +50,7 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
     }
 
     // Calculate the waypoint_direction from the airplane to the loop
-    vec3 waypoint_direction = normalize(loopPos - cameraPosition);
+    //vec3 waypoint_direction = normalize(loopPos - cameraPosition);
 
     // Rotate the arrow to point in the calculated waypoint_direction
     //waypoint_rotation = rotation(vec3(0, 0, 1), waypoint_direction);
@@ -60,6 +60,9 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
 
     create_model(filename, loopPos, sc);
     //create_model(waypointer_filename, arrowModel.position, waypointer_sc);
+
+    waypoint_model = LoadModel(waypointer_filename.c_str());
+    waypoint_scale = S(waypointer_sc, waypointer_sc, waypointer_sc);
 
     std::cout << "LOOP CREATED" << "\n";
 
@@ -73,7 +76,16 @@ Loops::Loops(Json::Value settings, vec3 cameraPosition)
 
 void Loops::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std::map<char, bool> keys_pressed)
 {
-    float distanceToCenter = length(cameraPosition - loopPos);
+    vec3 current_direction = vec3(0, 1, 0); // The current direction of the arrow
+    vec3 waypoint_direction = normalize(loopPos - lookAtPoint);
+    vec3 rotation_axis = cross(current_direction, waypoint_direction);
+    float rotation_angle = acos(dot(current_direction, waypoint_direction));
+    waypoint_rotation = ArbRotate(rotation_axis, rotation_angle);
+    waypoint_translation = T(lookAtPoint.x, lookAtPoint.y, lookAtPoint.z);
+
+
+
+    float distanceToCenter = length(lookAtPoint - loopPos);
     calculate_radius();
     //std::cout << "Distance to center: " << distanceToCenter << "Radius: " << radius << "\n";
     bool isInsideThisFrame = distanceToCenter < radius;
@@ -81,7 +93,7 @@ void Loops::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
     if (!wasInsideLastFrame && isInsideThisFrame) {
         std::cout << "Distance to center: " << distanceToCenter << "Radius: " << radius << "\n";
         std::cout << "Airplane has entered the torus.\n";
-        create_new_loop(cameraPosition);
+        create_new_loop(lookAtPoint);
     } 
     /*else if (wasInsideLastFrame && !isInsideThisFrame) {
         std::cout << "Distance to center: " << distanceToCenter << "Radius: " << radius << "\n";
@@ -96,6 +108,13 @@ void Loops::update(int time_elapsed, vec3 cameraPosition, vec3 lookAtPoint, std:
 void Loops::display(const GLuint& program, const mat4& world2view, const mat4& projection, vec3 light_int)
 {
     Object::display(program, world2view, projection);
+
+    // Draw waypoint
+    glUniformMatrix4fv(glGetUniformLocation(program, "translationMatrix"), 1, GL_TRUE, waypoint_translation.m);
+    glUniformMatrix4fv(glGetUniformLocation(program, "rotationMatrix"), 1, GL_TRUE, waypoint_rotation.m);
+    glUniformMatrix4fv(glGetUniformLocation(program, "scaleMatrix"), 1, GL_TRUE, waypoint_scale.m);
+    DrawModel(waypoint_model, program, "in_Position", "in_Normal", "in_TexCoord");
+
 }
 
 float Loops::length(vec3 v) {

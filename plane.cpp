@@ -162,7 +162,7 @@ vec3 Plane::get_pos()
 
 vec3 Plane::get_lookAtPoint()
 {
-    return position;
+    return position - rotationMatrix * model_forward * 4;
 }
 
 vec3 Plane::get_upVector()

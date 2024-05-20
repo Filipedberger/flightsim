@@ -43,28 +43,17 @@ class Loops : public Object {
         float radius = 0;
 
         
-
-        //float roll = 0;
-        //int roll_speed = 2;
-        //float pitch = 0;
-        //int pitch_speed = 1;
-        //float acceleration = 0;
-
-        //float camera_y_offset = 0; 
-        
         void calculate_radius();
 
-        //void tilt(std::map<char, bool> keys_pressed);
+        // WAYPOINTER
+        Model* waypoint_model;
+        mat4 waypoint_rotation = IdentityMatrix();
+        mat4 waypoint_translation = IdentityMatrix();
+        mat4 waypoint_scale = IdentityMatrix();
+        vec3 waypoint_position = vec3(0,0,0);
 
-        //mat4 create_rotation_matrix(vec3 forward, vec3 up, vec3 right);
 
-        //void update_light(int time_elapsed);
-        //vec3 light_pos[2];
-        //vec3 light_offset;
-        //vec3 light_color;
-        //int light_radius;
-        //float light_intensity;
-        //unsigned int total_time = 0;
+        
 
 
 };

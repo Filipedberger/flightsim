@@ -21,7 +21,7 @@ Game_State::Game_State(Context *c) : State(c->settings["game_state"], c)
     map = new TerrainMap(context->settings["terrain"], cameraPosition, frustum_obj);
     skydome = new Skydome(context->settings["skydome"], cameraPosition);
     plane = new Plane(context->settings["planes"][0], vec3(0,150,0));
-    objects.push_back(new Loops(context->settings["loops"], vec3(0, 150, -1000)));
+    loop = new Loops(context->settings["loops"], vec3(0, 150, -1000));
     glutHideCursor();
     return;
 }
@@ -83,6 +83,11 @@ void Game_State::keyboard(unsigned char key, int x, int y)
             light_intensity += 0.1;
             if (light_intensity > 1.0)
                 light_intensity = 1.0;
+            break;
+        }
+        case 'r':
+        {
+            loop_on = !loop_on;
             break;
         }
     }
@@ -150,10 +155,13 @@ void Game_State::update(int time_elapsed)
     plane->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
     map->update(plane->get_pos(), world2view);
     skydome->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
+    if (loop_on) {
+        loop->update(time_elapsed, plane->get_pos(), plane -> get_lookAtPoint(), keys_pressed);
+    }
 
     for (Object *object : objects)
     {
-        object->update(time_elapsed, plane->get_pos(), lookAtPoint, keys_pressed);
+        object->update(time_elapsed, plane->get_pos(), plane -> get_lookAtPoint(), keys_pressed);
     }
     move_camera(time_elapsed);
 
@@ -185,6 +193,11 @@ void Game_State::display()
 
     glUniform1i(glGetUniformLocation(program, "map"), 0);
     plane->display(program, world2view, projection);
+
+    if (loop_on) {
+        glUniform1i(glGetUniformLocation(program, "map"), 2);
+        loop->display(program, world2view, projection);
+    }
 
     for (Object *object : objects)
     {

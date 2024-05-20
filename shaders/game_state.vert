@@ -22,7 +22,7 @@ uniform vec3 chunkPosition;
 
 void main(void)
 {
-	if (map == 0) {
+	if (map != 1) {
 	mdlMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 	gl_Position = in_projectionMatrix * viewMatrix * mdlMatrix * vec4(in_Position, 1.0);
 
