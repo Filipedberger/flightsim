@@ -4,6 +4,7 @@
 #include <omp.h>
 #include "frustum.h"
 #include <jsoncpp/json/json.h>
+#include <random>
 
 TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum &f)
 {
@@ -44,6 +45,7 @@ TerrainMap::TerrainMap(Json::Value settings, vec3 cameraPosition, const Frustum 
     std::cout << "Grass: " << sand_size << " " << grass_inter << std::endl;
     std::cout << "Sand: " << water_to_sand << std::endl;
 
+    std::map<std::pair<int, int>, LightSource> lightSources;
     // TESTING
     noise_test = new SimplexNoise(1.0, 1.0);
 }
@@ -62,16 +64,20 @@ std::pair<int, int> TerrainMap::getChunk(int x, int z)
 {
     int chunkX;
     int chunkZ;
-    if (x < 0) {
+    if (x < 0)
+    {
         chunkX = (x - terrainWidth) / (terrainWidth);
     }
-    else {
+    else
+    {
         chunkX = x / (terrainWidth);
     }
-    if (z < 0) {
+    if (z < 0)
+    {
         chunkZ = (z - terrainHeight) / (terrainHeight);
     }
-    else {
+    else
+    {
         chunkZ = z / (terrainHeight);
     }
     return {chunkX, chunkZ};
@@ -79,61 +85,63 @@ std::pair<int, int> TerrainMap::getChunk(int x, int z)
 
 bool TerrainMap::collision(std::map<std::pair<int, int>, int> points)
 {
-    for (auto &point : points){
+    for (auto &point : points)
+    {
         int x = point.first.first;
         int z = point.first.second;
         int y = point.second;
 
-        //std::cout << "Original: " << x << " " << z << std::endl;  
+        // std::cout << "Original: " << x << " " << z << std::endl;
 
         int original_x = x;
         int original_z = z;
 
         std::pair<int, int> chunk = getChunk(x, z);
 
-        //std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
-        // Check if the chunk exists
+        // std::cout << "{ " << chunk.first << " , " << chunk.second << " }" << std::endl;
+        //  Check if the chunk exists
         if (chunks.find(chunk) == chunks.end())
         {
             continue;
         }
 
-        //x = x + 2 * chunk.first;
-        //z = z + 2 * chunk.second;
+        // x = x + 2 * chunk.first;
+        // z = z + 2 * chunk.second;
 
         // Calculate the position of the vertex in the chunk
-        if (x < 0) {
+        if (x < 0)
+        {
             x = -x;
             x = terrainWidth - x % (terrainWidth);
         }
-        else {
+        else
+        {
             x = x - chunk.first * (terrainWidth);
         }
-        if (z < 0) {
+        if (z < 0)
+        {
             z = -z;
             z = terrainHeight - z % (terrainHeight);
         }
-        else {
+        else
+        {
             z = z - chunk.second * (terrainHeight);
         }
 
         Model *chunkModel = chunks[chunk];
 
-        //std::cout << "Y: " << chunkModel -> vertexArray[x + z * terrainWidth].y << std::endl;
-        //std::cout << "X: " << x << " Z: " << z << std::endl;
+        // std::cout << "Y: " << chunkModel -> vertexArray[x + z * terrainWidth].y << std::endl;
+        // std::cout << "X: " << x << " Z: " << z << std::endl;
 
         int chunkX = chunk.first * (terrainWidth) + x;
         int chunkZ = chunk.second * (terrainHeight) + z;
-         
 
         tmp_x = x;
         tmp_z = z;
         tmp_x2 = chunk.first;
         tmp_z2 = chunk.second;
-        
 
-
-        if (y < chunkModel -> vertexArray[x + z * terrainWidth].y)
+        if (y < chunkModel->vertexArray[x + z * terrainWidth].y)
         {
             return true;
         }
@@ -156,7 +164,7 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 
         for (int z = cameraChunkZ - CHUNKS; z <= cameraChunkZ + CHUNKS; ++z)
         {
-            float chunkZ = (z * (terrainHeight) - cameraPosition.z) * (z * (terrainHeight) - cameraPosition.z);
+            float chunkZ = (z * (terrainHeight)-cameraPosition.z) * (z * (terrainHeight)-cameraPosition.z);
             if (chunkX + chunkZ > rad_sq)
             {
                 continue;
@@ -211,10 +219,10 @@ void TerrainMap::update(vec3 cameraPosition, const mat4 &world2view)
 
 void TerrainMap::display(const GLuint &program, const mat4 &world2view, const mat4 &projection, vec3 cameraPosition)
 {
-    //glUseProgram(terrain_program);
+    // glUseProgram(terrain_program);
 
-    //glUniformMatrix4fv(glGetUniformLocation(terrain_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
-    //glUniformMatrix4fv(glGetUniformLocation(terrain_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
+    // glUniformMatrix4fv(glGetUniformLocation(terrain_program, "viewMatrix"), 1, GL_TRUE, world2view.m);
+    // glUniformMatrix4fv(glGetUniformLocation(terrain_program, "in_projectionMatrix"), 1, GL_TRUE, projection.m);
 
     // Render all chunks
     for (const auto &pair : chunks)
@@ -223,7 +231,7 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         if (pair.first.first == 0 && pair.first.second == 1)
         {
             int p = 0;
-        } 
+        }
         // Calculate the chunk position
         float chunkX = pair.first.first * (terrainWidth - 2);
         float chunkZ = pair.first.second * (terrainHeight - 2);
@@ -232,7 +240,6 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         {
             continue;
         }
-
 
         // Pass the chunk position to the shader
         glUniform3f(glGetUniformLocation(program, "chunkPosition"), chunkX, 0, chunkZ);
@@ -249,7 +256,6 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
         glUniform1f(glGetUniformLocation(program, "width"), terrainWidth);
 
         glUniform3f(glGetUniformLocation(program, "tmp"), tmp_x, 0, tmp_z);
-        
 
         if (pair.first.first == tmp_x2 && pair.first.second == tmp_z2)
         {
@@ -260,19 +266,22 @@ void TerrainMap::display(const GLuint &program, const mat4 &world2view, const ma
             glUniform1i(glGetUniformLocation(program, "tmp2"), 0);
         }
 
-        
-
-
         // Pass the chunk position to the shader
-        
-
-
-
 
         // Draw the chunk
         DrawModel(pair.second, program, "in_Position", "in_Normal", "in_TexCoord");
     }
-    //glUseProgram(program);
+    for (const auto &pair : lightSources)
+    {
+        // Calculate the position of the light source
+        float lightX = pair.second.position.x + pair.first.first * (terrainWidth - 2);
+        float lightZ = pair.second.position.z + pair.first.second * (terrainHeight - 2);
+
+        // Pass the light position to the shader
+        glUniform3f(glGetUniformLocation(program, "lightPositionChunk"), lightX, pair.second.position.y, lightZ);
+    }
+
+    // glUseProgram(program);
 }
 
 Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
@@ -311,6 +320,13 @@ Model *TerrainMap::GeneratePerlinTerrain(int offsetX, int offsetZ)
             texCoordArray[x + z * terrainWidth] = vec2(x + offsetX, z + offsetZ);
         }
     auto t2 = std::chrono::high_resolution_clock::now();
+
+    // Light sources
+    LightSource light;
+    int lightX = rand() % terrainWidth;
+    int lightZ = rand() % terrainHeight;
+    light.position = vec3(lightX, vertexArray[lightX + lightZ * terrainWidth].y, lightZ);
+    lightSources[{offsetX, offsetZ}] = light;
 // Calculate the normals for the vertices
 #pragma omp parallel for collapse(2)
     for (int x = 0; x < terrainWidth; x++)

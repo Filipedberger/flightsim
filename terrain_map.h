@@ -65,9 +65,15 @@ private:
 
     SimplexNoise *noise_test;
 
+    struct LightSource
+    {
+        vec3 position;
+    };
+    std::map<std::pair<int, int>, LightSource> lightSources;
+
     std::pair<int, int> getChunk(int x, int z);
 
-    //TESTING
+    // TESTING
     int tmp_x;
     int tmp_z;
     int tmp_x2;

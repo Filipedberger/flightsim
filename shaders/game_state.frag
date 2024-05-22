@@ -33,6 +33,8 @@ uniform vec3 plane_light_pos[2];
 uniform vec3 plane_light_intensity;
 uniform int plane_light_radius;
 
+unform vec3 lightPositionChunk;
+
 void main(void)
 {	
 
